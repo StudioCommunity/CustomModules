@@ -1,7 +1,7 @@
 import os
 import yaml
 from .pytorch_score_module import PytorchScoreModule
-from .tensorflow_score_module import TensorflowScoreModule
+# from .tensorflow_score_module import TensorflowScoreModule
 
 MODEL_SPEC_FILE_NAME = "model_spec.yml"
 
