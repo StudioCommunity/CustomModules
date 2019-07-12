@@ -1,0 +1,36 @@
+name: Tensorflow Train - MNIST
+family_id: a140e35b-4f72-4b9b-b3be-c9183cd40290
+category: Machine Learning\Train
+description: DS tensorflow train which outputs a tensorflow model with spec
+inputs:
+
+outputs:
+- name: Output Model
+  type: Model
+  connectable: True
+  description: The Output model
+
+implementation:
+  container:
+    conda:
+      content:
+        name: project_environment
+        channels:
+        - defaults
+        dependencies:
+        - python=3.6.2
+        - pip:
+          - pandas
+          - tensorflow
+          - git+https://github.com/GuXiaoMing/dstest.git
+    invoking:
+      module: 
+      class: 
+      func: 
+    command:
+    - python
+    - -m
+    - dstest.tensorflow.mnist
+    args:
+    - --model_path
+    - outputPath: Output Model
