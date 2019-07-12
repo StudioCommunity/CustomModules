@@ -6,27 +6,22 @@ inputs:
 
 outputs:
 - name: Output Model
-  type: Model
-  connectable: True
+  type: ModelFolder
+  port: True
   description: The Output model
 
 implementation:
   container:
     conda:
-      content:
-        name: project_environment
-        channels:
-        - defaults
-        dependencies:
-        - python=3.6.2
-        - pip:
-          - pandas
-          - tensorflow
-          - git+https://github.com/GuXiaoMing/dstest.git
-    invoking:
-      module: 
-      class: 
-      func: 
+      name: project_environment
+      channels:
+      - defaults
+      dependencies:
+      - python=3.6.2
+      - pip:
+        - pandas
+        - tensorflow
+        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
     command:
     - python
     - -m
@@ -34,3 +29,7 @@ implementation:
     args:
     - --model_path
     - outputPath: Output Model
+  invoking:
+    module:
+    class:
+    func:
