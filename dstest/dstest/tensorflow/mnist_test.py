@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import pandas as pd
-from buildin_score.builtin_score_module import *
+from builtin_score.builtin_score_module import *
 
 # python -m dstest.tensorflow.mnist_test
 if __name__ == '__main__':
