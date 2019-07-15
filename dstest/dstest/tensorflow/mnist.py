@@ -1,9 +1,13 @@
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
 import tensorflow as tf
-import click
 import logging
 import os
+
+# Test dynamic install package
+import pip
+pip._internal.main(["install", "click"])
+import click
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
