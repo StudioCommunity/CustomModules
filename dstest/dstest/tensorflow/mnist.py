@@ -6,7 +6,13 @@ import os
 
 # Test dynamic install package
 import pip
-pip._internal.main(["install", "click"])
+def install(package):
+    if hasattr(pip, 'main'):
+        pip.main(['install', package])
+    else:
+        pip._internal.main(['install', package])
+
+install("click")
 import click
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
