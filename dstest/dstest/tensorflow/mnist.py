@@ -6,6 +6,8 @@ import os
 
 # Test dynamic install package
 import pip
+print(f"pip.__version__ = {pip.__version__}")
+print(f"dir(pip) = {dir(pip)}")
 def install(package):
     if hasattr(pip, 'main'):
         pip.main(['install', package])
