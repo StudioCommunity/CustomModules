@@ -5,16 +5,8 @@ import logging
 import os
 
 # Test dynamic install package
-import pip
-print(f"pip.__version__ = {pip.__version__}")
-print(f"dir(pip) = {dir(pip)}")
-def install(package):
-    if hasattr(pip, 'main'):
-        pip.main(['install', package])
-    else:
-        pip._internal.main(['install', package])
-
-install("click")
+from pip._internal import main as pipmain
+pipmain(["install", "click"])
 import click
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
