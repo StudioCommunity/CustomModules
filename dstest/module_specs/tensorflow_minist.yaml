@@ -21,6 +21,7 @@ implementation:
       - pip:
         - pandas
         - tensorflow
+        - click
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
     command:
     - python
