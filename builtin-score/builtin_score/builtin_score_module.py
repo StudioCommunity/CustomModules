@@ -27,8 +27,14 @@ class BuiltinScoreModule(object):
     def run(self, df, global_param=None):
         output_label = self.module.run(df)
         if self.append_score_column_to_output:
-            df.insert(len(df.columns), "Scored Label", output_label, True)
+            if isinstance(output_label, pd.DataFrame):
+                return pd.concat([df, output_label], axis=1)
+            else:
+                df.insert(len(df.columns), "Scored Label", output_label, True)
         else:
-            df = pd.DataFrame(output_label)
+            if isinstance(output_label, pd.DataFrame):
+                df = output_label
+            else:
+                df = pd.DataFrame(output_label)
         print(df)
         return df
