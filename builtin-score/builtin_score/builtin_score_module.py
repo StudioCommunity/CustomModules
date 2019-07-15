@@ -1,5 +1,6 @@
 import os
 import yaml
+import pandas as pd
 
 MODEL_SPEC_FILE_NAME = "model_spec.yml"
 
@@ -24,7 +25,8 @@ class BuiltinScoreModule(object):
 
     def run(self, df, global_param=None):
         output_label = self.module.run(df)
-        print(output_label)
-
-        df.insert(len(df.columns), "Scored Label", output_label, True)
+        if isinstance(output_label, pd.DataFrame):
+            return pd.concat([df, output_label], axis=1)
+        else:
+            df.insert(len(df.columns), "Scored Label", output_label, True)
         return df
