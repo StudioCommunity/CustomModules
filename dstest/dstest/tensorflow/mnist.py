@@ -20,20 +20,22 @@ def save_model_spec(model_path, multiple_output):
     yaml=YAML()
     yaml.default_flow_style = False
     spec = {
-        'model_file_path' : './deep_mnist_model.meta',
         'flavor' : {
             'framework' : 'tensorflow'
         },
-        'inputs' : [
-            {
-                'name': 'x'
-            }
-        ],
+        "tensorflow": {
+            "saved_model_path": 'deep_mnist_model.meta',
+            'inputs' : [
+                {
+                    'name': 'x'
+                }
+            ],
+        },
     }
 
     if(multiple_output == True):
         print("Write spec with multiple outputs")
-        spec['outputs'] = [
+        spec['tensorflow']['outputs'] = [
                 {
                     'name': 'y'
                 },
@@ -43,7 +45,7 @@ def save_model_spec(model_path, multiple_output):
             ]
     else:
         print("Write spec with single outputs")
-        spec['outputs'] = [
+        spec['tensorflow']['outputs'] = [
             {
                 'name': 'y'
             }
