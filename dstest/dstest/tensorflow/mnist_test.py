@@ -22,7 +22,7 @@ if __name__ == '__main__':
     with open("model/tensorflow-minist/model_spec.yml") as fp:
         config = yaml.safe_load(fp)
 
-    model_path = "model/tensorflow-minist/deep_mnist_model.meta"
+    model_path = "model/tensorflow-minist/"
     tfmodule = TensorflowScoreModule(model_path, config)
     result = tfmodule.run(df)
     print(result)
