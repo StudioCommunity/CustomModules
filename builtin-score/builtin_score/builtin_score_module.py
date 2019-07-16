@@ -14,6 +14,9 @@ class BuiltinScoreModule(object):
             config = yaml.safe_load(fp)
 
         model_file_path = os.path.join(model_path, config["model_file_path"])
+        print(f"model_path = {model_path}")
+        print(f"config['model_file_path'] = {config['model_file_path']}")
+        print(f"model_file_path = {model_file_path}")
         framework = config["flavor"]["framework"]
         if framework.lower() == "pytorch":
             from .pytorch_score_module import PytorchScoreModule
