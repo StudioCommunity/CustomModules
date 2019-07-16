@@ -17,8 +17,13 @@ if __name__ == '__main__':
     df1 = pd.DataFrame(data=data, columns=names)
     
     df = pd.concat([df, df1], axis=1)    
+    df.to_csv("test.csv")
+
+    with open("model/tensorflow-minist/model_spec.yml") as fp:
+        config = yaml.safe_load(fp)
+
     model_path = "model/tensorflow-minist/deep_mnist_model.meta"
-    tfmodule = TensorflowScoreModule(model_path)
+    tfmodule = TensorflowScoreModule(model_path, config)
     result = tfmodule.run(df)
     print(result)
 

@@ -3,6 +3,7 @@ mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
 import tensorflow as tf
 import logging
 import os
+from ruamel.yaml import YAML
 
 # Test dynamic install package
 from pip._internal import main as pipmain
@@ -14,6 +15,42 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message
                     level=logging.INFO)
 logging.info(f"in dstest echo")
 logger = logging.getLogger(__name__)
+
+def save_model_spec(model_path, multiple_output):
+    yaml=YAML()
+    yaml.default_flow_style = False
+    spec = {
+        'model_file_path' : './deep_mnist_model.meta',
+        'flavor' : {
+            'framework' : 'tensorflow'
+        },
+        'inputs' : [
+            {
+                'name': 'x'
+            }
+        ],
+    }
+
+    if(multiple_output == True):
+        print("Write spec with multiple outputs")
+        spec['outputs'] = [
+                {
+                    'name': 'y'
+                },
+                {
+                    'name': 'y_label'
+                }
+            ]
+    else:
+        print("Write spec with single outputs")
+        spec['outputs'] = [
+            {
+                'name': 'y'
+            }
+        ]
+
+    with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
+        yaml.dump(spec, fp)
 
 def save_model(model_path, sess):
     saver = tf.train.Saver()
@@ -28,17 +65,16 @@ def save_model(model_path, sess):
         logger.info(f"{model_path} exists")
 
     saver.save(sess, model_path + "deep_mnist_model")
-    
-    with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
-        fp.write("model_file_path: ./deep_mnist_model.meta\nflavor:\n  framework: tensorflow\n  env: ")
 
 @click.command()
 @click.option('--action', default="train", 
         type=click.Choice(['predict', 'train']))
 @click.option('--model_path', default="./model/")
+@click.option('--multiple_output', default=True)
 def run_pipeline(
     action, 
     model_path,
+    multiple_output
     ):
     x = tf.placeholder(tf.float32, [None,784], name="x")
     W = tf.Variable(tf.zeros([784,10]))
@@ -72,9 +108,10 @@ def run_pipeline(
     train_writer.close()
 
     save_model(model_path, sess)
+    save_model_spec(model_path, multiple_output)
     logger.info(f"training finished")
 
-# python -m dstest.tensorflow.mnist  --model_path model/tensorflow-minist
+# python -m dstest.tensorflow.mnist  --model_path model/tensorflow-minist --multiple_output False
 if __name__ == '__main__':
     run_pipeline()
     

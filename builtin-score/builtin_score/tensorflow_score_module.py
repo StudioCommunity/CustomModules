@@ -5,7 +5,7 @@ import pandas as pd
 
 class TensorflowScoreModule(object):
 
-    def __init__(self, model_meta_path):
+    def __init__(self, model_meta_path, config):
         model_path = os.path.dirname(model_meta_path)
         self.class_names = ["class:{}".format(str(i)) for i in range(10)]
         self.sess = tf.Session()
@@ -13,13 +13,28 @@ class TensorflowScoreModule(object):
         saver.restore(self.sess,tf.train.latest_checkpoint(model_path))
 
         graph = tf.get_default_graph()
-        # TODO: fix the hard-code x,y here
-        self.x = {"x": graph.get_tensor_by_name("x:0")}
+        
+        self.x = {}
+        for index in range(len(config["inputs"])):
+            name = config["inputs"][index]["name"]
+            self.x[name] = graph.get_tensor_by_name(name + ":0")
+        
+        print("loaded inputs:")
+        print(self.x)
 
-        y = graph.get_tensor_by_name("y:0")
-        y_label = graph.get_tensor_by_name("y_label:0") # TODO: understand why :0
-        self.y = [y, y_label]
-        self.y_names = ["y", "y_label"]
+        self.y = []
+        self.y_names = []
+        for index in range(len(config["outputs"])):
+            name = config["outputs"][index]["name"]
+            # TODO: support :0 in future version. :0 means the first ouput of an op in tensorflow graph
+            tensor = graph.get_tensor_by_name(name +":0")
+            self.y.append(tensor)
+            self.y_names.append(name)
+
+        print("loaded outputs:")
+        print(self.y)
+        print(self.y_names)
+
         print(f"Successfully loaded model from {model_path}")
 
     def run(self, df):
@@ -27,8 +42,7 @@ class TensorflowScoreModule(object):
         resultdf = pd.DataFrame()
         for index in range(len(self.y_names)):
             name = self.y_names[index]
-            #TODO : fix the hard-code float64
-            predict = predictions[index].astype(np.float64).tolist()
+            predict = predictions[index].tolist()
             resultdf.insert(len(resultdf.columns), name, predict, True)
 
         return resultdf

@@ -20,7 +20,7 @@ class BuiltinScoreModule(object):
             self.module = PytorchScoreModule(model_file_path)
         elif framework.lower() == "tensorflow":
             from .tensorflow_score_module import TensorflowScoreModule
-            self.module = TensorflowScoreModule(model_file_path)
+            self.module = TensorflowScoreModule(model_file_path, config)
         else:
             print(f"Not Implemented: framework {framework} not supported")
 
