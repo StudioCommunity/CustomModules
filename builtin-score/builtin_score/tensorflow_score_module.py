@@ -6,7 +6,7 @@ import pandas as pd
 class TensorflowScoreModule(object):
 
     def __init__(self, model_meta_path, config):
-        model_path = os.path.dirname(model_meta_path).strip('.')
+        model_path = os.path.dirname(model_meta_path).strip('.').strip('/')
         self.class_names = ["class:{}".format(str(i)) for i in range(10)]
         self.sess = tf.Session()
         print(f"model_meta_path = {model_meta_path}, model_path = {model_path}")
