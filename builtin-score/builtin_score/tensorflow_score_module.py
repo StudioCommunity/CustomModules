@@ -9,6 +9,7 @@ class TensorflowScoreModule(object):
         model_path = os.path.dirname(model_meta_path)
         self.class_names = ["class:{}".format(str(i)) for i in range(10)]
         self.sess = tf.Session()
+        print(f"model_meta_path = {model_meta_path}, model_path = {model_path}")
         saver = tf.train.import_meta_graph(model_meta_path)
         saver.restore(self.sess,tf.train.latest_checkpoint(model_path))
 
