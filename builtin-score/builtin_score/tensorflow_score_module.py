@@ -3,6 +3,10 @@ import numpy as np
 import os
 import pandas as pd
 
+def rename_col(df, col_name):
+    col_pattern = col_name +"."
+    df.rename(columns=lambda col : col_name if col.startswith(col_pattern) else col, inplace=True)
+
 class _TFSavedModelWrapper(object):
     """
     Wrapper class that exposes a TensorFlow model for inference via a ``predict`` function such that
@@ -31,6 +35,11 @@ class _TFSavedModelWrapper(object):
 
     def predict(self, df):
       with self.tf_graph.as_default():
+        # TODO fix this design
+        # rename column like x.1, x.2 to x
+        for col_name in self.input_tensor_mapping.keys():
+            rename_col(df, col_name)
+        
         feed_dict = {
                 self.input_tensor_mapping[tensor_column_name]: df[tensor_column_name].values
                 for tensor_column_name in self.input_tensor_mapping.keys()
@@ -38,7 +47,7 @@ class _TFSavedModelWrapper(object):
         raw_preds = self.tf_sess.run(self.output_tensors, feed_dict=feed_dict)
         resultdf = pd.DataFrame()
         for column_name, values in raw_preds.items():
-          resultdf.insert(len(resultdf.columns), column_name, values.tolist(), True)
+            resultdf.insert(len(resultdf.columns), column_name, values.tolist(), True)
         return resultdf
 
     def _load_tensorflow_saved_model(self, sess, tf_meta_graph_tags,tf_signature_def_key, export_dir):
@@ -93,6 +102,11 @@ class _TFSaverWrapper(object):
         return resultdf
 
     def feed_dict(self, df):
+        # TODO fix this design
+        # rename column like x.1, x.2 to x
+        for col_name, tensor in self.x.items():
+            rename_col(df, col_name)
+
         dict = {}
         for name, tensor in self.x.items():
             dict[tensor] = df[name].values
