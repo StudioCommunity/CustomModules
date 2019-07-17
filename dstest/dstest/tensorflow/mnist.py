@@ -33,7 +33,7 @@ def save_model_spec(model_path, multiple_output):
         },
     }
 
-    if(multiple_output == True):
+    if(multiple_output == "True"):
         print("Write spec with multiple outputs")
         spec['tensorflow']['outputs'] = [
                 {
@@ -97,7 +97,7 @@ def save_ilearner(model_path):
 @click.option('--action', default="train", 
         type=click.Choice(['predict', 'train']))
 @click.option('--model_path', default="./model/")
-@click.option('--multiple_output', default=True)
+@click.option('--multiple_output', default="True")
 def run_pipeline(
     action, 
     model_path,
@@ -139,7 +139,7 @@ def run_pipeline(
     save_ilearner(model_path)
     logger.info(f"training finished")
 
-# python -m dstest.tensorflow.mnist  --model_path model/tensorflow-minist --multiple_output False
+# python -m dstest.tensorflow.mnist  --model_path model/tensorflow-minist --multiple_output=False
 if __name__ == '__main__':
     run_pipeline()
     
