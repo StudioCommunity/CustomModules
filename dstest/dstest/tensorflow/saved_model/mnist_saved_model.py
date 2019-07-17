@@ -60,9 +60,9 @@ def save_model_spec(model_path, model_version):
         yaml.dump(spec, fp, default_flow_style=False)
 
 def main(_):
-  if len(sys.argv) < 2 or sys.argv[-1].startswith('-'):
+  if len(sys.argv) < 2:
     print('Usage: mnist_saved_model.py [--training_iteration=x] '
-          '[--model_version=y] export_dir')
+          '[--model_version=y] [--export_dir=/path/to/dir/]')
     sys.exit(-1)
   if FLAGS.training_iteration <= 0:
     print('Please specify a positive value for training iteration.')
@@ -161,6 +161,6 @@ def main(_):
   save_model_spec(FLAGS.export_dir, FLAGS.model_version)
   print('Done exporting!')
 
-# python -m dstest.tensorflow.saved_model.mnist_saved_model --export_dir model/tensorflow-minist-saved-model/
+# python -m dstest.tensorflow.saved_model.mnist_saved_model --export_dir=model/tensorflow-minist-saved-model/
 if __name__ == '__main__':
   tf.app.run()
