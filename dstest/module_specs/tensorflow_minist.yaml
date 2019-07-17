@@ -1,5 +1,5 @@
 name: Tensorflow Train - MNIST
-id: a140e35b-4f72-4b9b-b3be-c9183cd40291
+id: a140e35b-4f72-4b9b-b3be-c9183cd40290
 category: Machine Learning\Train
 description: DS tensorflow train which outputs a tensorflow model with spec
 inputs:
