@@ -29,6 +29,7 @@ from __future__ import print_function
 
 import os
 import sys
+import json
 
 # This is a placeholder for a Google-internal import.
 
@@ -58,6 +59,30 @@ def save_model_spec(model_path, model_version):
     }
     with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
         yaml.dump(spec, fp, default_flow_style=False)
+
+def save_ilearner(model_path):
+    # Dump data_type.json as a work around until SMT deploys
+    dct = {
+        "Id": "ILearnerDotNet",
+        "Name": "ILearner .NET file",
+        "ShortName": "Model",
+        "Description": "A .NET serialized ILearner",
+        "IsDirectory": False,
+        "Owner": "Microsoft Corporation",
+        "FileExtension": "ilearner",
+        "ContentType": "application/octet-stream",
+        "AllowUpload": False,
+        "AllowPromotion": False,
+        "AllowModelPromotion": True,
+        "AuxiliaryFileExtension": None,
+        "AuxiliaryContentType": None
+    }
+    with open(os.path.join(model_path, 'data_type.json'), 'w') as f:
+        json.dump(dct, f)
+    # Dump data.ilearner as a work around until data type design
+    visualization = os.path.join(model_path, "data.ilearner")
+    with open(visualization, 'w') as file:
+        file.writelines('{}')
 
 def main(_):
   if len(sys.argv) < 2:
@@ -159,6 +184,7 @@ def main(_):
 
   builder.save()
   save_model_spec(FLAGS.export_dir, FLAGS.model_version)
+  save_ilearner(FLAGS.export_dir)
   print('Done exporting!')
 
 # python -m dstest.tensorflow.saved_model.mnist_saved_model --export_dir=model/tensorflow-minist-saved-model/
