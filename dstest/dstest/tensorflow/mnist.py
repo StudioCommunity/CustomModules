@@ -55,7 +55,7 @@ def save_model_spec(model_path, multiple_output):
         yaml.dump(spec, fp)
 
 def save_model(model_path, sess):
-    saver = tf.train.Saver()
+    saver = tf.train.Saver(save_relative_paths=True)
 
     if(not model_path.endswith('/')):
         model_path += '/'

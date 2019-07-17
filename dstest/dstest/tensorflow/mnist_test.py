@@ -4,9 +4,22 @@ import pandas as pd
 from builtin_score.builtin_score_module import *
 from builtin_score.tensorflow_score_module import *
 
-# python -m dstest.tensorflow.mnist_test
-if __name__ == '__main__':
-    
+model_path = "model/tensorflow-minist/"
+
+def test_tensor(df):
+    with open(model_path + "model_spec.yml") as fp:
+        config = yaml.safe_load(fp)
+
+    tfmodule = TensorflowScoreModule(model_path, config)
+    result = tfmodule.run(df)
+    print(result)
+
+def test_builtin(df):
+    module = BuiltinScoreModule(model_path)
+    result = module.run(df)
+    print(result)
+
+def prepare_input():
     from tensorflow.examples.tutorials.mnist import input_data
     mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
     batch_xs, batch_ys = mnist.train.next_batch(2)
@@ -17,17 +30,10 @@ if __name__ == '__main__':
     df1 = pd.DataFrame(data=data, columns=names)
     
     df = pd.concat([df, df1], axis=1)    
-    df.to_csv("test.csv")
+    #df.to_csv("test.csv")
+    return df
 
-    with open("model/tensorflow-minist/model_spec.yml") as fp:
-        config = yaml.safe_load(fp)
-
-    model_path = "model/tensorflow-minist/"
-    tfmodule = TensorflowScoreModule(model_path, config)
-    result = tfmodule.run(df)
-    print(result)
-
-    model_path = "model/tensorflow-minist/"
-    module = BuiltinScoreModule(model_path)
-    result = module.run(df)
-    print(result)
+# python -m dstest.tensorflow.mnist_test
+if __name__ == '__main__':
+    df = prepare_input()
+    test_builtin(df)
