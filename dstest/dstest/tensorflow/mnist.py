@@ -3,7 +3,7 @@ mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
 import tensorflow as tf
 import logging
 import os
-from ruamel.yaml import YAML
+import yaml
 
 # Test dynamic install package
 from pip._internal import main as pipmain
@@ -17,8 +17,7 @@ logging.info(f"in dstest echo")
 logger = logging.getLogger(__name__)
 
 def save_model_spec(model_path, multiple_output):
-    yaml=YAML()
-    yaml.default_flow_style = False
+    
     spec = {
         'flavor' : {
             'framework' : 'tensorflow'
@@ -52,7 +51,7 @@ def save_model_spec(model_path, multiple_output):
         ]
 
     with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
-        yaml.dump(spec, fp)
+        yaml.dump(spec, fp, default_flow_style=False)
 
 def save_model(model_path, sess):
     saver = tf.train.Saver(save_relative_paths=True)

@@ -33,7 +33,7 @@ import sys
 # This is a placeholder for a Google-internal import.
 
 import tensorflow as tf
-from ruamel.yaml import YAML
+import yaml
 
 from .mnist_input_data import read_data_sets
 
@@ -45,8 +45,6 @@ tf.app.flags.DEFINE_string('export_dir', '', 'export_dir.')
 FLAGS = tf.app.flags.FLAGS
 
 def save_model_spec(model_path, model_version):
-    yaml=YAML()
-    yaml.default_flow_style = False
     spec = {
         'flavor' : {
             'framework' : 'tensorflow'
@@ -59,7 +57,7 @@ def save_model_spec(model_path, model_version):
         }
     }
     with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
-        yaml.dump(spec, fp)
+        yaml.dump(spec, fp, default_flow_style=False)
 
 def main(_):
   if len(sys.argv) < 2 or sys.argv[-1].startswith('-'):
