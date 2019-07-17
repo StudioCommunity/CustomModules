@@ -30,7 +30,7 @@ implementation:
     - -m
     - dstest.tensorflow.mnist
     args:
-    --multiple_output
+    - --multiple_output
     - inputValue: Multiple Output
     - --model_path
     - outputPath: Output Model
