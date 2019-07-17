@@ -20,6 +20,7 @@ implementation:
         - pandas
         - tensorflow
         - click
+        - PyYAML
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
     command:
     - python
