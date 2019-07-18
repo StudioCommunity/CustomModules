@@ -1,7 +1,10 @@
-import pyarrow.parquet as pq # imported explicitly to avoid known issue of pd.read_parquet
-import argparse
-import pandas as pd
 import os
+import argparse
+
+import pyarrow.parquet as pq # imported explicitly to avoid known issue of pd.read_parquet
+import pandas as pd
+
+from . import constants
 from .builtin_score_module import BuiltinScoreModule
 
 INPUT_FILE_NAME = "data.dataset.parquet" # hard coded, to be replaced, and we presume the data is DataFrame inside parquet
@@ -14,7 +17,12 @@ parser.add_argument('--append-score-columns-to-output', choices=('True', 'False'
 parser.add_argument("--scored-dataset", type=str, help="scored dataset path")
 
 args, _ = parser.parse_known_args()
-score_module = BuiltinScoreModule(args.trained_model)
+params = {
+    constants.APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY:
+        isinstance(args.append_score_columns_to_output, str) and
+        args.append_score_columns_to_output.lower() == "true"
+}
+score_module = BuiltinScoreModule(args.trained_model, params)
 input_df = pd.read_parquet(os.path.join(args.dataset, INPUT_FILE_NAME), engine="pyarrow")
 output_df = score_module.run(input_df)
 

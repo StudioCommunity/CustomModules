@@ -1,6 +1,9 @@
 import os
+
 import yaml
 import pandas as pd
+
+from . import constants
 
 MODEL_SPEC_FILE_NAME = "model_spec.yml"
 
@@ -8,7 +11,8 @@ MODEL_SPEC_FILE_NAME = "model_spec.yml"
 class BuiltinScoreModule(object):
 
     def __init__(self, model_path, params={}):
-        self.append_score_column_to_output = params.get("Append score columns to output", False)
+        self.append_score_column_to_output = params.get(
+            constants.APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY, False)
         model_spec_path = os.path.join(model_path, MODEL_SPEC_FILE_NAME)
         with open(model_spec_path) as fp:
             config = yaml.safe_load(fp)
@@ -33,11 +37,11 @@ class BuiltinScoreModule(object):
             if isinstance(output_label, pd.DataFrame):
                 return pd.concat([df, output_label], axis=1)
             else:
-                df.insert(len(df.columns), "Scored Label", output_label, True)
+                df.insert(len(df.columns), constants.SCORED_LABEL_COL_NAME, output_label, True)
         else:
             if isinstance(output_label, pd.DataFrame):
                 df = output_label
             else:
-                df = pd.DataFrame(output_label)
+                df = pd.DataFrame({constants.SCORED_LABEL_COL_NAME: output_label})
         print(df)
         return df
