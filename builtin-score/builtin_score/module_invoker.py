@@ -18,9 +18,7 @@ parser.add_argument("--scored-dataset", type=str, help="scored dataset path")
 
 args, _ = parser.parse_known_args()
 params = {
-    constants.APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY:
-        isinstance(args.append_score_columns_to_output, str) and
-        args.append_score_columns_to_output.lower() == "true"
+    constants.APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY: args.append_score_columns_to_output
 }
 score_module = BuiltinScoreModule(args.trained_model, params)
 input_df = pd.read_parquet(os.path.join(args.dataset, INPUT_FILE_NAME), engine="pyarrow")

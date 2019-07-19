@@ -11,8 +11,13 @@ MODEL_SPEC_FILE_NAME = "model_spec.yml"
 class BuiltinScoreModule(object):
 
     def __init__(self, model_path, params={}):
-        self.append_score_column_to_output = params.get(
-            constants.APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY, False)
+        print(f"BuiltinScoreModule({model_path}, {params})")
+        append_score_column_to_output_value_str = params.get(
+            constants.APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY, None
+        )
+        self.append_score_column_to_output = isinstance(append_score_column_to_output_value_str, str) and\
+            append_score_column_to_output_value_str.lower() == "true"
+        print(f"self.append_score_column_to_output = {self.append_score_column_to_output}")
         model_spec_path = os.path.join(model_path, MODEL_SPEC_FILE_NAME)
         with open(model_spec_path) as fp:
             config = yaml.safe_load(fp)
