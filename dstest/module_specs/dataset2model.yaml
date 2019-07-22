@@ -4,7 +4,7 @@ category: Machine Learning\Train
 description: Unzip the dataset in the input port to the output port (of Model type)
 inputs:
 - name: Zipped Model
-  type: TabularDataFolder
+  type: Zip
   port: True
   description: Contains a zipfile in which the Model folder resides
 outputs:
