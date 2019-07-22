@@ -36,6 +36,9 @@ class BuiltinScoreModule(object):
         elif framework.lower() == "sklearn":
             from .sklearn_score_module import SklearnScoreModule
             self.module = SklearnScoreModule(model_path, config)
+        elif framework.lower() == "keras":
+            from .keras_score_module import KerasScoreModule
+            self.module = KerasScoreModule(model_path, config)
         else:
             print(f"Not Implemented: framework {framework} not supported")
 
