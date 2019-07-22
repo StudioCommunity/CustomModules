@@ -33,6 +33,9 @@ class BuiltinScoreModule(object):
         elif framework.lower() == "tensorflow":
             from .tensorflow_score_module import TensorflowScoreModule
             self.module = TensorflowScoreModule(model_path, config)
+        elif framework.lower() == "sklearn":
+            from .sklearn_score_module import SklearnScoreModule
+            self.module = SklearnScoreModule(model_path, config)
         else:
             print(f"Not Implemented: framework {framework} not supported")
 
