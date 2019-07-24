@@ -31,7 +31,7 @@ def save_model_spec(model_path):
         "pytorch": {
             "serialization_format": "savedmodel",
             "model_file_path": model_file_name,
-            "model_class_package": "MnistModel"
+            "model_class_package": "dstest.pytorch.MnistModel"
         },
     }
 
