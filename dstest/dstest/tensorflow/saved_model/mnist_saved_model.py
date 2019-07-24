@@ -52,7 +52,7 @@ def save_model_spec(model_path, model_version):
         },
         'tensorflow' : {
             'serialization_format': "saved_model",
-            'saved_model_path': model_version,
+            'model_file_path': model_version,
             'meta_graph_tags':['serve'],
             'signature_def_key': 'predict_images'
         }

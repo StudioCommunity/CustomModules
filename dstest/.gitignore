@@ -1,2 +1,5 @@
 MNIST_data
 model
+*.pkl
+*.csv
+*.parquet

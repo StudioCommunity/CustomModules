@@ -15,7 +15,7 @@ def test_tensor(df):
     print(result)
 
 def test_builtin(df):
-    module = BuiltinScoreModule(model_path)
+    module = BuiltinScoreModule(model_path, {"Append score columns to output": True})
     result = module.run(df)
     print(result)
 

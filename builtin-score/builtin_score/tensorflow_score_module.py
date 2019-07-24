@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import pandas as pd
+from . import constants
 
 def rename_col(df, col_name):
     col_pattern = col_name +"."
@@ -61,7 +62,7 @@ class _TFSaverWrapper(object):
         self.sess = tf.Session()
         tf_config = config["tensorflow"]
         print(tf_config)
-        model_meta_path = os.path.join(model_path, tf_config["saved_model_path"])
+        model_meta_path = os.path.join(model_path, tf_config[constants.MODEL_FILE_PATH_KEY])
         
         print(f"model_meta_path = {model_meta_path}, model_path = {model_path}")
         saver = tf.train.import_meta_graph(model_meta_path)
@@ -118,7 +119,7 @@ class TensorflowScoreModule(object):
         tf_config = config["tensorflow"]
         
         if(tf_config.get("serialization_format", "saver") == "saved_model"):
-            export_dir = os.path.join(model_path, tf_config["saved_model_path"])
+            export_dir = os.path.join(model_path, tf_config[constants.MODEL_FILE_PATH_KEY])
             tf_meta_graph_tags = tf_config["meta_graph_tags"]
             tf_signature_def_key = tf_config["signature_def_key"]
             self.wrapper = _TFSavedModelWrapper(export_dir, tf_meta_graph_tags, tf_signature_def_key)

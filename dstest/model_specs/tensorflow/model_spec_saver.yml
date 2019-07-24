@@ -2,7 +2,7 @@ flavor:
   framework: tensorflow
 tensorflow:
   serialization_format: saver
-  saved_model_path: deep_mnist_model.meta
+  model_file_path: deep_mnist_model.meta
   inputs:
   - name: x
   outputs:

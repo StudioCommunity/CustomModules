@@ -13,7 +13,7 @@ class SklearnScoreModule(object):
     
     def __init__(self, model_path, config):
         sklearn_conf = config["sklearn"]
-        model_file_path = os.path.join(model_path, sklearn_conf["model_file_path"])
+        model_file_path = os.path.join(model_path, sklearn_conf[constants.MODEL_FILE_PATH_KEY])
         DEFAULT_SERIALIZATION_METHOD = "pickle"
         serialization_method = sklearn_conf.get(constants.SERIALIZATION_METHOD_KEY)
         if serialization_method is None:

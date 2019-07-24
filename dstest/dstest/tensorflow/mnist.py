@@ -24,7 +24,7 @@ def save_model_spec(model_path, multiple_output):
             'framework' : 'tensorflow'
         },
         "tensorflow": {
-            "saved_model_path": 'deep_mnist_model.meta',
+            "model_file_path": 'deep_mnist_model.meta',
             'inputs' : [
                 {
                     'name': 'x'
