@@ -87,13 +87,13 @@ class PytorchWrapper(object):
                 input_params = []
                 logger.info(f"ROW = \n {row}")
                 print(f"ROW = \n {row}")
-                if self.is_image(row)
+                if self.is_image(row):
                     input_params.append(torch.Tensor(row).to(self.device))
                     print(f"IMAGE: {input_params}")
                 else:
                     for entry in row:
                         input_params.append(torch.Tensor(entry).to(self.device))
-                    print(f"FEATURES" {input_params})
+                    print(f"FEATURES: {input_params}")
                 predicted = self.model(*input_params)
                 output.append(predicted.cpu().numpy())
         return pd.DataFrame(output)
