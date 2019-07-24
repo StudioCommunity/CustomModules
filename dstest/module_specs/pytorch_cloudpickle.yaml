@@ -23,6 +23,7 @@ implementation:
         - https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl
         - pillow==5.2.0
         - torchvision==0.2.2.post3
+        - cloudpickle
         - click
         - PyYAML
         - git+https://github.com/StudioCommunity/CustomModules.git@zhwei/New#subdirectory=dstest
