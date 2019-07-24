@@ -4,7 +4,7 @@ import torch.nn as nn
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 from torch.autograd import Variable
-from MnistModel import MnistNet
+from .MnistModel import MnistNet
 import cloudpickle
 import pickle
 import yaml
@@ -81,7 +81,7 @@ def save_ilearner(model_path):
 @click.option('--action', default="train", 
         type=click.Choice(['predict', 'train']))
 @click.option('--model_path', default="./model/")
-def run_pipeline(model_path):
+def run_pipeline(action, model_path):
   input_size = 784 # img_size = (28,28) ---> 28*28=784 in total
   hidden_size = 500 # number of nodes at hidden layer
   num_classes = 10 # number of output classes discrete range [0,9]
