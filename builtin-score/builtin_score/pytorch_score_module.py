@@ -82,11 +82,14 @@ class PytorchWrapper(object):
         output = []
         with torch.no_grad():
             logger.info(f"DF = \n {df}")
+            print(f"DF = \n {df}")
             for _, row in df.iterrows():
                 input_params = []
                 logger.info(f"ROW = \n {row}")
+                print(f"ROW = \n {row}")
                 for entry in row:
-                    logger.info(f"ENTRY = \n {rentry")
+                    logger.info(f"ENTRY = \n {rentry}")
+                    print(f"ENTRY = \n {rentry}")
                     input_params.append(torch.Tensor(entry).to(self.device))
                 predicted = self.model(*input_params)
                 output.append(predicted.cpu().numpy())
