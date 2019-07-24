@@ -1,0 +1,39 @@
+name: PyTorch Train - MNIST Saved States
+id: 8ad10e1b-ac2d-47f8-aa96-78597f26ca81
+category: Machine Learning\Train
+description: DS pytorch training with statedict as output 
+inputs:
+outputs:
+- name: Output Model
+  type: ModelFolder
+  port: True
+  description: The Output model
+implementation:
+  container:
+    conda:
+      name: project_environment
+      channels:
+      - defaults
+      dependencies:
+      - python=3.6.2
+      - git
+      - regex
+      - pip:
+        - pandas
+        - https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl
+        - pillow==5.2.0
+        - torchvision==0.2.2.post3
+        - click
+        - PyYAML
+        - git+https://github.com/StudioCommunity/CustomModules.git@zhwei/New#subdirectory=dstest
+    command:
+    - python
+    - -m
+    - dstest.pytorch.trainer_statedict
+    args:
+    - --model_path
+    - outputPath: Output Model
+  invoking:
+    module:
+    class:
+    func:
