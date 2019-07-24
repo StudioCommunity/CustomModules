@@ -4,7 +4,7 @@ import torch.nn as nn
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 from torch.autograd import Variable
-from .MnistModel import MnistNet
+from dstest.pytorch.MnistModel import MnistNet
 import cloudpickle
 import pickle
 import yaml
