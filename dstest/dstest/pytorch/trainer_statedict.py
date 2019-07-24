@@ -92,7 +92,7 @@ def run_pipeline(model_path):
   input_size = 784 # img_size = (28,28) ---> 28*28=784 in total
   hidden_size = 500 # number of nodes at hidden layer
   num_classes = 10 # number of output classes discrete range [0,9]
-  num_epochs = 5#20 # number of times which the entire dataset is passed throughout the model
+  num_epochs = 20 # number of times which the entire dataset is passed throughout the model
   batch_size = 100 # the size of input data took for one iteration
   lr = 1e-3 # size of step
 

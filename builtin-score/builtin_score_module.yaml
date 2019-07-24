@@ -1,5 +1,5 @@
-name: Built-in Score - GPU - New Yaml
-id: 412abbd1-794f-4888-a72f-a16220b9a521
+name: Built-in Score Module - GPU
+id: 312abbd1-794f-4888-a72f-a16220b9a521
 category: Machine Learning\Score
 description: Buildin Score Module for a set of limited flavors
 inputs:
@@ -45,7 +45,7 @@ implementation:
         - scikit-learn
         - keras
         - https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
+        - git+https://github.com/StudioCommunity/CustomModules.git@zhwei/New#subdirectory=builtin-score
     command:
     - python
     - -m

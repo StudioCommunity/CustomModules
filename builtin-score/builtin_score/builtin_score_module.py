@@ -25,11 +25,7 @@ class BuiltinScoreModule(object):
         framework = config["flavor"]["framework"]
         if framework.lower() == "pytorch":
             from .pytorch_score_module import PytorchScoreModule
-            model_file_path = os.path.join(model_path, config["model_file_path"])
-            print(f"model_path = {model_path}")
-            print(f"config['model_file_path'] = {config['model_file_path']}")
-            print(f"model_file_path = {model_file_path}")
-            self.module = PytorchScoreModule(model_file_path)
+            self.module = PytorchScoreModule(model_path, config)
         elif framework.lower() == "tensorflow":
             from .tensorflow_score_module import TensorflowScoreModule
             self.module = TensorflowScoreModule(model_path, config)
