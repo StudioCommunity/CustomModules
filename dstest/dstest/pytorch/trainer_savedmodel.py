@@ -104,8 +104,10 @@ def run_pipeline(action, model_path):
                                         shuffle = False)
 
   net = MnistNet(input_size, hidden_size, num_classes)
+  device = 'cuda' if torch.cuda.is_available() else 'cpu'
   if torch.cuda.is_available():
     net.cuda()
+    net.to(device)
 
   loss_function = nn.CrossEntropyLoss()
   optimizer = torch.optim.Adam( net.parameters(), lr=lr)
@@ -119,7 +121,7 @@ def run_pipeline(action, model_path):
           labels = labels.cuda()
       
       optimizer.zero_grad()
-      outputs = net(images)
+      outputs = net(images).to(device)
       loss = loss_function(outputs, labels)
       loss.backward()
       optimizer.step()
