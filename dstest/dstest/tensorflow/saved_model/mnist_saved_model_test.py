@@ -4,6 +4,7 @@ import os
 import sys
 import pandas as pd
 import numpy as np
+import json
 
 # This is a placeholder for a Google-internal import.
 import tensorflow as tf
@@ -16,6 +17,7 @@ def test_TFSavedWrapper():
   tf_signature_def_key = 'predict_images'
 
   wrapper = _TFSavedModelWrapper(export_dir, tf_meta_graph_tags, tf_signature_def_key)
+
   from tensorflow.examples.tutorials.mnist import input_data
   mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
   batch_xs, batch_ys = mnist.train.next_batch(2)
@@ -42,6 +44,14 @@ if __name__ == '__main__':
 
   model_path = "./model/tensorflow-minist-saved-model/"
   tfmodule = TensorflowScoreModule(model_path, config)
+  
+  schema = tfmodule.get_schema()
+  print('#################')
+  print(schema)
+
+  with open(os.path.join(model_path, 'contract.json'), 'w') as f:
+    json.dump(schema, f)
+
   result = tfmodule.run(df)
   print(result)
 

@@ -1,3 +1,5 @@
+import os
+import json
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -11,6 +13,12 @@ def test_tensor(df):
         config = yaml.safe_load(fp)
 
     tfmodule = TensorflowScoreModule(model_path, config)
+    schema = tfmodule.get_schema()
+    print('#################')
+    print(schema)
+    with open(os.path.join(model_path, 'contract.json'), 'w') as f:
+        json.dump(schema, f)
+    
     result = tfmodule.run(df)
     print(result)
 
@@ -43,4 +51,5 @@ def prepare_input():
 # python -m dstest.tensorflow.mnist_test
 if __name__ == '__main__':
     df = prepare_input()
+    test_tensor(df)
     test_builtin(df)

@@ -8,6 +8,14 @@ def rename_col(df, col_name):
     col_pattern = col_name +"."
     df.rename(columns=lambda col : col_name if col.startswith(col_pattern) else col, inplace=True)
 
+def get_col_schema(name, tensor):
+    col = {
+        "name": name,
+        "dtype": tensor.dtype.name,
+        "shape": tensor.shape.as_list()
+    }
+    return col
+
 class _TFSavedModelWrapper(object):
     """
     Wrapper class that exposes a TensorFlow model for inference via a ``predict`` function such that
@@ -21,18 +29,32 @@ class _TFSavedModelWrapper(object):
         self.tf_sess = tf_sess
 
         with tf_graph.as_default():
-          signature_def = self._load_tensorflow_saved_model(tf_sess, tf_meta_graph_tags, tf_signature_def_key, export_dir)
+          self.signature_def = self._load_tensorflow_saved_model(tf_sess, tf_meta_graph_tags, tf_signature_def_key, export_dir)
           
         # input keys in the signature definition correspond to input DataFrame column names
         self.input_tensor_mapping = {
                 tensor_column_name: tf_graph.get_tensor_by_name(tensor_info.name)
-                for tensor_column_name, tensor_info in signature_def.inputs.items()
+                for tensor_column_name, tensor_info in self.signature_def.inputs.items()
         }
         # output keys in the signature definition correspond to output DataFrame column names
         self.output_tensors = {
                 sigdef_output: tf_graph.get_tensor_by_name(tnsr_info.name)
-                for sigdef_output, tnsr_info in signature_def.outputs.items()
+                for sigdef_output, tnsr_info in self.signature_def.outputs.items()
         }
+
+    def get_schema(self):
+        schema = {
+            "inputs": [],
+            "outputs": []
+            }
+        for name, tensor in self.input_tensor_mapping.items():
+            schema['inputs'].append(get_col_schema(name,tensor))
+
+        for name, tensor in self.output_tensors.items():
+            schema['outputs'].append(get_col_schema(name,tensor))
+        
+        #print(schema)
+        return schema
 
     def predict(self, df):
       with self.tf_graph.as_default():
@@ -92,6 +114,21 @@ class _TFSaverWrapper(object):
 
         print(f"Successfully loaded model from {model_path}")
 
+    def get_schema(self):
+        schema = {
+            "inputs": [],
+            "outputs": []
+            }
+        for name, tensor in self.x.items():
+            schema['inputs'].append(get_col_schema(name,tensor))
+
+        for index in range(len(self.y_names)):
+            name= self.y_names[index]
+            tensor= self.y[index]
+            schema['outputs'].append(get_col_schema(name,tensor))
+        
+        return schema
+
     def predict(self, df):
         predictions = self.sess.run(self.y, feed_dict= self.feed_dict(df))
         resultdf = pd.DataFrame()
@@ -128,4 +165,7 @@ class TensorflowScoreModule(object):
 
     def run(self, df):
         return self.wrapper.predict(df)
+
+    def get_schema(self):
+        return self.wrapper.get_schema()
 
