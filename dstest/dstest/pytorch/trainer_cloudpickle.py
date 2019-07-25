@@ -4,7 +4,6 @@ import torch.nn as nn
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 from torch.autograd import Variable
-from dstest.pytorch.MnistModel import MnistNet
 import cloudpickle
 import pickle
 import yaml
@@ -22,6 +21,22 @@ logger = logging.getLogger(__name__)
 
 
 model_file_name = "model.pkl"
+
+import torch
+import torch.nn as nn
+
+class MnistNet(nn.Module):
+  def __init__(self, input_size, hidden_size, num_classes):
+    super(MnistNet,self).__init__()
+    self.fc1 = nn.Linear(input_size, hidden_size)
+    self.relu = nn.ReLU()
+    self.fc2 = nn.Linear(hidden_size, num_classes)
+  
+  def forward(self,x):
+    out = self.fc1(x)
+    out = self.relu(out)
+    out = self.fc2(out)
+    return out
 
 def save_model_spec(model_path):
     spec = {
