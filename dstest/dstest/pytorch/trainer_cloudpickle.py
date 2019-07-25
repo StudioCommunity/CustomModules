@@ -122,6 +122,7 @@ def run_pipeline(action, model_path):
   print(f'DEVICE={device}')
   if torch.cuda.is_available():
     net = net.cuda()
+  net = net.to(device)
 
   loss_function = nn.CrossEntropyLoss()
   optimizer = torch.optim.Adam( net.parameters(), lr=lr)
