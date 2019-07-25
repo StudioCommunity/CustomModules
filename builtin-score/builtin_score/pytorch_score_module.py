@@ -84,17 +84,25 @@ class PytorchWrapper(object):
             logger.info(f"DF = \n {df}")
             print(f"DF = \n {df}")
             for _, row in df.iterrows():
-                input_params = []
+                input_params_cpu = []
+                input_params_gpu = []
                 logger.info(f"ROW = \n {row}")
                 print(f"ROW = \n {row}")
                 if self.is_image(row):
-                    input_params.append(torch.Tensor(row).to(self.device))
-                    print(f"IMAGE: {input_params}")
+                    input_params_cpu.append(torch.Tensor(row).to('cpu'))
+                    input_params_gpu.append(torch.Tensor(row).to('cuda'))
+                    print(f"FEATURES: {input_params_cpu}")
                 else:
                     for entry in row:
-                        input_params.append(torch.Tensor(entry).to(self.device))
-                    print(f"FEATURES: {input_params}")
-                predicted = self.model(*input_params)
+                        input_params_cpu.append(torch.Tensor(entry).to('cpu'))
+                        input_params_gpu.append(torch.Tensor(entry).to('cuda'))
+                    print(f"FEATURES: {input_params_cpu}")
+                try:
+                    predicted = self.model(*input_params_cpu)
+                    print("CPU!!")
+                except:
+                    predicted = self.model(*input_params_gpu)
+                    print("GPU!!")
                 output.append(predicted.cpu().numpy())
         return pd.DataFrame(output)
     

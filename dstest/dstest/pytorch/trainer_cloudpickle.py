@@ -118,8 +118,10 @@ def run_pipeline(action, model_path):
                                         shuffle = False)
 
   net = MnistNet(input_size, hidden_size, num_classes)
+  device = 'cuda' if torch.cuda.is_available() else 'cpu'
+  print(f'DEVICE={device}')
   if torch.cuda.is_available():
-    net.cuda()
+    net = net.cuda()
 
   loss_function = nn.CrossEntropyLoss()
   optimizer = torch.optim.Adam( net.parameters(), lr=lr)

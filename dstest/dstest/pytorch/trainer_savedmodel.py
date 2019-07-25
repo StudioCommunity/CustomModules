@@ -105,6 +105,7 @@ def run_pipeline(action, model_path):
 
   net = MnistNet(input_size, hidden_size, num_classes)
   device = 'cuda' if torch.cuda.is_available() else 'cpu'
+  print(f'DEVICE={device}')
   if torch.cuda.is_available():
     net.cuda()
     net.to(device)
