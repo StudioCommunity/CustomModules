@@ -26,8 +26,8 @@ def save_model_spec(model_path):
         'flavor' : {
             'framework' : 'keras'
         },
-        "keras": {
-            "model_file_path": 'model.h5'
+        'keras': {
+            'model_file_path': 'model.h5'
         },
     }
 

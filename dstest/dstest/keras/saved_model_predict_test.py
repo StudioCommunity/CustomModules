@@ -13,8 +13,7 @@ from keras.models import load_model
 from keras.datasets import mnist
 
 
-# python -m dstest.keras.saved_model_predict_test
-if __name__ == '__main__':
+def load_model_then_predict1(model_spec_file = 'model/keras-mnist/model_spec.yml'):
   (x_train, y_train), (x_test, y_test) = mnist.load_data()
   x_test = x_test.reshape(x_test.shape[0], -1) # x_test shape [x_test.shape[0], 784]
   x_test = x_test[:8] # only pick 8 imgs
@@ -23,7 +22,7 @@ if __name__ == '__main__':
   df = pd.DataFrame(data=x_test, columns=['img']*784, dtype=np.float64)
   df.to_csv('mnist_kera_test_data.csv')
 
-  with open("model/keras-mnist/model_spec.yml") as fp:
+  with open(model_spec_file) as fp:
       config = yaml.safe_load(fp)
 
   model_path = "./model/keras-mnist/"
@@ -35,3 +34,9 @@ if __name__ == '__main__':
   result = module.run(df)
   print('=====buildinScoreModule=======')
   print(result)
+
+# python -m dstest.keras.saved_model_predict_test
+if __name__ == '__main__':
+  load_model_then_predict1()
+  print('\n===============another load model method================\n')
+  load_model_then_predict1('model/keras-mnist/model_weights_spec.yml')
