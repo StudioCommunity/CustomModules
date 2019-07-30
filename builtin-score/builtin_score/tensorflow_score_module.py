@@ -58,13 +58,8 @@ class _TFSavedModelWrapper(object):
 
     def predict(self, df):
       with self.tf_graph.as_default():
-        # TODO fix this design
-        # rename column like x.1, x.2 to x
-        for col_name in self.input_tensor_mapping.keys():
-            rename_col(df, col_name)
-        
         feed_dict = {
-                self.input_tensor_mapping[tensor_column_name]: df[tensor_column_name].values
+                self.input_tensor_mapping[tensor_column_name]: ioutil.from_df_column_to_array(df[tensor_column_name])
                 for tensor_column_name in self.input_tensor_mapping.keys()
         }
         raw_preds = self.tf_sess.run(self.output_tensors, feed_dict=feed_dict)
@@ -140,14 +135,11 @@ class _TFSaverWrapper(object):
         return resultdf
 
     def feed_dict(self, df):
-        # TODO fix this design
-        # rename column like x.1, x.2 to x
-        for col_name, tensor in self.x.items():
-            rename_col(df, col_name)
-
         dict = {}
         for name, tensor in self.x.items():
-            dict[tensor] = df[name].values
+            values = ioutil.from_df_column_to_array(df[name])
+            #print(values)
+            dict[tensor] = values
         return dict
 
 class TensorflowScoreModule(object):
@@ -169,3 +161,23 @@ class TensorflowScoreModule(object):
     def get_schema(self):
         return self.wrapper.get_schema()
 
+
+def _test_tensor(df, model_path):
+    import yaml
+    with open(model_path + "model_spec.yml") as fp:
+        config = yaml.safe_load(fp)
+
+    tfmodule = TensorflowScoreModule(model_path, config)
+    result = tfmodule.run(df)
+    print(result)
+
+# python -m builtin_score.tensorflow_score_module
+if __name__ == '__main__':
+    from . import ioutil
+    df = ioutil.read_parquet("../dstest/outputs/mnist/")
+    print(df.columns)
+    _test_tensor(df, "../dstest/model/tensorflow-minist/")
+
+    df = df.rename(columns={"x": "images"})
+    print(df.columns)
+    _test_tensor(df,"../dstest/model/tensorflow-minist-saved-model/")

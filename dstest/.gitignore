@@ -3,3 +3,6 @@ model
 *.pkl
 *.csv
 *.parquet
+outputs
+datas
+notebooks
