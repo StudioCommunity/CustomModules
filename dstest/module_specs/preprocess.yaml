@@ -51,6 +51,6 @@ implementation:
     - --output_path
     - outputPath: Output Data
   invoking:
-    module:dstest.preprocess.preprocess
-    class:PreProcess
-    func:run
+    module: dstest.preprocess.preprocess
+    class: PreProcess
+    func: run
