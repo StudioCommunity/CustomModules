@@ -33,6 +33,7 @@ implementation:
         - tensorflow
         - click
         - PyYAML
+        - pyarrow
         - scipy 
         - opencv-python-headless
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
