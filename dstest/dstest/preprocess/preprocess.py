@@ -119,7 +119,7 @@ class PreProcess:
       """
       flatten = img.flatten() / 255.0
 
-      results.append(img)
+      results.append(flatten)
     
     if(input_df.columns.contains(self.target_column)):
       logger.info(f"writing to column {self.target_column}")
