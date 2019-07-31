@@ -34,7 +34,7 @@ implementation:
         - click
         - PyYAML
         - scipy 
-        - opencv-python
+        - opencv-python-headless
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
     command:

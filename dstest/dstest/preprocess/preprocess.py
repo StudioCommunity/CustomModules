@@ -35,8 +35,6 @@ def readb64(base64_string):
   img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
   #print(img.shape)
   #cv2.imwrite("outputs/test_0_origin.png", img)
-  img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-  #cv2.imwrite("outputs/test_1_gray.png", img)
   return img
 
 def transform_image(base64Str, no):
@@ -44,6 +42,8 @@ def transform_image(base64Str, no):
   transform image to 28x28x3
   """
   gray = readb64(base64Str)
+  gray = cv2.cvtColor(gray, cv2.COLOR_RGB2GRAY)
+  #cv2.imwrite("outputs/test_1_gray.png", img)
 
   # rescale it
   gray = cv2.resize(255-gray, (28, 28))
@@ -89,22 +89,14 @@ def transform_image(base64Str, no):
   shifted = shift(gray, shiftx, shifty)
   gray = shifted
 
-  # save the processed images
-  # cv2.imwrite("outputs/image_"+str(no)+".png", gray)
-  """
-  all images in the training set have an range from 0-1
-  and not from 0-255 so we divide our flatten images
-  (a one dimensional vector with our 784 pixels)
-  to use the same 0-1 based range
-  """
-  flatten = gray.flatten() / 255.0
-  
-  return flatten
+  return gray
 
 class PreProcess:
   def __init__(self, meta: dict = {}):
     self.image_column = str(meta.get('Image Column', 'image'))
     self.target_column = str(meta.get('Target Column', ''))
+    self.target_column = str(meta.get('Target Column', ''))
+    
     if not self.target_column:
       self.target_column = self.image_column
 
@@ -116,6 +108,17 @@ class PreProcess:
     for index, row in input_df.iterrows():
       #print(row['label'])
       img = transform_image(row[self.image_column], index)
+      # save the processed images
+      # cv2.imwrite("outputs/image_"+str(index)+".png", gray)
+
+      """
+      all images in the training set have an range from 0-1
+      and not from 0-255 so we divide our flatten images
+      (a one dimensional vector with our 784 pixels)
+      to use the same 0-1 based range
+      """
+      flatten = img.flatten() / 255.0
+
       results.append(img)
     
     if(input_df.columns.contains(self.target_column)):
