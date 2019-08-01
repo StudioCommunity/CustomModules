@@ -17,3 +17,10 @@ if __name__ == '__main__':
     save_model(model, "./test/outputModels/sklearn/")
     print('********')
 
+    #pytorch test
+    from builtin_models.pytorch import *
+    print('---pytorch test---')
+    model = load_model_from_local_file('D:/GIT/CustomModules-migu-NewYamlTest2/dstest/model/pytorch-mnist/model.pkl')
+    print('------')
+    save_model(model, "./test/outputModels/pytorch/")
+    print('********')
