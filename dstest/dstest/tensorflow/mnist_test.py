@@ -24,9 +24,10 @@ def test_tensor(df):
     print(result)
 
 def test_builtin(df):
-    module = BuiltinScoreModule(model_path, {"Append score columns to output": True})
+    module = BuiltinScoreModule(model_path, {"Append score columns to output": "True"})
     result = module.run(df)
     print(result)
+    return result
 
 def prepare_input():
     from tensorflow.examples.tutorials.mnist import input_data
@@ -53,5 +54,8 @@ def prepare_input():
 if __name__ == '__main__':
     # df = prepare_input()
     df = ioutil.read_parquet("../dstest/outputs/mnist/")
+    print(df.columns)
+
     test_tensor(df)
-    test_builtin(df)
+    out = test_builtin(df)
+    print(out.columns)

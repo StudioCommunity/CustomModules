@@ -23,8 +23,8 @@ def read_parquet(data_path):
 
 def ensure_folder_exists(output_path):
   if not os.path.exists(output_path):
-    logger.info(f"{output_path} not exists")
     os.makedirs(output_path)
+    logger.info(f"{output_path} not exists, created")
 
 def save_parquet(df, output_path, writeCsv= False):
   ensure_folder_exists(output_path)

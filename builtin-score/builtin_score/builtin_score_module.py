@@ -51,4 +51,5 @@ class BuiltinScoreModule(object):
             else:
                 df = pd.DataFrame({constants.SCORED_LABEL_COL_NAME: output_label})
         print(df)
+        print(df.columns)
         return df

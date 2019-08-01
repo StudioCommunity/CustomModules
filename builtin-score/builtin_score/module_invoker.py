@@ -6,6 +6,9 @@ import pandas as pd
 
 from . import constants
 from .builtin_score_module import BuiltinScoreModule
+from . import ioutil
+
+# python -m builtin_score.module_invoker --trained-model ../dstest/model/tensorflow-minist/ --dataset ../dstest/outputs/mnist/ --scored-dataset ../dstest/outputs/mnist/ouput
 
 INPUT_FILE_NAME = "data.dataset.parquet" # hard coded, to be replaced, and we presume the data is DataFrame inside parquet
 OUTPUT_FILE_NAME = "output.csv"
@@ -24,6 +27,4 @@ score_module = BuiltinScoreModule(args.trained_model, params)
 input_df = pd.read_parquet(os.path.join(args.dataset, INPUT_FILE_NAME), engine="pyarrow")
 output_df = score_module.run(input_df)
 
-if not os.path.exists(args.scored_dataset):
-    os.makedirs(args.scored_dataset)
-output_df.to_csv(os.path.join(args.scored_dataset, OUTPUT_FILE_NAME))
+ioutil.save_parquet(output_df, args.scored_dataset)
