@@ -9,6 +9,8 @@ import pickle
 import yaml
 import json
 
+from builtin_models.pytorch import *
+
 from pip._internal import main as pipmain
 pipmain(["install", "click"])
 import click
@@ -19,11 +21,6 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-model_file_name = "model.pkl"
-
-import torch
-import torch.nn as nn
 
 class MnistNet(nn.Module):
   def __init__(self, input_size, hidden_size, num_classes):
@@ -38,58 +35,6 @@ class MnistNet(nn.Module):
     out = self.fc2(out)
     return out
 
-def save_model_spec(model_path):
-    spec = {
-        'flavor' : {
-            'framework' : 'pytorch'
-        },
-        "pytorch": {
-            "serialization_format": "cloudpickle",
-            "model_file_path": model_file_name
-        },
-    }
-
-    with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
-        yaml.dump(spec, fp, default_flow_style=False)
-
-
-def save_model(model_path, model):
-    if(not model_path.endswith('/')):
-        model_path += '/'
-    
-    if not os.path.exists(model_path):
-        logger.info(f"{model_path} does not exist")
-        os.makedirs(model_path)
-    else:
-        logger.info(f"{model_path} exists")
-
-    with open(model_path + model_file_name, 'wb') as fp:
-      cloudpickle.dump(model, fp)
-
-def save_ilearner(model_path):
-    # Dump data_type.json as a work around until SMT deploys
-    dct = {
-        "Id": "ILearnerDotNet",
-        "Name": "ILearner .NET file",
-        "ShortName": "Model",
-        "Description": "A .NET serialized ILearner",
-        "IsDirectory": False,
-        "Owner": "Microsoft Corporation",
-        "FileExtension": "ilearner",
-        "ContentType": "application/octet-stream",
-        "AllowUpload": False,
-        "AllowPromotion": False,
-        "AllowModelPromotion": True,
-        "AuxiliaryFileExtension": None,
-        "AuxiliaryContentType": None
-    }
-    with open(os.path.join(model_path, 'data_type.json'), 'w') as f:
-        json.dump(dct, f)
-    # Dump data.ilearner as a work around until data type design
-    visualization = os.path.join(model_path, "data.ilearner")
-    with open(visualization, 'w') as file:
-        file.writelines('{}')
-
 
 @click.command()
 @click.option('--action', default="train", 
@@ -99,8 +44,8 @@ def run_pipeline(action, model_path):
   input_size = 784 # img_size = (28,28) ---> 28*28=784 in total
   hidden_size = 500 # number of nodes at hidden layer
   num_classes = 10 # number of output classes discrete range [0,9]
-  num_epochs = 20 # number of times which the entire dataset is passed throughout the model
-  batch_size = 100 # the size of input data took for one iteration
+  num_epochs = 5 # number of times which the entire dataset is passed throughout the model
+  batch_size = 64 # the size of input data took for one iteration
   lr = 1e-3 # size of step
 
   train_data = dsets.MNIST(root = './data', train = True,
@@ -145,9 +90,7 @@ def run_pipeline(action, model_path):
         print('Epoch [%d/%d], Step [%d/%d]'
                   %(epoch+1, num_epochs, i+1, len(train_data)//batch_size))
 
-  save_model(model_path, net)
-  save_model_spec(model_path)
-  save_ilearner(model_path)
+  save_model(net, model_path, conda_env=None)
   print("Done")
     
 
