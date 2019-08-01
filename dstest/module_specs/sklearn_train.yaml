@@ -18,8 +18,7 @@ implementation:
       - python=3.6.2
       - pip:
         - pandas
-        - tensorflow
-        - keras
+        - scikit-learn
         - click
         - PyYAML
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
