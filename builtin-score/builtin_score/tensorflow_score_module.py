@@ -3,6 +3,7 @@ import numpy as np
 import os
 import pandas as pd
 from . import constants
+from . import ioutil
 
 def rename_col(df, col_name):
     col_pattern = col_name +"."
@@ -173,7 +174,6 @@ def _test_tensor(df, model_path):
 
 # python -m builtin_score.tensorflow_score_module
 if __name__ == '__main__':
-    from . import ioutil
     df = ioutil.read_parquet("../dstest/outputs/mnist/")
     print(df.columns)
     _test_tensor(df, "../dstest/model/tensorflow-minist/")
