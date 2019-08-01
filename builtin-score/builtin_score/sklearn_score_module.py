@@ -14,18 +14,9 @@ class SklearnScoreModule(object):
     def __init__(self, model_path, config):
         sklearn_conf = config["sklearn"]
         model_file_path = os.path.join(model_path, sklearn_conf[constants.MODEL_FILE_PATH_KEY])
-        DEFAULT_SERIALIZATION_METHOD = "pickle"
-        serialization_method = sklearn_conf.get(constants.SERIALIZATION_METHOD_KEY)
-        if serialization_method is None:
-            print(f"Using default deserializtion method: {DEFAULT_SERIALIZATION_METHOD}")
-            serialization_method = pickle
-        if serialization_method == "joblib":
-            self.model = joblib.load(model_file_path)
-        elif serialization_method == "pickle":
-            with open(model_file_path, "rb") as fp:
-                self.model = pickle.load(fp)
-        else:
-            raise Exception(f"Unrecognized serializtion format {serialization_method}")
+        with open(model_file_path, "rb") as fp:
+            self.model = pickle.load(fp)
+
     
     def run(self, df):
         y = self.model.predict(df)

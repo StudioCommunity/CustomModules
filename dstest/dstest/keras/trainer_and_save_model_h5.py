@@ -8,6 +8,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras import backend as K
 
+from builtin_models.keras import *
 
 # Test dynamic install package
 from pip._internal import main as pipmain
@@ -19,58 +20,6 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message
                     level=logging.INFO)
 logging.info(f"in dstest echo")
 logger = logging.getLogger(__name__)
-
-
-def save_model_spec(model_path):
-    spec = {
-        'flavor' : {
-            'framework' : 'keras'
-        },
-        'keras': {
-            'model_file_path': 'model.h5'
-        },
-    }
-
-    with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
-        yaml.dump(spec, fp, default_flow_style=False)
-
-
-def save_model(model_path, model):
-    if(not model_path.endswith('/')):
-        model_path += '/'
-    
-    if not os.path.exists(model_path):
-        logger.info(f"{model_path} not exists")
-        os.makedirs(model_path)
-    else:
-        logger.info(f"{model_path} exists")
-
-    model.save(model_path + "model.h5")
-
-
-def save_ilearner(model_path):
-    # Dump data_type.json as a work around until SMT deploys
-    dct = {
-        "Id": "ILearnerDotNet",
-        "Name": "ILearner .NET file",
-        "ShortName": "Model",
-        "Description": "A .NET serialized ILearner",
-        "IsDirectory": False,
-        "Owner": "Microsoft Corporation",
-        "FileExtension": "ilearner",
-        "ContentType": "application/octet-stream",
-        "AllowUpload": False,
-        "AllowPromotion": False,
-        "AllowModelPromotion": True,
-        "AuxiliaryFileExtension": None,
-        "AuxiliaryContentType": None
-    }
-    with open(os.path.join(model_path, 'data_type.json'), 'w') as f:
-        json.dump(dct, f)
-    # Dump data.ilearner as a work around until data type design
-    visualization = os.path.join(model_path, "data.ilearner")
-    with open(visualization, 'w') as file:
-        file.writelines('{}')
 
 
 @click.command()
@@ -108,13 +57,12 @@ def run_pipeline(
     model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.Adadelta(), metrics=['accuracy'])
 
     model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(x_test, y_test))
-    save_model(model_path, model)
-    save_model_spec(model_path)
-    save_ilearner(model_path)
+
+    save_model(model, model_path, conda_env=None)
 
     logger.info(f"training finished")
 
-# python -m dstest.keras.trainer  --model_path model/keras-mnist
+# python -m dstest.keras.trainer_and_save_model_h5  --model_path model/keras-mnist
 if __name__ == '__main__':
     run_pipeline()
     
