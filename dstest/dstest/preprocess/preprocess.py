@@ -2,11 +2,12 @@ import logging
 import click
 import pandas as pd
 from builtin_score import ioutil
-import numpy as np
 import math
 from scipy import ndimage
+import numpy as np
 import base64
 import cv2
+from . import datauri_util
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -29,19 +30,11 @@ def shift(img,sx,sy):
   shifted = cv2.warpAffine(img,M,(cols,rows))
   return shifted
 
-def readb64(base64_string):
-  imgData = base64.b64decode(base64_string)
-  nparr = np.fromstring(imgData, np.uint8)
-  img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-  #print(img.shape)
-  #cv2.imwrite("outputs/test_0_origin.png", img)
-  return img
-
 def transform_image(base64Str, no):
   """
   transform image to 28x28x3
   """
-  gray = readb64(base64Str)
+  gray = datauri_util.readb64(base64Str)
   gray = cv2.cvtColor(gray, cv2.COLOR_RGB2GRAY)
   #cv2.imwrite("outputs/test_1_gray.png", img)
 
@@ -91,42 +84,51 @@ def transform_image(base64Str, no):
 
   return gray
 
+def add_data_to_dataframe(input_df, results, target_column):
+  if(input_df.columns.contains(target_column)):
+    logger.info(f"writing to column {target_column}")
+    input_df[target_column] = results
+  else:
+    logger.info(f"append new column {target_column}")
+    input_df.insert(len(input_df.columns), target_column, results, True)
+
 class PreProcess:
   def __init__(self, meta: dict = {}):
     self.image_column = str(meta.get('Image Column', 'image'))
     self.target_column = str(meta.get('Target Column', ''))
-    self.target_column = str(meta.get('Target Column', ''))
+    self.target_data_column = str(meta.get('Target DataURI Column', ''))
     
     if not self.target_column:
       self.target_column = self.image_column
+
+    if not self.target_data_column:
+      self.target_data_column = f"{self.target_column}_data"
 
     print(self.image_column, self.target_column)
 
   def run(self, input_df: pd.DataFrame, meta: dict = None):
     results = []
+    datauris = []
     
     for index, row in input_df.iterrows():
       #print(row['label'])
       img = transform_image(row[self.image_column], index)
+      
+      # append datauris
+      if self.target_data_column:
+        datauri = datauri_util.img_to_datauri(img)
+        datauris.append(datauri)
+      
       # save the processed images
-      # cv2.imwrite("outputs/image_"+str(index)+".png", gray)
-
-      """
-      all images in the training set have an range from 0-1
-      and not from 0-255 so we divide our flatten images
-      (a one dimensional vector with our 784 pixels)
-      to use the same 0-1 based range
-      """
+      #cv2.imwrite("outputs/image_"+str(index)+".png", gray)
+      # Convert to 0-1 based range
       flatten = img.flatten() / 255.0
-
       results.append(flatten)
-    
-    if(input_df.columns.contains(self.target_column)):
-      logger.info(f"writing to column {self.target_column}")
-      input_df[self.target_column] = results
-    else:
-      logger.info(f"append new column {self.target_column}")
-      input_df.insert(len(input_df.columns), self.target_column, results, True)
+
+    add_data_to_dataframe(input_df, results, self.target_column)
+    if self.target_data_column:
+      add_data_to_dataframe(input_df, datauris, self.target_data_column)
+
     return input_df
 
 @click.command()
@@ -134,13 +136,15 @@ class PreProcess:
 @click.option('--output_path', default="outputs/mnist")
 @click.option('--image_column', default="image")
 @click.option('--target_column', default="x")
-def run(input_path, output_path, image_column, target_column):
+@click.option('--target_datauri_column', default="")
+def run(input_path, output_path, image_column, target_column, target_datauri_column):
   """
   This functions read base64 encoded images from df. Transform to format required by model input.
   """
   meta = {
     "Image Column": image_column,
-    "Target Column": target_column
+    "Target Column": target_column,
+    "Target DataURI Column": target_datauri_column
   }
   proccesor = PreProcess(meta)
 
@@ -148,6 +152,6 @@ def run(input_path, output_path, image_column, target_column):
   result = proccesor.run(df)
   ioutil.save_parquet(result, output_path)
 
-# python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --target_column x
+# python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --target_column x --target_datauri_column x.data
 if __name__ == '__main__':
   run()

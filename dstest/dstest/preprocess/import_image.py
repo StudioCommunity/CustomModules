@@ -8,6 +8,7 @@ from os import walk
 import base64
 import pyarrow.parquet as pq
 from builtin_score import ioutil
+from. import datauri_util
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -37,10 +38,8 @@ def run(input_path, output_path):
   for i in range(len(files_grabbed)):
     filename = files_grabbed[i]
     label = os.path.splitext(os.path.basename(filename))[0].split('_')[-1]
-    with open(filename, 'rb') as image:
-      image_read = image.read()
-      image_64_encode = base64.encodebytes(image_read).decode('ascii')
-      df.loc[i] = label, image_64_encode
+    image_64_encode = datauri_util.imgfile_to_data(filename)
+    df.loc[i] = label, image_64_encode
 
   ioutil.save_parquet(df, output_path)
 

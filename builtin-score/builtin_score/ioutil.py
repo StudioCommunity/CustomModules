@@ -26,9 +26,10 @@ def ensure_folder_exists(output_path):
     logger.info(f"{output_path} not exists")
     os.makedirs(output_path)
 
-def save_parquet(df, output_path):
+def save_parquet(df, output_path, writeCsv= False):
   ensure_folder_exists(output_path)
-  #df.to_csv(os.path.join(output_path, "data.csv"))
+  if(writeCsv):
+    df.to_csv(os.path.join(output_path, "data.csv"))
 
   df.to_parquet(fname=os.path.join(output_path, "data.dataset.parquet"), engine='pyarrow')
 

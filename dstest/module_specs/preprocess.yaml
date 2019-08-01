@@ -15,6 +15,10 @@ inputs:
   type: String
   default: 
   description: Target Column
+- name: Target DataURI Column
+  type: String
+  default: 
+  description: Target DataURI Column which can be displayed in browser
 outputs:
 - name: Output Data
   type: TabularDataFolder
@@ -47,6 +51,8 @@ implementation:
     - inputValue: Image Column
     - --target_column
     - inputValue: Target Column
+    - --target_datauri_column
+    - inputValue: Target DataURI Column
     - --input_path
     - inputValue: Input Data
     - --output_path
