@@ -51,6 +51,7 @@ def save_parquet(df, output_path, writeCsv= False):
   }
   with open(os.path.join(output_path, 'data_type.json'), 'w') as f:
     json.dump(dct, f)
+  logger.info(f"saved parquet to {output_path}")
 
 def from_df_column_to_array(col):
   if(len(col)==0):
