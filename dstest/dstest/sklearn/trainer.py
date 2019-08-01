@@ -23,7 +23,7 @@ def run_pipeline(
     # # y: array([0,...,2])
     clf.fit(X, y)
     
-    save_model(clf, './model/sklearn')
+    save_model(clf, model_path)
 
 # python -m dstest.sklearn.trainer  --model_path model/
 if __name__ == '__main__':
