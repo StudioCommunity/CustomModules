@@ -12,7 +12,7 @@ from . import datauri_util
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
-logging.info(f"in {__file__}")
+logging.info(f"in {__file__} v1")
 logger = logging.getLogger(__name__)
 
 def getBestShift(img):
@@ -152,6 +152,6 @@ def run(input_path, output_path, image_column, target_column, target_datauri_col
   result = proccesor.run(df)
   ioutil.save_parquet(result, output_path)
 
-# python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --target_column x --target_datauri_column x.data
+# python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --image_column=image --target_column=x --target_datauri_column=x.data
 if __name__ == '__main__':
   run()
