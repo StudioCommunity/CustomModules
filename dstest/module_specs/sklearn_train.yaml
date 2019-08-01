@@ -1,7 +1,7 @@
-name: Keras Train - MNIST Saved Model 2
-id: b390f3b5-af6b-4b1f-896f-cb359af74a23
+name: Sklearn Train - Xin builtin-model test
+id: 8ad10e1b-ac2d-47f8-aa96-78597f26ca48
 category: Machine Learning\Train
-description: DS keras train which outputs a keras model 2 with spec
+description: DS Sklearn train which outputs a Sklearn model with spec
 inputs:
 outputs:
 - name: Output Model
@@ -23,10 +23,11 @@ implementation:
         - click
         - PyYAML
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
     command:
     - python
     - -m
-    - dstest.keras.trainer_and_save_model_weights
+    - dstest.sklearn.trainer
     args:
     - --model_path
     - outputPath: Output Model
