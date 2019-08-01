@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from builtin_score.builtin_score_module import *
 from builtin_score.tensorflow_score_module import *
+from builtin_score import ioutil
 
 model_path = "model/tensorflow-minist/"
 
@@ -50,6 +51,7 @@ def prepare_input():
 
 # python -m dstest.tensorflow.mnist_test
 if __name__ == '__main__':
-    df = prepare_input()
+    # df = prepare_input()
+    df = ioutil.read_parquet("../dstest/outputs/mnist/")
     test_tensor(df)
     test_builtin(df)
