@@ -10,6 +10,7 @@ import json
 import tensorflow as tf
 from builtin_score.builtin_score_module import *
 from builtin_score.tensorflow_score_module import _TFSavedModelWrapper, TensorflowScoreModule
+from builtin_score import ioutil
 
 def test_TFSavedWrapper():
   export_dir = 'model/tensorflow-minist-saved-model/mnist'
@@ -27,17 +28,8 @@ def test_TFSavedWrapper():
 
 # python -m dstest.tensorflow.saved_model.mnist_saved_model_test
 if __name__ == '__main__':
-  from tensorflow.examples.tutorials.mnist import input_data
-  mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
-  batch_xs, batch_ys = mnist.train.next_batch(2)
-  df = pd.DataFrame(data=batch_xs, columns=['images']*784, dtype=np.float64)
-
-  names = ["fixed acidity","volatile acidity","citric acid","residual sugar","chlorides","free sulfur dioxide","total sulfur dioxide","density","pH","sulphates","alcohol"]
-  data = [[7,0.27,0.36,20.7,0.045,45,170,1.001,3,0.45,8.8]]
-  df1 = pd.DataFrame(data=data, columns=names)
-  
-  df = pd.concat([df, df1], axis=1)    
-  df.to_csv("test.csv")
+  df = ioutil.read_parquet("../dstest/outputs/mnist/")
+  df = df.rename(columns={"x": "images"})
 
   with open("model/tensorflow-minist-saved-model/model_spec.yml") as fp:
       config = yaml.safe_load(fp)
