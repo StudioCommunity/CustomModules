@@ -38,7 +38,7 @@ def run(input_path, output_path):
   for i in range(len(files_grabbed)):
     filename = files_grabbed[i]
     label = os.path.splitext(os.path.basename(filename))[0].split('_')[-1]
-    image_64_encode = datauri_util.imgfile_to_data(filename)
+    image_64_encode = datauri_util.imgfile_to_datauri(filename)
     df.loc[i] = label, image_64_encode
 
   ioutil.save_parquet(df, output_path)

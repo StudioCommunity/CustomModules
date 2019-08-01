@@ -38,6 +38,7 @@ def imgfile_to_datauri(filename):
         return u'data:%s;base64,%s' % (mime, data64)
 
 def readb64(base64_string):
+  base64_string = remove_datauri_prefix(base64_string)
   imgData = base64.b64decode(base64_string)
   nparr = np.fromstring(imgData, np.uint8)
   img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
