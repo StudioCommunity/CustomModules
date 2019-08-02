@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 import tensorflow as tf
-from builtin_score.builtin_score_module import *
+from builtin_score.builtin_score_module import BuiltinScoreModule
 from keras.datasets import mnist
 
 

@@ -7,7 +7,7 @@ import numpy as np
 
 # This is a placeholder for a Google-internal import.
 import tensorflow as tf
-from builtin_score.builtin_score_module import *
+from builtin_score.builtin_score_module import BuiltinScoreModule
 from sklearn import datasets
 
 
@@ -23,6 +23,6 @@ def load_model_then_predict(model_path = "./model/sklearn/"):
   print('=====buildinScoreModule=======')
   print(result)
 
-# python -m dstest.sklearn.load_saved_model_predict_test
+# python -m dstest.sklearn.load_saved_model_predict_test --model_path model/sklearn
 if __name__ == '__main__':
   load_model_then_predict()

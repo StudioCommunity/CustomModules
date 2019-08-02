@@ -9,7 +9,7 @@ import pickle
 import yaml
 import json
 
-from builtin_models.pytorch import *
+from builtin_models.pytorch import save_model
 
 from pip._internal import main as pipmain
 pipmain(["install", "click"])
@@ -65,20 +65,15 @@ def run_pipeline(action, model_path):
   net = MnistNet(input_size, hidden_size, num_classes)
   device = 'cuda' if torch.cuda.is_available() else 'cpu'
   print(f'DEVICE={device}')
-  if torch.cuda.is_available():
-    net = net.cuda()
   net = net.to(device)
 
-  loss_function = nn.CrossEntropyLoss()
+  loss_function = nn.CrossEntropyLoss().to(device)
   optimizer = torch.optim.Adam( net.parameters(), lr=lr)
 
   for epoch in range(num_epochs):
     for i ,(images,labels) in enumerate(train_gen):
-      images = Variable(images.view(-1,28*28))
-      labels = Variable(labels)
-      if torch.cuda.is_available():
-          images = images.cuda()
-          labels = labels.cuda()
+      images = Variable(images.view(-1,28*28)).to(device)
+      labels = Variable(labels).to(device)
       
       optimizer.zero_grad()
       outputs = net(images)
@@ -91,7 +86,7 @@ def run_pipeline(action, model_path):
                   %(epoch+1, num_epochs, i+1, len(train_data)//batch_size))
 
   save_model(net, model_path, conda_env=None)
-  print("Done")
+  print("save_model Done")
     
 
 # python -m dstest.pytorch.trainer_cloudpickle  --model_path model/pytorch-mnist

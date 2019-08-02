@@ -2,7 +2,7 @@ from sklearn import svm
 from sklearn import datasets
 import pickle
 import os
-from builtin_models.sklearn import *
+from builtin_models.sklearn import save_model
 
 
 # Test dynamic install package
@@ -25,8 +25,7 @@ def run_pipeline(
     
     save_model(clf, model_path)
 
-# python -m dstest.sklearn.trainer  --model_path model/
+# python -m dstest.sklearn.trainer  --model_path model/sklearn
 if __name__ == '__main__':
     run_pipeline()
     
-
