@@ -33,7 +33,7 @@ def save_parquet1(df, output_path, writeCsv= False):
   #requires alghost 70
   OutputHandler.handle_output(DataTable(df), output_path, 'data.dataset.parquet', DataTypes.DATASET)
   save_datatype(output_path)
-  logger.info(f"saved parquet to {output_path}")
+  logger.info(f"saved parquet to {output_path}, columns {df.columns}")
 
 def save_datatype(output_path):
   dct = {
@@ -63,7 +63,7 @@ def save_parquet(df, output_path, writeCsv= False):
 
   # Dump data_type.json as a work around until SMT deploys
   save_datatype(output_path)
-  logger.info(f"saved parquet to {output_path}")
+  logger.info(f"saved parquet to {output_path}, columns {df.columns}")
 
 def from_df_column_to_array(col):
   if(len(col)==0):
