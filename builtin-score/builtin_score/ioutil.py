@@ -4,6 +4,10 @@ import os
 import json
 import pandas as pd
 import numpy as np
+from azureml.studio.modulehost.handler.port_io_handler import OutputHandler
+from azureml.studio.common.datatypes import DataTypes
+from azureml.studio.common.datatable.data_table import DataTable
+
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -26,14 +30,14 @@ def ensure_folder_exists(output_path):
     os.makedirs(output_path)
     logger.info(f"{output_path} not exists, created")
 
-def save_parquet(df, output_path, writeCsv= False):
+def save_parquet1(df, output_path, writeCsv= False):
   ensure_folder_exists(output_path)
-  if(writeCsv):
-    df.to_csv(os.path.join(output_path, "data.csv"))
+  #requires alghost 70
+  OutputHandler.handle_output(DataTable(df), output_path, 'data.dataset.parquet', DataTypes.DATASET)
+  save_datatype(output_path)
+  logger.info(f"saved parquet to {output_path}")
 
-  df.to_parquet(fname=os.path.join(output_path, "data.dataset.parquet"), engine='pyarrow')
-
-  # Dump data_type.json as a work around until SMT deploys
+def save_datatype(output_path):
   dct = {
       "Id": "Dataset",
       "Name": "Dataset .NET file",
@@ -51,6 +55,16 @@ def save_parquet(df, output_path, writeCsv= False):
   }
   with open(os.path.join(output_path, 'data_type.json'), 'w') as f:
     json.dump(dct, f)
+
+def save_parquet(df, output_path, writeCsv= False):
+  ensure_folder_exists(output_path)
+  if(writeCsv):
+    df.to_csv(os.path.join(output_path, "data.csv"))
+
+  df.to_parquet(fname=os.path.join(output_path, "data.dataset.parquet"), engine='pyarrow')
+
+  # Dump data_type.json as a work around until SMT deploys
+  save_datatype(output_path)
   logger.info(f"saved parquet to {output_path}")
 
 def from_df_column_to_array(col):
