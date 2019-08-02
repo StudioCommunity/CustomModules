@@ -8,7 +8,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras import backend as K
 
-from builtin_models.keras import *
+from builtin_models.keras import save_model
 
 # Test dynamic install package
 from pip._internal import main as pipmain

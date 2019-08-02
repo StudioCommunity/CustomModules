@@ -7,8 +7,10 @@ from builtin_models.environment import _generate_ilearner_files
 
 FLAVOR_NAME = "pytorch"
 model_file_name = "model.pkl"
+gpu_model_file_name = "cuda_model.pkl"
 conda_file_name = "conda.yaml"
 model_spec_file_name = "model_spec.yml"
+
 
 def _get_default_conda_env():
     import torch
@@ -31,20 +33,29 @@ def _save_conda_env(path, conda_env=None):
         yaml.safe_dump(conda_env, stream=f, default_flow_style=False)
 
 
-def _save_model_spec(path):
-    spec = {
-        'flavor' : {
-            'framework' : FLAVOR_NAME
-        },
-        FLAVOR_NAME: {
-            'model_file_path': model_file_name
-        },
-        'conda': {
-            'conda_file_path': conda_file_name
-        },
-    }
+def _save_model_spec(path, isGpu = False):
+    spec = dict(
+        flavor = dict(
+            framework = FLAVOR_NAME
+        ),
+        pytorch = dict(
+            model_file_path = model_file_name
+        ),
+        conda = dict(
+            conda_file_path = conda_file_name
+        )
+    )
+
+    if isGpu:
+        spec[FLAVOR_NAME]['cuda_model_file_path'] = gpu_model_file_name
+
     with open(os.path.join(path, model_spec_file_name), 'w') as fp:
         yaml.dump(spec, fp, default_flow_style=False)
+
+
+def _save_model(pytorch_model, path):
+    with open(path, 'wb') as fp:
+        cloudpickle.dump(pytorch_model, fp)
 
 
 def load_model_from_local_file(path):
@@ -62,11 +73,15 @@ def save_model(pytorch_model, path, conda_env=None):
     if not os.path.exists(path):
         os.makedirs(path)
 
-    with open(os.path.join(path, model_file_name), 'wb') as fp:
-        cloudpickle.dump(pytorch_model, fp)
+    is_gpu = torch.cuda.is_available()
+    # save gpu version
+    if is_gpu:
+        _save_model(pytorch_model, os.path.join(path, gpu_model_file_name))
+    # save cpu version too
+    _save_model(pytorch_model.to('cpu'), os.path.join(path, model_file_name))
 
     _save_conda_env(path, conda_env)
-    _save_model_spec(path)
+    _save_model_spec(path, is_gpu)
     _generate_ilearner_files(path) # temp solution, to remove later
 
     
