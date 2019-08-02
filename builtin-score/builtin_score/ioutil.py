@@ -4,11 +4,6 @@ import os
 import json
 import pandas as pd
 import numpy as np
-from azureml.studio.modulehost.handler.port_io_handler import OutputHandler
-from azureml.studio.common.datatypes import DataTypes
-from azureml.studio.common.datatable.data_table import DataTable
-
-
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
@@ -31,6 +26,9 @@ def ensure_folder_exists(output_path):
     logger.info(f"{output_path} not exists, created")
 
 def save_parquet1(df, output_path, writeCsv= False):
+  from azureml.studio.modulehost.handler.port_io_handler import OutputHandler
+  from azureml.studio.common.datatypes import DataTypes
+  from azureml.studio.common.datatable.data_table import DataTable
   ensure_folder_exists(output_path)
   #requires alghost 70
   OutputHandler.handle_output(DataTable(df), output_path, 'data.dataset.parquet', DataTypes.DATASET)
