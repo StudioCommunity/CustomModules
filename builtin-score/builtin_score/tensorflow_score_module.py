@@ -17,6 +17,18 @@ def get_col_schema(name, tensor):
     }
     return col
 
+def load_graph(model_file_path, sess):
+    with open(model_file_path, mode='rb') as f:
+        fileContent = f.read()
+
+    graph_def = tf.GraphDef()
+    graph_def.ParseFromString(fileContent)
+    tf.import_graph_def(graph_def)
+    graph = tf.get_default_graph()
+    init = tf.global_variables_initializer()
+    sess.run(init)
+    return graph
+
 class _TFSavedModelWrapper(object):
     """
     Wrapper class that exposes a TensorFlow model for inference via a ``predict`` function such that
@@ -76,31 +88,44 @@ class _TFSavedModelWrapper(object):
       return meta_graph_def.signature_def[tf_signature_def_key]
 
 class _TFSaverWrapper(object):
-    def __init__(self, model_path, config):
-        self.sess = tf.Session()
-        tf_config = config["tensorflow"]
-        print(tf_config)
+
+    def _load_graph_from_checkpoint(self, model_path, tf_config):
         model_meta_path = os.path.join(model_path, tf_config[constants.MODEL_FILE_PATH_KEY])
-        
         print(f"model_meta_path = {model_meta_path}, model_path = {model_path}")
         saver = tf.train.import_meta_graph(model_meta_path)
         saver.restore(self.sess,tf.train.latest_checkpoint(model_path))
-        graph = tf.get_default_graph()
-        
+        self.graph = tf.get_default_graph()
+    
+    def _load_graph(self, model_path, tf_config):
+        model_file_path = os.path.join(model_path, tf_config[constants.MODEL_FILE_PATH_KEY])
+        print(f"model_file_path = {model_file_path}, model_path = {model_path}")
+        self.graph = load_graph(model_file_path, self.sess)
+
+    def _load_inputs_outputs(self, tf_config):
+        graph = self.graph
         self.x = {}
+        self.x_shape = {}
         for index in range(len(tf_config["inputs"])):
             name = tf_config["inputs"][index]["name"]
-            self.x[name] = graph.get_tensor_by_name(name + ":0")
+            tensor = graph.get_tensor_by_name(name + ":0")
+            self.x[name] = tensor
+            shape = None
+            if(tensor.shape.ndims == None):
+                shape = tf_config["inputs"][index].get("shape", None)
+            else:
+                shape = tensor.shape.as_list()[-1:]
+            self.x_shape[name] = shape
         
         print("loaded inputs:")
         print(self.x)
+        print(self.x_shape)
 
         self.y = []
         self.y_names = []
         for index in range(len(tf_config["outputs"])):
             name = tf_config["outputs"][index]["name"]
             # TODO: support :0 in future version. :0 means the first ouput of an op in tensorflow graph
-            tensor = graph.get_tensor_by_name(name +":0")
+            tensor = graph.get_tensor_by_name(name + ":0")
             self.y.append(tensor)
             self.y_names.append(name)
 
@@ -108,6 +133,16 @@ class _TFSaverWrapper(object):
         print(self.y)
         print(self.y_names)
 
+    def __init__(self, model_path, config):
+        self.sess = tf.Session()
+        tf_config = config["tensorflow"]
+        print(tf_config)
+        serialization_format = tf_config.get(constants.SERIALIZATION_METHOD_KEY, "saver")
+        if(serialization_format == "saver"):
+            self._load_graph_from_checkpoint(model_path, tf_config)
+        else:
+            self._load_graph(model_path, tf_config)
+        self._load_inputs_outputs(tf_config)
         print(f"Successfully loaded model from {model_path}")
 
     def get_schema(self):
@@ -139,7 +174,13 @@ class _TFSaverWrapper(object):
         dict = {}
         for name, tensor in self.x.items():
             values = ioutil.from_df_column_to_array(df[name])
-            #print(values)
+            shape = self.x_shape[name]
+            if shape != None :
+                target_shape = (len(values), *shape)
+                # reshape
+                if values.shape != target_shape:
+                    print(f"reshape from {values.shape} to {target_shape}.")
+                    values = np.array(values).reshape(target_shape)
             dict[tensor] = values
         return dict
 
@@ -148,7 +189,7 @@ class TensorflowScoreModule(object):
     def __init__(self, model_path, config):
         tf_config = config["tensorflow"]
         
-        if(tf_config.get("serialization_format", "saver") == "saved_model"):
+        if(tf_config.get(constants.SERIALIZATION_METHOD_KEY, "saver") == "saved_model"):
             export_dir = os.path.join(model_path, tf_config[constants.MODEL_FILE_PATH_KEY])
             tf_meta_graph_tags = tf_config["meta_graph_tags"]
             tf_signature_def_key = tf_config["signature_def_key"]
