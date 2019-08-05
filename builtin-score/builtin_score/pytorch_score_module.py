@@ -65,7 +65,9 @@ class PytorchWrapper(object):
                     print(f"FEATURES: {input_params}")
                 predicted = self.model(*input_params)
                 output.append(predicted.cpu().numpy()) # here to cpu, as "can't convert CUDA tensor to numpy"
-        return pd.DataFrame(output)
+        output_df = pd.DataFrame(output)
+        print(f"output: {output_df}")
+        return output_df
     
     def is_image(self, row):
         # TODO:
