@@ -3,9 +3,10 @@ import torch
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 import pandas as pd
+import numpy as np
 
 from builtin_score.builtin_score_module import BuiltinScoreModule
-
+import builtin_score.ioutil as ioutil
 
 
 def load_model_then_predict(model_path = "./model/pytorch-mnist/"):
@@ -22,12 +23,16 @@ def load_model_then_predict(model_path = "./model/pytorch-mnist/"):
 
     input_numpy_array = x_input.cpu().numpy() # construct input dataframe (Only cpu type tensor can convert to df)
     input_df = pd.DataFrame(input_numpy_array)
-
-    module = BuiltinScoreModule(model_path)
+    params = {
+        "Append score columns to output": "False"
+    }
+    module = BuiltinScoreModule(model_path, params)
+    #module = BuiltinScoreModule(model_path)
     result = module.run(input_df)
     print('=====buildinScoreModule=======')
     print(result)
-
+    #result.columns = result.columns.astype(str)
+    ioutil.save_parquet(result, './testOutputParquet/')
 
 # python -m dstest.pytorch.saved_model_predict_test
 if __name__ == '__main__':

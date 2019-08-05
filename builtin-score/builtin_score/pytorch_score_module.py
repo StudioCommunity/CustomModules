@@ -25,25 +25,31 @@ class PytorchScoreModule(object):
     def load_from_cloudpickle(self, model_path, pt_config):
         print('device is gpu ? ', self.is_gpu())
         if self.is_gpu():
-            model_path = os.path.join(model_path, pt_config['cuda_model_file_path'])
+            model_file = pt_config.get('cuda_model_file_path', '') # try to get gpu model firstly
+            self.is_gpu_model = True
+
+        if model_file != '':
+            model_path = os.path.join(model_path, model_file)
         else:
+            self.is_gpu_model = False
             model_path = os.path.join(model_path, pt_config['model_file_path'])
 
+        print(f'Load model: is_gpu_model = {self.is_gpu_model}')
         with open(model_path, 'rb') as fp:
             model = cloudpickle.load(fp)
-        return PytorchWrapper(model, self.is_gpu())
+        return PytorchWrapper(model, self.is_gpu_model)
 
     def is_gpu(self):
         return torch.cuda.is_available()
 
 class PytorchWrapper(object):
-    def __init__(self, model, is_gpu):
+    def __init__(self, model, is_gpu_model):
         self.model = model
         self.model.eval()
-        self.device = 'cuda' if is_gpu else 'cpu'
+        self.device = 'cuda' if is_gpu_model else 'cpu'
     
     def predict(self, df):
-        print(f"device is = {self.device}")
+        print(f"model_is_gpu = {self.device}")
         output = []
         with torch.no_grad():
             print(f"predict df = \n {df}")
@@ -59,7 +65,9 @@ class PytorchWrapper(object):
                     print(f"FEATURES: {input_params}")
                 predicted = self.model(*input_params)
                 output.append(predicted.cpu().numpy()) # here to cpu, as "can't convert CUDA tensor to numpy"
-        return pd.DataFrame(output)
+        output_df = pd.DataFrame(output)
+        print(f"output: {output_df}")
+        return output_df
     
     def is_image(self, row):
         # TODO:

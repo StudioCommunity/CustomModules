@@ -76,7 +76,7 @@ def save_model(pytorch_model, path, conda_env=None):
     is_gpu = torch.cuda.is_available()
     # save gpu version
     if is_gpu:
-        _save_model(pytorch_model, os.path.join(path, gpu_model_file_name))
+        _save_model(pytorch_model.to('cuda'), os.path.join(path, gpu_model_file_name))
     # save cpu version too
     _save_model(pytorch_model.to('cpu'), os.path.join(path, model_file_name))
 

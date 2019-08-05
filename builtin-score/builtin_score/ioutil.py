@@ -58,7 +58,8 @@ def save_parquet(df, output_path, writeCsv= False):
   ensure_folder_exists(output_path)
   if(writeCsv):
     df.to_csv(os.path.join(output_path, "data.csv"))
-
+  # convert df columns type, as parquet must have string column names
+  df.columns = df.columns.astype(str)
   df.to_parquet(fname=os.path.join(output_path, "data.dataset.parquet"), engine='pyarrow')
 
   # Dump data_type.json as a work around until SMT deploys

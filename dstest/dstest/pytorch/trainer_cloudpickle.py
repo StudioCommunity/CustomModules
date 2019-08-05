@@ -65,6 +65,7 @@ def run_pipeline(action, model_path):
   net = MnistNet(input_size, hidden_size, num_classes)
   device = 'cuda' if torch.cuda.is_available() else 'cpu'
   print(f'DEVICE={device}')
+  print(f'os.environ={os.environ}')
   net = net.to(device)
 
   loss_function = nn.CrossEntropyLoss().to(device)
