@@ -22,7 +22,7 @@ inputs:
 - name: Target Image Size
   type: String
   default: 
-  description: Target Image Size, eg, 224, 224
+  description: Target Image Size, eg, 224x224
 outputs:
 - name: Output Data
   type: TabularDataFolder

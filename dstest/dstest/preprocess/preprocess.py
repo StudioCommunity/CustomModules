@@ -29,7 +29,7 @@ class PreProcess:
 
     try:
       image_size = str(meta.get('Target Image Size', '')).strip()
-      self.target_image_size = tuple(map(int, image_size.split(',')))
+      self.target_image_size = tuple(map(int, image_size.split('x')))
     except:
       raise Exception('Invalid [Target Image Size] Parameter:{image_size}')
     
@@ -98,7 +98,7 @@ def run(input_path, output_path, image_column, target_column, target_datauri_col
   result = proccesor.run(df)
   ioutil.save_parquet(result, output_path)
 
-# mnist: python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --image_column=image --target_column=x --target_datauri_column=x.data --target_image_size=28,28
-# imagenet: python -m dstest.preprocess.preprocess  --input_path datas/imagenet --output_path outputs/imagenet --image_column=image --target_column=import/images --target_datauri_column=import/images.data --target_image_size=224,224
+# mnist: python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --image_column=image --target_column=x --target_datauri_column=x.data --target_image_size=28x28
+# imagenet: python -m dstest.preprocess.preprocess  --input_path datas/imagenet --output_path outputs/imagenet --image_column=image --target_column=import/images --target_datauri_column=import/images.data --target_image_size=224x224
 if __name__ == '__main__':
   run()

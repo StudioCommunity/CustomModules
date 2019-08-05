@@ -41,7 +41,7 @@ def run(input_path, output_path):
     image_64_encode = datauri_util.imgfile_to_datauri(filename)
     df.loc[i] = label, image_64_encode
 
-  ioutil.save_parquet(df, output_path)
+  ioutil.save_parquet(df, output_path, True)
 
 # python -m dstest.preprocess.import_image  --input_path inputs/mnist --output_path datas/mnist
 # python -m dstest.preprocess.import_image  --input_path inputs/imagenet --output_path datas/imagenet
