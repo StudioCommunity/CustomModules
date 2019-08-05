@@ -44,5 +44,6 @@ def run(input_path, output_path):
   ioutil.save_parquet(df, output_path)
 
 # python -m dstest.preprocess.import_image  --input_path inputs/mnist --output_path datas/mnist
+# python -m dstest.preprocess.import_image  --input_path inputs/imagenet --output_path datas/imagenet
 if __name__ == '__main__':
     run()

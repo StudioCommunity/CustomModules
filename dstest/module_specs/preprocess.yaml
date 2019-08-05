@@ -1,7 +1,7 @@
-name: Preprocess - MNIST
+name: Image Preprocess
 id: bf0465b9-c530-4368-a206-fe089f022f59
 category: Machine Learning\Preprocess
-description: Image Preprocess - MNIST
+description: Image Preprocess
 inputs:
 - name: Input Data
   type: TabularDataFolder
@@ -19,6 +19,10 @@ inputs:
   type: String
   default: 
   description: Target DataURI Column which can be displayed in browser
+- name: Target Image Size
+  type: String
+  default: 
+  description: Target Image Size, eg, 224, 224
 outputs:
 - name: Output Data
   type: TabularDataFolder
@@ -38,7 +42,8 @@ implementation:
         - click
         - PyYAML
         - pyarrow
-        - scipy 
+        - scipy
+        - scikit-image
         - opencv-python-headless
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
@@ -53,6 +58,8 @@ implementation:
     - inputValue: Target Column
     - --target_datauri_column
     - inputValue: Target DataURI Column
+    - --target_image_size
+    - inputValue: Target Image Size
     - --input_path
     - inputValue: Input Data
     - --output_path

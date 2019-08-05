@@ -5,6 +5,7 @@ import cv2
 from builtin_score import ioutil
 from . import datauri_util
 from . import mnist
+from . import imagenet
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -25,6 +26,12 @@ class PreProcess:
     self.image_column = str(meta.get('Image Column', 'image'))
     self.target_column = str(meta.get('Target Column', ''))
     self.target_data_column = str(meta.get('Target DataURI Column', ''))
+
+    try:
+      image_size = str(meta.get('Target Image Size', '')).strip()
+      self.target_image_size = tuple(map(int, image_size.split(',')))
+    except:
+      raise Exception('Invalid [Target Image Size] Parameter:{image_size}')
     
     if not self.target_column:
       self.target_column = self.image_column
@@ -41,7 +48,14 @@ class PreProcess:
     for index, row in input_df.iterrows():
       #print(row['label'])
       img = datauri_util.base64str_to_ndarray(row[self.image_column])
-      img = mnist.transform_image_mnist(img)
+      if self.target_image_size == (28,28):
+        #logging.info(f"### mnist")
+        img = mnist.transform_image_mnist(img)
+      elif self.target_image_size == (224,224):
+        #logging.info(f"### imagenet")
+        img = imagenet.transform_image_imagenet(img)
+      else:
+        raise Exception("Not Implemented")
       
       # append datauris
       if self.target_data_column:
@@ -67,14 +81,16 @@ class PreProcess:
 @click.option('--image_column', default="image")
 @click.option('--target_column', default="x")
 @click.option('--target_datauri_column', default="")
-def run(input_path, output_path, image_column, target_column, target_datauri_column):
+@click.option('--target_image_size', default="")
+def run(input_path, output_path, image_column, target_column, target_datauri_column, target_image_size):
   """
   This functions read base64 encoded images from df. Transform to format required by model input.
   """
   meta = {
     "Image Column": image_column,
     "Target Column": target_column,
-    "Target DataURI Column": target_datauri_column
+    "Target DataURI Column": target_datauri_column,
+    "Target Image Size": target_image_size
   }
   proccesor = PreProcess(meta)
 
@@ -82,6 +98,7 @@ def run(input_path, output_path, image_column, target_column, target_datauri_col
   result = proccesor.run(df)
   ioutil.save_parquet(result, output_path)
 
-# python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --image_column=image --target_column=x --target_datauri_column=x.data
+# mnist: python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --image_column=image --target_column=x --target_datauri_column=x.data --target_image_size=28,28
+# imagenet: python -m dstest.preprocess.preprocess  --input_path datas/imagenet --output_path outputs/imagenet --image_column=image --target_column=import/images --target_datauri_column=import/images.data --target_image_size=224,224
 if __name__ == '__main__':
   run()
