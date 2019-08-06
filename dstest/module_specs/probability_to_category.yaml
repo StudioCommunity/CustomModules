@@ -8,9 +8,9 @@ inputs:
   port: True
   description: input data frame
 - name: Meta Data
-  type: GenericFolder
+  type: ModelFolder
   port: True
-  description: Meta Data
+  description: Meta Data, GenericFolder
 - name: Category File Name
   type: String
   default: 
