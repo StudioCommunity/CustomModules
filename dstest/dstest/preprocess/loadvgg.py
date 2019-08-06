@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from . import imagenet
+from dstest.postprocess import prob_to_category
 from builtin_score import tensorflow_score_module
 from builtin_score.tensorflow_score_module import TensorflowScoreModule
 
@@ -14,13 +15,6 @@ def load_image(path, target_size = (224,224)):
 
 # convert this to a generic postprocess module
 synset = [l.strip() for l in open('model/vgg/synset.txt').readlines()]
-def get_category(prob):
-  pred = np.argsort(prob)[::-1] ##[::-1] inverse order
-  # Get top1 label
-  top1 = synset[pred[0]]
-  # Get top5 label
-  #top5 = [synset[pred[i]] for i in range(5)]
-  return top1
 
 model_path = "model/vgg/"
 
@@ -41,7 +35,7 @@ def load_inputs():
   df.insert(len(df.columns), "import/images", imgs, True)
   return df
 
-# python -m dstest.tensorflow.vgg.loadvgg
+# python -m dstest.preprocess.loadvgg
 if __name__ == '__main__':
   df = load_inputs()
   print(df)
@@ -55,9 +49,5 @@ if __name__ == '__main__':
   print(result_df)
   prob = result_df["import/prob"]
 
-  result=[]
-  for i in range (len(result_df)): 
-    category = get_category(prob[i])
-    result.append(category)
-  
+  result = prob_to_category.get_categories(prob, synset)
   print ("The category is :",result)
