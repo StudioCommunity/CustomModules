@@ -3,6 +3,18 @@ id: 8ad10e1b-ac2d-47f8-aa96-78597f26abcd
 category: Machine Learning\Score
 description: Load external model 
 inputs:
+- name: Model Flavor
+  type: String
+  description: Model Flavor
+- name: Model URL
+  type: String
+  description: Model URL
+- name: Target Column
+  type: String
+  description: Target Column
+- name: Serialization Mode
+  type: String 
+  description: Serialization Mode
 outputs:
 - name: Output Model
   type: ModelFolder
