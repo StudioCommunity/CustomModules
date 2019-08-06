@@ -1,28 +1,24 @@
-name: Image Preprocess
-id: bf0465b9-c530-4368-a206-fe089f022f59
-category: Machine Learning\Preprocess
-description: Image Preprocess
+name: Probability to Category
+id: c459b343-3ec8-48d3-b699-d8b36502c6a8
+category: Machine Learning\Postprocess
+description: Probability to Category
 inputs:
 - name: Input Data
   type: TabularDataFolder
   port: True
   description: input data frame
-- name: Image Column
-  type: String
-  default: image
-  description: Image Column
-- name: Target Column
-  type: String
-  default: 
-  description: Target Column
-- name: Target DataURI Column
+- name: Meta Data
+  type: ModelFolder
+  port: True
+  description: Meta Data, GenericFolder
+- name: Category File Name
   type: String
   default: 
-  description: Target DataURI Column which can be displayed in browser
-- name: Target Image Size
+  description: Category File Name
+- name: Probability Column Name
   type: String
   default: 
-  description: Target Image Size, eg, 224x224
+  description: Probability Column Name
 outputs:
 - name: Output Data
   type: TabularDataFolder
@@ -42,29 +38,26 @@ implementation:
         - click
         - PyYAML
         - pyarrow
-        - scipy
-        - scikit-image
+        - scipy 
         - opencv-python-headless
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
     command:
     - python
     - -m
-    - dstest.preprocess.preprocess
+    - dstest.postprocess.prob_to_category
     args:
-    - --image_column
-    - inputValue: Image Column
-    - --target_column
-    - inputValue: Target Column
-    - --target_datauri_column
-    - inputValue: Target DataURI Column
-    - --target_image_size
-    - inputValue: Target Image Size
+    - --prob_col
+    - inputValue: Probability Column Name
+    - --file_name
+    - inputValue: Category File Name
     - --input_path
     - inputValue: Input Data
+    - --meta_path
+    - inputValue: Meta Data
     - --output_path
     - outputPath: Output Data
   invoking:
-    module: dstest.preprocess.preprocess
-    class: PreProcess
+    module: dstest.postprocess.prob_to_category
+    class: Process
     func: run
