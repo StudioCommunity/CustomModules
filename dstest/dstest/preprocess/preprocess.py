@@ -14,7 +14,7 @@ logging.info(f"in {__file__} v1")
 logger = logging.getLogger(__name__)
 
 def add_data_to_dataframe(input_df, results, target_column):
-  if(input_df.columns.contains(target_column)):
+  if target_column in input_df.columns:
     logger.info(f"writing to column {target_column}")
     input_df[target_column] = results
   else:

@@ -18,15 +18,19 @@ class Process:
 
   def run(self, input_df: pd.DataFrame, meta: dict = None):
     print(input_df.columns)
+    df = input_df.copy()
     for col in self.remove_columns:
-      if col in input_df.columns:
+      if col in df.columns:
         print(f"deleting column {col}")
-        del input_df[col]
+        del df[col]
         print(f"deleted column {col}")
       else:
         logger.info(f"skip column {col}")
 
-    return input_df
+    print("input_df:", input_df.columns)
+    print("df:", df.columns)
+
+    return df
 
 @click.command()
 @click.option('--input_path', default="datas/mnist")

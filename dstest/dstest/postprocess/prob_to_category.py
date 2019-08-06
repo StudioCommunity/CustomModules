@@ -28,9 +28,10 @@ def get_categories(prob, categories):
   return df
 
 class Process:
-  def __init__(self, meta: dict = {}):
+  def __init__(self, meta_path, meta: dict = {}):
     self.prob_col = str(meta.get('Probability Column Name', ''))
-    self.file_name = str(meta.get('Category File Name', ''))
+    file_name = str(meta.get('Category File Name', ''))
+    self.file_name = os.path.join(meta_path, file_name)
     logger.info(f"reading from {self.file_name}")
     self.categories = [l.strip() for l in open(self.file_name).readlines()]
 
@@ -50,14 +51,14 @@ def run(input_path, meta_path, output_path, file_name, prob_col):
   """
   
   meta = {
-    "Category File Name": os.path.join(meta_path, file_name),
+    "Category File Name": file_name,
     "Probability Column Name": prob_col
   }
 
-  proccesor = Process(meta)
+  proccesor = Process(meta_path, meta)
   df = ioutil.read_parquet(input_path)
   result = proccesor.run(df)
-  ioutil.save_parquet(result, output_path,True)
+  ioutil.save_parquet(result, output_path, True)
 
 # python -m dstest.postprocess.prob_to_category  --input_path outputs/imagenet/ouput --meta_path model/vgg --output_path outputs/imagenet/categories --file_name=synset.txt --prob_col=import/prob
 if __name__ == '__main__':

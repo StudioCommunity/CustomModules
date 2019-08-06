@@ -173,6 +173,8 @@ class _TFSaverWrapper(object):
     def feed_dict(self, df):
         dict = {}
         for name, tensor in self.x.items():
+            if(name not in df.columns):
+                raise Exception(f"Column {name} not in input df columns: {df.columns}")
             values = ioutil.from_df_column_to_array(df[name])
             shape = self.x_shape[name]
             if shape != None :
