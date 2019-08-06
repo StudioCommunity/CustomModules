@@ -9,9 +9,6 @@ inputs:
 - name: Model URL
   type: String
   description: Model URL
-- name: Target Column
-  type: String
-  description: Target Column
 - name: Serialization Mode
   type: String 
   description: Serialization Mode
