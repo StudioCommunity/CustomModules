@@ -22,7 +22,7 @@ _data_ilearner_file_name = "data.ilearner"
 _conda_file_name = "conda.yaml"
 _model_spec_file_name = "model_spec.yml"
 
-def _generate_conda_env(path=None, additional_conda_deps=None, additional_pip_deps=None,
+def generate_conda_env(path=None, additional_conda_deps=None, additional_pip_deps=None,
                       additional_conda_channels=None, install_alghost=True, install_azureml=True):
     env = yaml.safe_load(_conda_header)
     env["dependencies"] = ["python={}".format(PYTHON_VERSION), "git", "regex"]
@@ -43,7 +43,7 @@ def _generate_conda_env(path=None, additional_conda_deps=None, additional_pip_de
         return env
 
 
-def _save_conda_env(path, conda_env):
+def save_conda_env(path, conda_env):
     if conda_env is None:
         raise Exception("conda_env is empty")
     if isinstance(conda_env, str) and os.path.isfile(conda_env):
@@ -55,7 +55,7 @@ def _save_conda_env(path, conda_env):
         yaml.safe_dump(conda_env, stream=f, default_flow_style=False)
 
 
-def _generate_model_spec(flavor_name, model_file_name, conda_file_name=_conda_file_name):
+def generate_model_spec(flavor_name, model_file_name, conda_file_name=_conda_file_name):
     """
     Generate default model spec (TBD)
     :flavor_name
@@ -75,7 +75,7 @@ def _generate_model_spec(flavor_name, model_file_name, conda_file_name=_conda_fi
     }
     return spec
 
-def _save_model_spec(path, flavor_name, model_file_name, conda_file_name=_conda_file_name):
+def save_model_spec(path, flavor_name, model_file_name, conda_file_name=_conda_file_name):
     """
     Save model spec to local (TBD)
     :path
@@ -83,11 +83,11 @@ def _save_model_spec(path, flavor_name, model_file_name, conda_file_name=_conda_
     :model_file_name
     :conda_file_name
     """
-    spec = _generate_model_spec(flavor_name, model_file_name, conda_file_name)
+    spec = generate_model_spec(flavor_name, model_file_name, conda_file_name)
     with open(os.path.join(path, _model_spec_file_name), 'w') as fp:
         yaml.dump(spec, fp, default_flow_style=False)
 
-def _generate_ilearner_files(path):
+def generate_ilearner_files(path):
     # Dump data_type.json as a work around until SMT deploys
     dct = {
         "Id": "ILearnerDotNet",

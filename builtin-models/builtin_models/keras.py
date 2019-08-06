@@ -1,28 +1,18 @@
 import os
 import yaml
 import keras
-
-from builtin_models.environment import _generate_conda_env
-from builtin_models.environment import _generate_ilearner_files
-from builtin_models.environment import _save_conda_env
-from builtin_models.environment import _save_model_spec
+import builtin_models.utils as utils
 
 FLAVOR_NAME = "keras"
 model_file_name = "model.h5"
 
 def _get_default_conda_env():
     import tensorflow as tf
-
-    return _generate_conda_env(
+    return utils.generate_conda_env(
         additional_pip_deps=[
             "keras=={}".format(keras.__version__),
             "tensorflow=={}".format(tf.__version__),
         ])
-
-
-def _load_model_from_local_file(path):
-    from keras.models import load_model
-    return load_model(path)
 
 
 def save_model(keras_model, path='./model/', conda_env=None):
@@ -31,7 +21,7 @@ def save_model(keras_model, path='./model/', conda_env=None):
 
     :param keras_model: Keras model to be saved. 
 
-    :param path: Path to a file or directory containing model data.
+    :param path: Path to a directory containing model data.
     
     :param conda_env: Either a dictionary representation of a Conda environment or the path to a conda environment yaml file. 
     """
@@ -44,9 +34,9 @@ def save_model(keras_model, path='./model/', conda_env=None):
 
     if conda_env is None:
         conda_env = _get_default_conda_env()
-    _save_conda_env(path, conda_env)
+    utils.save_conda_env(path, conda_env)
 
-    _save_model_spec(path, FLAVOR_NAME, model_file_name)
-    _generate_ilearner_files(path) # temp solution, to remove later
+    utils.save_model_spec(path, FLAVOR_NAME, model_file_name)
+    utils.generate_ilearner_files(path) # temp solution, to remove later
 
     
