@@ -6,8 +6,7 @@ import pandas as pd
 import numpy as np
 
 from builtin_score.builtin_score_module import BuiltinScoreModule
-import builtin_score.ioutil as ioutil
-
+import builtin_score.ioutil
 
 def load_model_then_predict(model_path = "./model/pytorch-mnist/"):
     batch_size = 64

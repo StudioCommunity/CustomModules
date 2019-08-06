@@ -1,6 +1,7 @@
 import os
 import yaml
 import pickle
+import sklearn
 
 from builtin_models.environment import _generate_conda_env
 from builtin_models.environment import _generate_ilearner_files
@@ -11,8 +12,6 @@ conda_file_name = "conda.yaml"
 model_spec_file_name = "model_spec.yml"
 
 def _get_default_conda_env():
-    import sklearn
-
     return _generate_conda_env(
         additional_pip_deps=[
             "scikit-learn=={}".format(sklearn.__version__)
@@ -50,14 +49,21 @@ def _save_model(sklearn_model, path):
         pickle.dump(sklearn_model, fb)
 
 
-def load_model_from_local_file(path):
+def _load_model_from_local_file(path):
     with open(path, "rb") as f:
         return pickle.load(f)
 
 
-def save_model(sklearn_model, path, conda_env=None):
-    import sklearn
+def save_model(sklearn_model, path='./model/', conda_env=None):
+    """
+    Save a Sklearn model to a path on the local file system.
 
+    :param sklearn_model: Sklearn model to be saved. 
+
+    :param path: Path to a file or directory containing model data.
+    
+    :param conda_env: Either a dictionary representation of a Conda environment or the path to a conda environment yaml file. 
+    """
     if(not path.endswith('/')):
         path += '/'
     if not os.path.exists(path):
