@@ -1,0 +1,58 @@
+name: Model Loader
+id: 8ad10e1b-ac2d-47f8-aa96-78597f26abcd
+category: Machine Learning\Score
+description: Load external model 
+inputs:
+- name: Model Flavor
+  type: String
+  description: Model Flavor
+- name: Model URL
+  type: String
+  description: Model URL
+- name: Serialization Mode
+  type: String 
+  description: Serialization Mode
+outputs:
+- name: Output Model
+  type: ModelFolder
+  port: True
+  description: The Output model
+implementation:
+  container:
+    conda:
+      name: project_environment
+      channels:
+      - defaults
+      dependencies:
+      - python=3.6.8
+      - git
+      - regex
+      - pip:
+        - pandas
+        - https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl
+        - https://download.pytorch.org/whl/cu100/torchvision-0.3.0-cp36-cp36m-linux_x86_64.whl
+        - pillow==5.2.0
+        - tensorflow
+        - keras
+        - cloudpickle
+        - click
+        - PyYAML
+        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
+    command:
+    - python
+    - -m
+    - dstest.modelloader.loader 
+    args:
+    - --flavor
+    - inputValue: Model Flavor
+    - --model_url
+    - inputValue: Model URL
+    - --serialization
+    - inputValue: Serialization Mode
+    - --out_model_path
+    - outputPath: Output Model
+  invoking:
+    module:
+    class:
+    func:
