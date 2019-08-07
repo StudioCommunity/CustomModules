@@ -1,5 +1,5 @@
-name: Model Loader
-id: 8ad10e1b-ac2d-47f8-aa96-78597f26abcd
+name: Model Loader - Master
+id: e389d134-e4cc-4f99-b039-62d1bfa0ae55
 category: Machine Learning\Score
 description: Load external model 
 inputs:
@@ -37,8 +37,8 @@ implementation:
         - cloudpickle
         - click
         - PyYAML
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=builtin-models
     command:
     - python
     - -m
