@@ -1,5 +1,5 @@
-name: Tensorflow Train - MNIST
-id: a140e35b-4f72-4b9b-b3be-c9183cd40290
+name: Tensorflow Train - MNIST - Master
+id: b7527d43-b82c-4a32-aaf9-b5560fc17d26
 category: Machine Learning\Train
 description: DS tensorflow train which outputs a tensorflow model with spec
 inputs:
@@ -25,7 +25,7 @@ implementation:
         - tensorflow
         - click
         - PyYAML
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
     command:
     - python
     - -m
