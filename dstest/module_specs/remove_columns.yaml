@@ -1,5 +1,5 @@
-name: Remove Columns
-id: 339e583b-6c79-4e04-9df8-e1248eb32612
+name: Remove Columns - Master
+id: 3fc01bee-09a4-4b47-8ee0-67eadc3bdd2f
 category: Machine Learning\Postprocess
 description: Remove Columns
 inputs:
@@ -32,8 +32,8 @@ implementation:
         - pyarrow
         - scipy 
         - opencv-python-headless
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=builtin-score
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
     command:
     - python
     - -m
