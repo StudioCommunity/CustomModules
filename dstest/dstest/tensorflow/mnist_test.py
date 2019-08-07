@@ -59,3 +59,4 @@ if __name__ == '__main__':
     test_tensor(df)
     out = test_builtin(df)
     print(out.columns)
+    print(out)
