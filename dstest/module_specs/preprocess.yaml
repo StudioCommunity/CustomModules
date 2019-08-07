@@ -1,5 +1,5 @@
-name: Image Preprocess
-id: bf0465b9-c530-4368-a206-fe089f022f59
+name: Image Preprocess - Master
+id: be92aaf5-40e8-4a8d-b665-ae5ca25c44ff
 category: Machine Learning\Preprocess
 description: Image Preprocess
 inputs:
@@ -45,8 +45,8 @@ implementation:
         - scipy
         - scikit-image
         - opencv-python-headless
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=builtin-score
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
     command:
     - python
     - -m
