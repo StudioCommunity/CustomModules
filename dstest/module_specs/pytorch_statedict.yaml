@@ -1,5 +1,5 @@
-name: PyTorch Train - MNIST Saved States
-id: 8ad10e1b-ac2d-47f8-aa96-78597f26ca81
+name: PyTorch Train - MNIST Saved States - Master
+id: a9736026-77fa-4556-9ada-95ddcfb04174
 category: Machine Learning\Train
 description: DS pytorch training with statedict as output 
 inputs:
@@ -26,7 +26,7 @@ implementation:
         - cloudpickle
         - click
         - PyYAML
-        - git+https://github.com/StudioCommunity/CustomModules.git@zhwei/New#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
     command:
     - python
     - -m
