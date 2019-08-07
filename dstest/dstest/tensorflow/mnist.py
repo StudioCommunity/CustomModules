@@ -1,9 +1,15 @@
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
 import tensorflow as tf
-import click
 import logging
 import os
+import json
+import yaml
+
+# Test dynamic install package
+from pip._internal import main as pipmain
+pipmain(["install", "click"])
+import click
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -11,8 +17,45 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message
 logging.info(f"in dstest echo")
 logger = logging.getLogger(__name__)
 
+def save_model_spec(model_path, multiple_output):
+    
+    spec = {
+        'flavor' : {
+            'framework' : 'tensorflow'
+        },
+        "tensorflow": {
+            "model_file_path": 'deep_mnist_model.meta',
+            'inputs' : [
+                {
+                    'name': 'x'
+                }
+            ],
+        },
+    }
+
+    if(multiple_output == "True"):
+        print("Write spec with multiple outputs")
+        spec['tensorflow']['outputs'] = [
+                {
+                    'name': 'y'
+                },
+                {
+                    'name': 'y_label'
+                }
+            ]
+    else:
+        print("Write spec with single outputs")
+        spec['tensorflow']['outputs'] = [
+            {
+                'name': 'y'
+            }
+        ]
+
+    with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
+        yaml.dump(spec, fp, default_flow_style=False)
+
 def save_model(model_path, sess):
-    saver = tf.train.Saver()
+    saver = tf.train.Saver(save_relative_paths=True)
 
     if(not model_path.endswith('/')):
         model_path += '/'
@@ -24,17 +67,41 @@ def save_model(model_path, sess):
         logger.info(f"{model_path} exists")
 
     saver.save(sess, model_path + "deep_mnist_model")
-    
-    with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
-        fp.write("model_file_path: ./deep_mnist_model.meta\nflavor:\n  framework: tensorflow\n  env: ")
+
+
+def save_ilearner(model_path):
+    # Dump data_type.json as a work around until SMT deploys
+    dct = {
+        "Id": "ILearnerDotNet",
+        "Name": "ILearner .NET file",
+        "ShortName": "Model",
+        "Description": "A .NET serialized ILearner",
+        "IsDirectory": False,
+        "Owner": "Microsoft Corporation",
+        "FileExtension": "ilearner",
+        "ContentType": "application/octet-stream",
+        "AllowUpload": False,
+        "AllowPromotion": False,
+        "AllowModelPromotion": True,
+        "AuxiliaryFileExtension": None,
+        "AuxiliaryContentType": None
+    }
+    with open(os.path.join(model_path, 'data_type.json'), 'w') as f:
+        json.dump(dct, f)
+    # Dump data.ilearner as a work around until data type design
+    visualization = os.path.join(model_path, "data.ilearner")
+    with open(visualization, 'w') as file:
+        file.writelines('{}')
 
 @click.command()
 @click.option('--action', default="train", 
         type=click.Choice(['predict', 'train']))
 @click.option('--model_path', default="./model/")
+@click.option('--multiple_output', default="True")
 def run_pipeline(
     action, 
     model_path,
+    multiple_output
     ):
     x = tf.placeholder(tf.float32, [None,784], name="x")
     W = tf.Variable(tf.zeros([784,10]))
@@ -68,9 +135,11 @@ def run_pipeline(
     train_writer.close()
 
     save_model(model_path, sess)
+    save_model_spec(model_path, multiple_output)
+    save_ilearner(model_path)
     logger.info(f"training finished")
 
-# python -m dstest.tensorflow.mnist  --model_path model/tensorflow-minist
+# python -m dstest.tensorflow.mnist  --model_path model/tensorflow-minist --multiple_output=False
 if __name__ == '__main__':
     run_pipeline()
     

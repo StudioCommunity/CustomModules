@@ -1,2 +1,9 @@
 MNIST_data
 model
+*.pkl
+*.csv
+*.parquet
+outputs
+datas
+notebooks
+app
