@@ -1,5 +1,5 @@
-name: Dummy Train
-family_id: a140e35b-4f72-4b9b-b3be-c9183cd40290
+name: Dummy Train - Master
+id: dc9d433a-d0b6-4d97-af5f-9d6e65e8c758
 category: Machine Learning\Train
 description: DS Dummy Train, deep copy the input structure to output port
 inputs:
@@ -24,7 +24,7 @@ implementation:
         - python=3.6.2
         - pip:
           - pandas
-          - git+https://github.com/GuXiaoMing/dstest.git
+          - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
     invoking:
       module: 
       class: 
