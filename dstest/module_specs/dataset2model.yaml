@@ -1,5 +1,5 @@
-name: Dataset to Model
-id: 01d734a3-82bf-449b-85b4-5f99fdf64d43
+name: Dataset to Model - Master
+id: c45d71c5-bc36-4ed6-8b18-b87947b5ebaa
 category: Machine Learning\Train
 description: Unzip the dataset in the input port to the output port (of Model type)
 inputs:
@@ -22,7 +22,7 @@ implementation:
       - python=3.6.8
       - pip:
         - zipfile36
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
     command:
     - python
     - -m
