@@ -1,5 +1,5 @@
-name: Sklearn Train - Xin builtin-model test
-id: 8ad10e1b-ac2d-47f8-aa96-78597f26ca48
+name: Sklearn Train - Xin builtin-model test - Master
+id: 937d6518-5848-4435-8415-23e78894e971
 category: Machine Learning\Train
 description: DS Sklearn train which outputs a Sklearn model with spec
 inputs:
@@ -21,8 +21,8 @@ implementation:
         - scikit-learn
         - click
         - PyYAML
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=builtin-models
     command:
     - python
     - -m
