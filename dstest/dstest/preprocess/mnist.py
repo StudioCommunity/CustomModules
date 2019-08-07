@@ -18,19 +18,42 @@ def shift(img, sx, sy):
   shifted = cv2.warpAffine(img, M, (cols, rows))
   return shifted
 
+def _save_img_file(file, img):
+  #cv2.imwrite(file, img)
+  pass
+
+def threshold(im_gray, method):
+    if method == 'fixed':
+        (thresh, threshed_im) = cv2.threshold(im_gray, 128, 255, cv2.THRESH_BINARY)
+        print(f"used threshold: {thresh}")
+    elif method == 'mean':
+        threshed_im = cv2.adaptiveThreshold(im_gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 15, -22)
+    elif method == 'gaussian':
+        threshed_im = cv2.adaptiveThreshold(im_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 5, 7)
+    else:
+        return None
+
+    return threshed_im 
+
 def transform_image_mnist(gray, target_size = (28, 28)):
   """
   transform image to 28x28x3
   """
+  # gray
   gray = cv2.cvtColor(gray, cv2.COLOR_RGB2GRAY)
-  #cv2.imwrite("outputs/test_1_gray.png", img)
+  _save_img_file("outputs/test_1_gray.png", gray)
 
-  # rescale it
-  gray = cv2.resize(255-gray, target_size)
+  # invert
+  gray = 255-gray
+  _save_img_file("outputs/test_1_gray_invert.png", gray)
   
+  # rescale it
+  gray = cv2.resize(gray, target_size)
+  _save_img_file('outputs/test_2_rescale.png',gray)
+
   # better black and white version
-  (thresh, gray) = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-  #cv2.imwrite('outputs/test_2_rescale.png',gray)
+  gray = threshold(gray, "mean")
+  _save_img_file('outputs/test_3_thresh.png',gray)
 
   while np.sum(gray[0]) == 0:
       gray = gray[1:]
@@ -44,6 +67,7 @@ def transform_image_mnist(gray, target_size = (28, 28)):
   while np.sum(gray[:,-1]) == 0:
     gray = np.delete(gray,-1,1)
 
+  _save_img_file('outputs/test_4.png',gray)
   #print(gray.shape)
   rows,cols = gray.shape
 
@@ -63,11 +87,21 @@ def transform_image_mnist(gray, target_size = (28, 28)):
   colsPadding = (int(math.ceil((28-cols)/2.0)),int(math.floor((28-cols)/2.0)))
   rowsPadding = (int(math.ceil((28-rows)/2.0)),int(math.floor((28-rows)/2.0)))
   gray = np.lib.pad(gray,(rowsPadding,colsPadding),'constant')
-  # cv2.imwrite('outputs/test_3.png',gray)
+  _save_img_file('outputs/test_5.png',gray)
 
   shiftx, shifty = getBestShift(gray)
   shifted = shift(gray, shiftx, shifty)
   gray = shifted
   
-  
+  _save_img_file('outputs/test_final.png',gray)
+
   return gray
+
+# python -m dstest.preprocess.mnist
+if __name__ == '__main__':
+  from . import datauri_util
+  uri = datauri_util.imgfile_to_datauri("inputs/mnist/hard_6.jpg")
+  #print(uri)
+  img = datauri_util.base64str_to_ndarray(uri)
+  transform_image_mnist(img)
+
