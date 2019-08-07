@@ -1,5 +1,5 @@
-name: PyTorch Train - MNIST Cloudpickle Model
-id: 8ad10e1b-ac2d-47f8-aa96-78597f26ca82
+name: PyTorch Train - MNIST Cloudpickle Model - Master
+id: b93a0da2-0f16-4c18-a29a-9bcd8566b511
 category: Machine Learning\Train
 description: DS pytorch training with cloudpickle object as output 
 inputs:
@@ -26,8 +26,8 @@ implementation:
         - cloudpickle
         - click
         - PyYAML
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=builtin-models
     command:
     - python
     - -m
