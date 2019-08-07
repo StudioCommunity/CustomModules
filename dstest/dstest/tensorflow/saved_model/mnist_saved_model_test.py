@@ -26,10 +26,12 @@ def test_TFSavedWrapper():
   out = wrapper.predict(df)
   print(out)
 
+
 # python -m dstest.tensorflow.saved_model.mnist_saved_model_test
 if __name__ == '__main__':
   df = ioutil.read_parquet("../dstest/outputs/mnist/")
-  df = df.rename(columns={"x": "images"})
+  #df = df.rename(columns={"x": "images"})
+  df = df.rename(columns={"x": "x:0"})
 
   with open("model/tensorflow-minist-saved-model/model_spec.yml") as fp:
       config = yaml.safe_load(fp)

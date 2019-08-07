@@ -32,11 +32,11 @@ import sys
 import json
 
 # This is a placeholder for a Google-internal import.
-
 import tensorflow as tf
 import yaml
 
 from .mnist_input_data import read_data_sets
+from builtin_models.tensorflow import save_model
 
 tf.app.flags.DEFINE_integer('training_iteration', 1000,
                             'number of training iterations.')
@@ -45,44 +45,6 @@ tf.app.flags.DEFINE_string('work_dir', '/tmp', 'Working directory.')
 tf.app.flags.DEFINE_string('export_dir', '', 'export_dir.')
 FLAGS = tf.app.flags.FLAGS
 
-def save_model_spec(model_path, model_version):
-    spec = {
-        'flavor' : {
-            'framework' : 'tensorflow'
-        },
-        'tensorflow' : {
-            'serialization_format': "saved_model",
-            'model_file_path': model_version,
-            'meta_graph_tags':['serve'],
-            'signature_def_key': 'predict_images'
-        }
-    }
-    with open(os.path.join(model_path, "model_spec.yml"), 'w') as fp:
-        yaml.dump(spec, fp, default_flow_style=False)
-
-def save_ilearner(model_path):
-    # Dump data_type.json as a work around until SMT deploys
-    dct = {
-        "Id": "ILearnerDotNet",
-        "Name": "ILearner .NET file",
-        "ShortName": "Model",
-        "Description": "A .NET serialized ILearner",
-        "IsDirectory": False,
-        "Owner": "Microsoft Corporation",
-        "FileExtension": "ilearner",
-        "ContentType": "application/octet-stream",
-        "AllowUpload": False,
-        "AllowPromotion": False,
-        "AllowModelPromotion": True,
-        "AuxiliaryFileExtension": None,
-        "AuxiliaryContentType": None
-    }
-    with open(os.path.join(model_path, 'data_type.json'), 'w') as f:
-        json.dump(dct, f)
-    # Dump data.ilearner as a work around until data type design
-    visualization = os.path.join(model_path, "data.ilearner")
-    with open(visualization, 'w') as file:
-        file.writelines('{}')
 
 def main(_):
   if len(sys.argv) < 2:
@@ -130,39 +92,10 @@ def main(_):
       }))
   print('Done training!')
 
-  # Export model
-  # WARNING(break-tutorial-inline-code): The following code snippet is
-  # in-lined in tutorials, please update tutorial documents accordingly
-  # whenever code changes.
-  export_path_base = FLAGS.export_dir
-  export_path = os.path.join(
-      tf.compat.as_bytes(export_path_base),
-      tf.compat.as_bytes(str(FLAGS.model_version)))
-  print('Exporting trained model to', export_path)
-  builder = tf.saved_model.builder.SavedModelBuilder(export_path)
-
-  # Build the signature_def_map.
-  tensor_info_x = tf.saved_model.utils.build_tensor_info(x)
-  tensor_info_y = tf.saved_model.utils.build_tensor_info(y)
-
-  prediction_signature = (
-      tf.saved_model.signature_def_utils.build_signature_def(
-          inputs={'images': tensor_info_x},
-          outputs={'scores': tensor_info_y},
-          method_name=tf.saved_model.signature_constants.PREDICT_METHOD_NAME))
-
-  builder.add_meta_graph_and_variables(
-      sess, [tf.saved_model.tag_constants.SERVING],
-      signature_def_map= {
-          'predict_images': prediction_signature
-      },
-      main_op=tf.tables_initializer(),
-      strip_default_attrs=True)
-
-  builder.save()
-  save_model_spec(FLAGS.export_dir, FLAGS.model_version)
-  save_ilearner(FLAGS.export_dir)
+  # using builtin_model to save model
+  save_model(sess, [x], [y], path = FLAGS.export_dir)
   print('Done exporting!')
+
 
 # python -m dstest.tensorflow.saved_model.mnist_saved_model --export_dir=model/tensorflow-minist-saved-model/
 if __name__ == '__main__':
