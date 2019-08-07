@@ -1,5 +1,5 @@
-name: PyTorch Train - MNIST Saved Model
-id: 8ad10e1b-ac2d-47f8-aa96-78597f26ca80
+name: PyTorch Train - MNIST Saved Model - Master
+id: d903a5a8-735e-403c-a3a8-f4d32402414c
 category: Machine Learning\Train
 description: DS pytorch training with savedmodel as output 
 inputs:
@@ -26,7 +26,7 @@ implementation:
         - cloudpickle
         - click
         - PyYAML
-        - git+https://github.com/StudioCommunity/CustomModules.git@zhwei/New#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
     command:
     - python
     - -m
