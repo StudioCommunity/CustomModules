@@ -19,9 +19,10 @@ _azureml_defaults_pip = "azureml-defaults"
 # temp solution, would remove later
 _data_type_file_name = "data_type.json"
 _data_ilearner_file_name = "data.ilearner"
+_conda_file_name = "conda.yaml"
+_model_spec_file_name = "model_spec.yml"
 
-
-def _generate_conda_env(path=None, additional_conda_deps=None, additional_pip_deps=None,
+def generate_conda_env(path=None, additional_conda_deps=None, additional_pip_deps=None,
                       additional_conda_channels=None, install_alghost=True, install_azureml=True):
     env = yaml.safe_load(_conda_header)
     env["dependencies"] = ["python={}".format(PYTHON_VERSION), "git", "regex"]
@@ -42,7 +43,51 @@ def _generate_conda_env(path=None, additional_conda_deps=None, additional_pip_de
         return env
 
 
-def _generate_ilearner_files(path):
+def save_conda_env(path, conda_env):
+    if conda_env is None:
+        raise Exception("conda_env is empty")
+    if isinstance(conda_env, str) and os.path.isfile(conda_env):
+            with open(conda_env, "r") as f:
+                conda_env = yaml.safe_load(f)
+    if not isinstance(conda_env, dict):
+        raise Exception("Could not load conda_env %s" % conda_env)
+    with open(os.path.join(path, _conda_file_name), "w") as f:
+        yaml.safe_dump(conda_env, stream=f, default_flow_style=False)
+
+
+def generate_model_spec(flavor_name, model_file_name, conda_file_name=_conda_file_name):
+    """
+    Generate default model spec (TBD)
+    :flavor_name
+    :model_file_name
+    :conda_file_name (optional)
+    """
+    spec = {
+        'flavor' : {
+            'framework' : flavor_name
+        },
+        flavor_name: {
+            'model_file_path': model_file_name
+        },
+        'conda': {
+            'conda_file_path': conda_file_name
+        },
+    }
+    return spec
+
+def save_model_spec(path, flavor_name, model_file_name, conda_file_name=_conda_file_name):
+    """
+    Save model spec to local (TBD)
+    :path
+    :flavor_name
+    :model_file_name
+    :conda_file_name
+    """
+    spec = generate_model_spec(flavor_name, model_file_name, conda_file_name)
+    with open(os.path.join(path, _model_spec_file_name), 'w') as fp:
+        yaml.dump(spec, fp, default_flow_style=False)
+
+def generate_ilearner_files(path):
     # Dump data_type.json as a work around until SMT deploys
     dct = {
         "Id": "ILearnerDotNet",
