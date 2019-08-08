@@ -6,6 +6,7 @@ from builtin_score import ioutil
 from . import datauri_util
 from . import mnist
 from . import imagenet
+from . import stargan
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -46,32 +47,43 @@ class PreProcess:
     datauris = []
     
     for index, row in input_df.iterrows():
-      #print(row['label'])
-      img = datauri_util.base64str_to_ndarray(row[self.image_column])
-      if self.target_image_size == (28,28):
-        #logging.info(f"### mnist")
-        img = mnist.transform_image_mnist(img)
-      elif self.target_image_size == (224,224):
-        #logging.info(f"### imagenet")
-        img = imagenet.transform_image_imagenet(img)
+      if self.target_image_size == (256, 256):
+        img = datauri_util.base64str_to_image(row[self.image_column])
+        img = stargan.transform_image_stargan(img)
+         # append datauris
+        if self.target_data_column:
+          datauri = datauri_util.tensor_to_datauri(img)
+          datauris.append(datauri)
+        results.append(img.tolist())
       else:
-        raise Exception("Not Implemented")
-      
-      # append datauris
-      if self.target_data_column:
-        datauri = datauri_util.img_to_datauri(img)
-        datauris.append(datauri)
-      
-      # save the processed images
-      cv2.imwrite("outputs/image_"+str(index)+".png", img)
-      
-      # Convert to 0-1 based range, so we can save it in dataframe
-      flatten = img.flatten() / 255.0
-      results.append(flatten)
+        #print(row['label'])
+        img = datauri_util.base64str_to_ndarray(row[self.image_column])
+        if self.target_image_size == (28,28):
+          #logging.info(f"### mnist")
+          img = mnist.transform_image_mnist(img)
+        elif self.target_image_size == (224,224):
+          #logging.info(f"### imagenet")
+          img = imagenet.transform_image_imagenet(img)
+        else:
+          raise Exception("Not Implemented")
+        
+        # append datauris
+        if self.target_data_column:
+          datauri = datauri_util.img_to_datauri(img)
+          datauris.append(datauri)
+        
+        # save the processed images
+        cv2.imwrite("outputs/image_"+str(index)+".png", img)
+        
+        # Convert to 0-1 based range, so we can save it in dataframe
+        flatten = img.flatten() / 255.0
+        results.append(flatten)
 
     add_data_to_dataframe(input_df, results, self.target_column)
     if self.target_data_column:
       add_data_to_dataframe(input_df, datauris, self.target_data_column)
+    logger.info(f"input_df.columns = {input_df.columns}")
+    logger.info(f"input_df = \n {input_df}")
 
     return input_df
 
@@ -100,5 +112,6 @@ def run(input_path, output_path, image_column, target_column, target_datauri_col
 
 # mnist: python -m dstest.preprocess.preprocess  --input_path datas/mnist --output_path outputs/mnist --image_column=image --target_column=x --target_datauri_column=x.data --target_image_size=28x28
 # imagenet: python -m dstest.preprocess.preprocess  --input_path datas/imagenet --output_path outputs/imagenet --image_column=image --target_column=import/images --target_datauri_column=import/images.data --target_image_size=224x224
+# stargan: python -m dstest.preprocess.preprocess  --input_path inputs/stargan --output_path outputs/stargan --image_column=image --target_column=import/images --target_datauri_column=import/images.data --target_image_size=256x256
 if __name__ == '__main__':
   run()

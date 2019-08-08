@@ -3,6 +3,11 @@ import mimetypes
 import base64
 import cv2
 import numpy as np
+from PIL import Image
+from io import BytesIO
+import torch
+from torchvision import transforms as T
+
 
 def remove_datauri_prefix(data_uri):
     """Remove prefix of a data URI to base64 content."""
@@ -18,6 +23,17 @@ def img_to_datauri(img):
     data64 = u''.join(base64.encodebytes(data).decode('ascii').splitlines())
     #cv2.imwrite('outputs/test_3.png',gray)
     return u'data:image/%s;base64,%s' % (filetype, data64)
+  
+def tensor_to_datauri(image_tensor: torch.Tensor):
+  # specified for stargan, of which the model accept tensor of 4 dimensions
+  image_tensor = image_tensor.squeeze(0)
+  to_pil = T.ToPILImage()
+  img = to_pil(image_tensor)
+  buffered = BytesIO()
+  img.save(buffered, format="JPEG")
+  data64 = base64.b64encode(buffered.getvalue()).decode("utf8")
+  filetype = "jpg"
+  return u'data:image/%s;base64,%s' % (filetype, data64)
 
 def imgfile_to_data(filename):
     with open(filename, 'rb') as image:
@@ -44,6 +60,10 @@ def base64str_to_ndarray(base64_string):
   #print(img.shape)
   #cv2.imwrite("outputs/test_0_origin.png", img)
   return img
+
+def base64str_to_image(base64_string):
+  base64_string = remove_datauri_prefix(base64_string)
+  return Image.open(BytesIO(base64.b64decode(base64_string)))
 
 def _write_file(str, filename):
   with open(filename, "w") as fp:
