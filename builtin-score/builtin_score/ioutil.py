@@ -1,9 +1,9 @@
-
 import logging
 import os
 import json
 import pandas as pd
 import numpy as np
+
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
@@ -54,12 +54,29 @@ def save_datatype(output_path):
   with open(os.path.join(output_path, 'data_type.json'), 'w') as f:
     json.dump(dct, f)
 
+def transform_to_list(root):
+  if type(root) == np.ndarray:
+    root = root.tolist()
+  if type(root) == list:
+    for i, child in enumerate(root):
+      root[i] = transform_to_list(child)
+  return root
+  
 def save_parquet(df, output_path, writeCsv= False):
   ensure_folder_exists(output_path)
   if(writeCsv):
     df.to_csv(os.path.join(output_path, "data.csv"))
   # convert df columns type, as parquet must have string column names
   df.columns = df.columns.astype(str)
+  if df.shape[0] > 0:
+    for col in df.columns:
+      if type(df.loc[0][col]) == np.ndarray:
+        logger.info(f"transformed ndarray column '{col}' to list")
+        # df[col] = df[col].transform(lambda x: x.tolist())
+        df[col] = df[col].transform(transform_to_list)
+  print("type of columns")
+  for col in df.columns:
+    print(f"{col}: {type(df.loc[0][col])}")
   df.to_parquet(fname=os.path.join(output_path, "data.dataset.parquet"), engine='pyarrow')
 
   # Dump data_type.json as a work around until SMT deploys

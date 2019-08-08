@@ -26,7 +26,7 @@ class PytorchScoreModule(object):
         elif serializer == 'saveddict':
             model = self.load_from_saveddict(model_path, pt_config)
         else:
-            raise Exception(f"Unrecognized serializtion format {serialization_method}")
+            raise Exception(f"Unrecognized serializtion format {serializer}")
 
         print('Load model success.')
         is_gpu = torch.cuda.is_available()   
@@ -89,19 +89,13 @@ class PytorchWrapper(object):
             for _, row in df.iterrows():
                 input_params = []
                 print(f"ROW = \n {row}")
-                if self.is_image(row):
-                    input_params.append(torch.Tensor(row).to(self.device))
-                    print(f"IMAGES: {input_params}")
-                else:
-                    for entry in row:
-                        input_params.append(torch.Tensor(entry).to(self.device))
-                    print(f"FEATURES: {input_params}")
+                input_params = list(map(lambda x : torch.Tensor(list(x)).to(self.device), row[["x", "attribute"]]))
+                print(f"FEATURES: {input_params}")
+                print(f"input_params[0].size() = {input_params[0].size()}")
+                print(f"input_params[1].size() = {input_params[1].size()}")
                 predicted = self.model(*input_params)
-                output.append(predicted.cpu().numpy()) # here to cpu, as "can't convert CUDA tensor to numpy"
+                output.append(predicted.tolist())
+
         output_df = pd.DataFrame(output)
-        print(f"output: {output_df}")
+        print(f"output_df:\n{output_df}")
         return output_df
-    
-    def is_image(self, row):
-        # TODO:
-        return len(row) > 10
