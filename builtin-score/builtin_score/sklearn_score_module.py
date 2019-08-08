@@ -13,7 +13,7 @@ class SklearnScoreModule(object):
         sklearn_conf = config["sklearn"]
         model_file_path = os.path.join(model_path, sklearn_conf[constants.MODEL_FILE_PATH_KEY])
         
-        serialization_method = pt_config.get(constants.SERIALIZATION_METHOD_KEY, 'pickle') # try to get gpu model firstly
+        serialization_method = sklearn_conf.get(constants.SERIALIZATION_METHOD_KEY, 'pickle') # try to get gpu model firstly
         if serialization_method == 'pickle':
             import pickle
             with open(model_file_path, "rb") as fp:
