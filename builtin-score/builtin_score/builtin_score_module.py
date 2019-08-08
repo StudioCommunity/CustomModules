@@ -40,9 +40,10 @@ class BuiltinScoreModule(object):
 
     def run(self, df, global_param=None):
         output_label = self.module.run(df)
+        print(f"output_label = {output_label}")
         if self.append_score_column_to_output:
             if isinstance(output_label, pd.DataFrame):
-                return pd.concat([df, output_label], axis=1)
+                df = pd.concat([df, output_label], axis=1)
             else:
                 df.insert(len(df.columns), constants.SCORED_LABEL_COL_NAME, output_label, True)
         else:
@@ -50,6 +51,9 @@ class BuiltinScoreModule(object):
                 df = output_label
             else:
                 df = pd.DataFrame({constants.SCORED_LABEL_COL_NAME: output_label})
-        print(df)
+        print(f"df =\n{df}")
         print(df.columns)
+        if df.shape[0] > 0:
+            for col in df.columns:
+                print(f"{col}: {type(df.loc[0][col])}")
         return df
