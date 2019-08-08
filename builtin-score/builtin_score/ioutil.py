@@ -71,9 +71,8 @@ def save_parquet(df, output_path, writeCsv= False):
   if df.shape[0] > 0:
     for col in df.columns:
       if type(df.loc[0][col]) == np.ndarray:
-        logger.info(f"transformed ndarray column '{col}' to list")
-        # df[col] = df[col].transform(lambda x: x.tolist())
         df[col] = df[col].transform(transform_to_list)
+        logger.info(f"transformed ndarray column '{col}' to list")
   df.to_parquet(fname=os.path.join(output_path, "data.dataset.parquet"), engine='pyarrow')
 
   # Dump data_type.json as a work around until SMT deploys
