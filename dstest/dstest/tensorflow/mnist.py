@@ -93,6 +93,11 @@ def save_ilearner(model_path):
     with open(visualization, 'w') as file:
         file.writelines('{}')
 
+def save_all(model_path, sess, multiple_output = False):
+    save_model(model_path, sess)
+    save_model_spec(model_path, multiple_output)
+    save_ilearner(model_path)
+
 @click.command()
 @click.option('--action', default="train", 
         type=click.Choice(['predict', 'train']))

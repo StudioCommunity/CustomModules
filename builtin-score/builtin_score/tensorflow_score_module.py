@@ -113,7 +113,7 @@ class _TFSaverWrapper(object):
             if(tensor.shape.ndims == None):
                 shape = tf_config["inputs"][index].get("shape", None)
             else:
-                shape = tensor.shape.as_list()[-1:]
+                shape = tensor.shape.as_list()[1:]
             self.x_shape[name] = shape
         
         print("loaded inputs:")
