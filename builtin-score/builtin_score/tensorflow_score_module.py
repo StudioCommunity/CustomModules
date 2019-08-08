@@ -29,6 +29,18 @@ def load_graph(model_file_path, sess):
     sess.run(init)
     return graph
 
+#df[name]
+#shape = self.x_shape[name]
+def array_from_df_col(col, shape):
+    values = ioutil.from_df_column_to_array(col)
+    if shape != None :
+        target_shape = (len(values), *shape)
+        # reshape
+        if values.shape != target_shape:
+            print(f"reshape from {values.shape} to {target_shape}.")
+            values = np.array(values).reshape(target_shape)
+    return values
+
 class _TFSavedModelWrapper(object):
     """
     Wrapper class that exposes a TensorFlow model for inference via a ``predict`` function such that
@@ -46,14 +58,16 @@ class _TFSavedModelWrapper(object):
           
         # input keys in the signature definition correspond to input DataFrame column names
         self.input_tensor_mapping = {
-                tensor_column_name: tf_graph.get_tensor_by_name(tensor_info.name)
-                for tensor_column_name, tensor_info in self.signature_def.inputs.items()
+            tensor_column_name: tf_graph.get_tensor_by_name(tensor_info.name)
+            for tensor_column_name, tensor_info in self.signature_def.inputs.items()
         }
         # output keys in the signature definition correspond to output DataFrame column names
         self.output_tensors = {
-                sigdef_output: tf_graph.get_tensor_by_name(tnsr_info.name)
-                for sigdef_output, tnsr_info in self.signature_def.outputs.items()
+            sigdef_output: tf_graph.get_tensor_by_name(tnsr_info.name)
+            for sigdef_output, tnsr_info in self.signature_def.outputs.items()
         }
+        print(self.input_tensor_mapping)
+        print(self.output_tensors)
 
     def get_schema(self):
         schema = {
@@ -72,8 +86,8 @@ class _TFSavedModelWrapper(object):
     def predict(self, df):
       with self.tf_graph.as_default():
         feed_dict = {
-                self.input_tensor_mapping[tensor_column_name]: ioutil.from_df_column_to_array(df[tensor_column_name])
-                for tensor_column_name in self.input_tensor_mapping.keys()
+            tensor: array_from_df_col(df[tensor_column_name], tensor.shape.as_list()[1:]) # TODO: check first column -1, and check if we can replace there
+            for tensor_column_name, tensor in self.input_tensor_mapping.items()
         }
         raw_preds = self.tf_sess.run(self.output_tensors, feed_dict=feed_dict)
         resultdf = pd.DataFrame()
@@ -175,14 +189,7 @@ class _TFSaverWrapper(object):
         for name, tensor in self.x.items():
             if(name not in df.columns):
                 raise Exception(f"Column {name} not in input df columns: {df.columns}")
-            values = ioutil.from_df_column_to_array(df[name])
-            shape = self.x_shape[name]
-            if shape != None :
-                target_shape = (len(values), *shape)
-                # reshape
-                if values.shape != target_shape:
-                    print(f"reshape from {values.shape} to {target_shape}.")
-                    values = np.array(values).reshape(target_shape)
+            values = array_from_df_col(df[name], self.x_shape[name])
             dict[tensor] = values
         return dict
 
@@ -221,6 +228,11 @@ if __name__ == '__main__':
     print(df.columns)
     _test_tensor(df, "../dstest/model/tensorflow-minist/")
 
-    df = df.rename(columns={"x": "images"})
-    print(df.columns)
-    _test_tensor(df,"../dstest/model/tensorflow-minist-saved-model/")
+    # df = df.rename(columns={"x": "images"})
+    # print(df.columns)
+    # _test_tensor(df,"../dstest/model/tensorflow-minist-saved-model/")
+
+    # df = ioutil.read_parquet("../dstest/outputs/mnist/")
+    # df = df.rename(columns={"x": "image", "image": "image1"})
+    # print(df.columns)
+    # _test_tensor(df,"../dstest/model/tensorflow-mnist-cnn-estimator/")
