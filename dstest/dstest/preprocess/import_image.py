@@ -34,12 +34,13 @@ def run(input_path, output_path):
   print(f"Got {len(files_grabbed)} files in folder {input_path}")
   print(files_grabbed)
 
-  df = pd.DataFrame(columns=["label", "image"])
+  df = pd.DataFrame(columns=["filename", "label", "image"])
   for i in range(len(files_grabbed)):
     filename = files_grabbed[i]
-    label = os.path.splitext(os.path.basename(filename))[0].split('_')[-1]
+    basename = os.path.splitext(os.path.basename(filename))[0]
+    label = basename.split('_')[-1]
     image_64_encode = datauri_util.imgfile_to_datauri(filename)
-    df.loc[i] = label, image_64_encode
+    df.loc[i] = basename, label, image_64_encode
 
   ioutil.save_parquet(df, output_path, True)
 

@@ -7,15 +7,12 @@ from builtin_score.builtin_score_module import *
 from builtin_score.tensorflow_score_module import *
 from builtin_score import ioutil
 
-model_path = "model/tensorflow-minist/"
-
-def test_tensor(df):
+def test_tensor(model_path, df):
     with open(model_path + "model_spec.yml") as fp:
         config = yaml.safe_load(fp)
 
     tfmodule = TensorflowScoreModule(model_path, config)
     schema = tfmodule.get_schema()
-    print('#################')
     print(schema)
     with open(os.path.join(model_path, 'contract.json'), 'w') as f:
         json.dump(schema, f)
@@ -23,13 +20,18 @@ def test_tensor(df):
     result = tfmodule.run(df)
     print(result)
 
-def test_builtin(df):
+def test_builtin(model_path, df):
     module = BuiltinScoreModule(model_path, {"Append score columns to output": "True"})
     result = module.run(df)
-    print(result)
+    #print(result)
     return result
 
 def prepare_input():
+    df = ioutil.read_parquet("../dstest/outputs/mnist/")
+    print(df.columns)
+    return df
+
+def prepare_input1():
     from tensorflow.examples.tutorials.mnist import input_data
     mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
     batch_xs, batch_ys = mnist.train.next_batch(2)
@@ -50,13 +52,40 @@ def prepare_input():
     #df.to_csv("test.csv")
     return df
 
-# python -m dstest.tensorflow.mnist_test
-if __name__ == '__main__':
-    # df = prepare_input()
-    df = ioutil.read_parquet("../dstest/outputs/mnist/")
-    print(df.columns)
-
-    test_tensor(df)
-    out = test_builtin(df)
+def test(model_path, xname = "images", col1 = None, col2 = None):
+    df = prepare_input()
+    print(f"||| {df.columns}")
+    if(xname != 'x'):
+        if xname in df.columns:
+            del df[xname]
+        df = df.rename(columns={"x": xname})
+    test_tensor(model_path, df)
+    out = test_builtin(model_path, df)
     print(out.columns)
     print(out)
+    _evaluate(out, col1, col2)
+
+def _evaluate(df, col1, col2):
+    if(col1 == None or col2 == None):
+        return
+    count = 0
+    for index in range(len(df)):
+        a = str(df[col1][index])
+        b = str(df[col2][index])
+        if a == b:
+            count+=1
+        else:
+            print(f"## Failed: {index} {a} {b} {df['filename'][index]}")
+    print(f"{count} correct in {len(df)} examples")
+
+# python -m dstest.tensorflow.mnist_test
+if __name__ == '__main__':
+    model_path = "model/tensorflow-minist/"
+    test(model_path, "x", "label", "y_label")
+    
+    model_path = "model/tensorflow-minist-saved-model/"
+    test(model_path, "images")
+
+    #saved_model_cli show --dir model/tensorflow-mnist-cnn-estimator/1565246816 --all
+    model_path = "model/tensorflow-mnist-cnn-estimator/"
+    test(model_path, "image", "label", "classes")
