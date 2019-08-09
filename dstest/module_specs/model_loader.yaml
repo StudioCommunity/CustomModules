@@ -12,6 +12,15 @@ inputs:
 - name: Serialization Mode
   type: String 
   description: Serialization Mode
+- name: Model Class URL
+  type: String 
+  description: Model Class URL
+- name: Init Args
+  type: String 
+  description: Init Args
+- name: Input Args
+  type: String 
+  description: Input Args
 outputs:
 - name: Output Model
   type: ModelFolder
@@ -50,6 +59,12 @@ implementation:
     - inputValue: Model URL
     - --serialization
     - inputValue: Serialization Mode
+    - --model_class_url
+    - inputValue: Model Class URL
+    -- init_args
+    - inputValue: Init Args
+    -- input_args
+    - inputValue: Input Args
     - --out_model_path
     - outputPath: Output Model
   invoking:
