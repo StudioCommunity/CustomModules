@@ -10,10 +10,11 @@ def transform_image_stargan(img, resize=(300, 300), crop_size=(256, 256), target
   std=[0.5, 0.5, 0.5]
   )
 
+  # need fix later, just to get stargan work
   preprocess = T.Compose([
-      T.Resize(resize),
-      T.CenterCrop(crop_size),
-      T.Resize(target_size),
+      T.Resize(resize[0]),
+      T.CenterCrop(crop_size[0]),
+      T.Resize(target_size[0]),
       T.ToTensor(),
       normalize
       ])
