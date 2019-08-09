@@ -55,7 +55,7 @@ def save_conda_env(path, conda_env):
         yaml.safe_dump(conda_env, stream=f, default_flow_style=False)
 
 
-def generate_model_spec(flavor_name, model_file_name, conda_file_name=_conda_file_name):
+def generate_model_spec(flavor_name, model_file_name, conda_file_name=_conda_file_name, input_args=[]):
     """
     Generate default model spec (TBD)
     :flavor_name
@@ -73,9 +73,12 @@ def generate_model_spec(flavor_name, model_file_name, conda_file_name=_conda_fil
             'conda_file_path': conda_file_name
         },
     }
+    if input_args:
+        spec['inputs'] = input_args
+    print(f'SPEC={spec}')
     return spec
 
-def save_model_spec(path, flavor_name, model_file_name, conda_file_name=_conda_file_name):
+def save_model_spec(path, flavor_name, model_file_name, conda_file_name=_conda_file_name, input_args=[]):
     """
     Save model spec to local (TBD)
     :path
@@ -83,7 +86,7 @@ def save_model_spec(path, flavor_name, model_file_name, conda_file_name=_conda_f
     :model_file_name
     :conda_file_name
     """
-    spec = generate_model_spec(flavor_name, model_file_name, conda_file_name)
+    spec = generate_model_spec(flavor_name, model_file_name, conda_file_name, input_args)
     with open(os.path.join(path, _model_spec_file_name), 'w') as fp:
         yaml.dump(spec, fp, default_flow_style=False)
 

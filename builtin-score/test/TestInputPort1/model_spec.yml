@@ -4,3 +4,6 @@ flavor:
   framework: pytorch
 pytorch:
   model_file_path: model.pkl
+inputs:
+  - x
+  - c
