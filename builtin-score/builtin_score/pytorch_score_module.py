@@ -6,6 +6,7 @@ import pandas as pd
 import sys
 import pickle
 import os
+import ast
 
 import logging
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
@@ -84,12 +85,19 @@ class PytorchWrapper(object):
     def predict(self, df):
         print(f"Device type = {self.device}")
         output = []
+
+        def to_tensor(entry):
+            if type(entry) == str:
+                entry = ast.literal_eval(entry)
+            return torch.Tensor(list(entry)).to(self.device)
+
         with torch.no_grad():
             print(f"predict df = \n {df}")
             for _, row in df.iterrows():
                 input_params = []
                 print(f"ROW = \n {row}")
-                input_params = list(map(lambda x : torch.Tensor(list(x)).to(self.device), row[["x", "attribute"]]))
+                feature_cols = ["x", "attribute"]
+                input_params = list(map(to_tensor, row[feature_cols]))
                 print(f"FEATURES: {input_params}")
                 print(f"input_params[0].size() = {input_params[0].size()}")
                 print(f"input_params[1].size() = {input_params[1].size()}")
