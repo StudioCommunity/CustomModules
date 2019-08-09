@@ -1,8 +1,8 @@
 name: Model Loader
 id: 8ad10e1b-ac2d-47f8-aa96-78597f26abcd
 category: Machine Learning\Score
-description: Load external model 
-inputs:
+description: Load external model
+inputs: 
 - name: Model Flavor
   type: String
   description: Model Flavor
@@ -12,6 +12,18 @@ inputs:
 - name: Serialization Mode
   type: String 
   description: Serialization Mode
+- name: Model Class URL
+  type: String
+  optional: True
+  description: Model Class URL
+- name: Init Args
+  type: String
+  optional: True
+  description: Init Args
+- name: Input Args
+  type: String
+  optional: True
+  description: Input Args
 outputs:
 - name: Output Model
   type: ModelFolder
@@ -50,6 +62,12 @@ implementation:
     - inputValue: Model URL
     - --serialization
     - inputValue: Serialization Mode
+    - --model_class_url
+    - inputValue: Model Class URL
+    - --init_args
+    - inputValue: Init Args
+    - --input_args
+    - inputValue: Input Args
     - --out_model_path
     - outputPath: Output Model
   invoking:
