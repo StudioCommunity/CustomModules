@@ -1,4 +1,4 @@
-name: Model Loader
+name: Model Converter
 id: 8ad10e1b-ac2d-47f8-aa96-78597f26abcd
 category: Machine Learning\Score
 description: Load external model
@@ -54,7 +54,7 @@ implementation:
     command:
     - python
     - -m
-    - dstest.modelloader.loader 
+    - dstest.modelconverter.converter 
     args:
     - --flavor
     - inputValue: Model Flavor
