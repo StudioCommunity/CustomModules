@@ -13,13 +13,16 @@ inputs:
   type: String 
   description: Serialization Mode
 - name: Model Class URL
-  type: String 
+  type: String
+  optional: True
   description: Model Class URL
 - name: Init Args
-  type: String 
+  type: String
+  optional: True
   description: Init Args
 - name: Input Args
-  type: String 
+  type: String
+  optional: True
   description: Input Args
 outputs:
 - name: Output Model
