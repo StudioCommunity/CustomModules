@@ -130,7 +130,10 @@ def load_pytorch(model_file, serialization, out_model_path, model_class_file, in
             raise NotImplementedError
 
         print(f'init_args = {init_args}')
-        model = model_class(**init_args)
+        if init_args:
+            model = model_class(**init_args)
+        else:
+            model = model_class()
         print(f'MODEL1 = {model}')
         model.load_state_dict(torch.load(model_file))
         print(f'MODEL2 = {model}')
