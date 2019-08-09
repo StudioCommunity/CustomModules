@@ -1,7 +1,7 @@
 name: Model Converter
-id: 8ad10e1b-ac2d-47f8-aa96-78597f26abcd
+id: 8ad10e1b-ac2d-47f8-aa96-78597f26efgh
 category: Machine Learning\Score
-description: Load external model
+description: Convert external model to Studio Trained Model
 inputs: 
 - name: Model Flavor
   type: String
