@@ -1,6 +1,8 @@
 import os
+import shutil
 import yaml
 import cloudpickle
+import inspect
 import torch
 import torchvision
 
@@ -22,7 +24,7 @@ def _save_model(pytorch_model, path):
         cloudpickle.dump(pytorch_model, fp)
 
 
-def save_model(pytorch_model, path='./model/', conda_env=None):
+def save_model(pytorch_model, path='./model/', conda_env=None, dependencies=[]):
     """
     Save a PyTorch model to a path on the local file system.
 
@@ -42,9 +44,17 @@ def save_model(pytorch_model, path='./model/', conda_env=None):
 
     if conda_env is None:
         conda_env = _get_default_conda_env()
+    print(f'path={path}, conda_env={conda_env}')
     utils.save_conda_env(path, conda_env)
 
-    utils.save_model_spec(path, FLAVOR_NAME, model_file_name)
+    for dependency in dependencies:
+        shutil.copy(dependency, path)
+    forward_func = getattr(pytorch_model, 'forward')
+    args = inspect.getargspec(forward_func).args
+    if 'self' in args:
+        args.remove('self')
+
+    utils.save_model_spec(path, FLAVOR_NAME, model_file_name, input_args = args)
     utils.generate_ilearner_files(path) # temp solution, to remove later
 
 

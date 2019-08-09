@@ -1,7 +1,9 @@
 import os
 import logging
-import keras
 import urllib.request
+import ast
+import json
+import importlib
 
 from pip._internal import main as pipmain
 pipmain(["install", "click"])
@@ -10,22 +12,31 @@ import click
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
-logging.info(f"in dstest echo")
+logging.info(f"loader echo")
 logger = logging.getLogger(__name__)
 
 @click.command()
-@click.option('--flavor', default='pytorch')
-@click.option('--model_url', default='model.pkl')
-@click.option('--serialization', default='cloudpickle')
+@click.option('--flavor')
+@click.option('--model_url')
+@click.option('--serialization')
+@click.option('--model_class_url', default='')
+@click.option('--init_args', default='{}')
+@click.option('--input_args', default='{}')
 @click.option('--out_model_path', default='model')
-def run_pipeline(flavor, model_url, serialization, out_model_path):
+def run_pipeline(flavor, model_url, serialization, model_class_url, init_args, input_args, out_model_path):
+    print(f'flavor={flavor}, serialziation={serialization}, out_model_path={out_model_path}')
     download_path = 'download'
     if not os.path.exists(download_path):
         os.makedirs(download_path)
-    model_file = os.path.join(download_path, 'model.file')
+    model_file = os.path.join(download_path, extract_name(model_url))
     urllib.request.urlretrieve(model_url, model_file)
+    model_class_file = None
+    if model_class_url:
+        model_class_file = os.path.join(download_path, extract_name(model_class_url))
+        urllib.request.urlretrieve(model_class_url, model_class_file)
+
     if flavor == 'pytorch':
-        load_pytorch(model_file, serialization, out_model_path)
+        load_pytorch(model_file, serialization, out_model_path, model_class_file, init_args)
     elif flavor == 'keras':
         load_keras(model_file, serialization, out_model_path)
     elif flavor == 'tensorflow':
@@ -35,21 +46,103 @@ def run_pipeline(flavor, model_url, serialization, out_model_path):
     else:
         raise NotImplementedError()
 
-def load_pytorch(model_file, serialization, out_model_path):
+def load_module(path):
+    module_path = path.replace('\\', '.').replace('/', '.')
+    if module_path.endswith('.py'):
+        module_path = module_path[:-len('.py')]
+    print(f'module path = ({path} : {module_path})')
+    return importlib.import_module(module_path)
+
+def extract_name(url):
+    return url.partition('?')[0].rpartition('/')[-1]
+
+def parse_init(init_args):
+    if not init_args:
+        return '', None
+    args = ast.literal_eval(init_args)
+    #args = json.loads(init_args)
+    class_name = args.get('class', '')
+    if class_name:
+        args.pop('class')
+    return class_name, args
+
+def parse_input(input_args):
+    pass
+
+def load_scripts(model_path):
+        modules = {}
+        with os.scandir(model_path) as files_and_dirs:
+            for entry in files_and_dirs:
+                if entry.is_file() and entry.name.endswith('.py'):
+                    name = entry.name[:-len('.py')]
+                    modules[name] = load_module(entry.path)
+        return modules  
+
+def load_pytorch(model_file, serialization, out_model_path, model_class_file, init_args=None):
+    import torch
     from builtin_models.pytorch import save_model
+    dependencies = []
+    modules = {}
+    if model_class_file:
+        dependencies.append(model_class_file)
+        modules = load_scripts(os.path.dirname(model_class_file))
+    class_name, init_args = parse_init(init_args)
+    model = None
     if serialization == 'cloudpickle':
         print(f'model loading(cloudpickle): {model_file} to {out_model_path}')
         import cloudpickle
-        with open(model_file, 'rb') as fp:
-            model = cloudpickle.load(fp)
-        save_model(model, out_model_path)
-        print(f'model loaded: {out_model_path}')
+        retry = True
+        while retry:
+            try:
+                with open(model_file, 'rb') as fp:
+                    model = cloudpickle.load(fp)
+                retry = False
+            except ModuleNotFoundError as ex:
+                name = ex.name.rpartition('.')[-1]
+                if name in modules:
+                    sys.modules[ex.name] = modules[name]
+                    retry = True
+                else:
+                    raise ex      
     elif serialization == 'savedmodel':
-        pass
+        print(f'model loading(savedmodel): {model_file} to {out_model_path}')
+        retry = True
+        while retry:  
+            try:
+                with open(model_file, 'rb') as fp:
+                    model = torch.load(model_file)
+                retry = False
+            except ModuleNotFoundError as ex:
+                name = ex.name.rpartition('.')[-1]
+                if name in modules:
+                    sys.modules[ex.name] = modules[name]
+                    retry = True
+                else:
+                    raise ex
+    elif serialization == 'statedict':
+        print(f'model loading(statedict): {model_file} to {out_model_path}')
+        model_class = None
+        for module in modules.values():
+            model_class = getattr(module, class_name)
+            if model_class:
+                break
+        if not model_class:
+            raise NotImplementedError
+
+        print(f'init_args = {init_args}')
+        model = model_class(**init_args)
+        print(f'MODEL1 = {model}')
+        model.load_state_dict(torch.load(model_file))
+        print(f'MODEL2 = {model}')
     else:
-        pass
+        raise NotImplementedError
+
+    print(f'model loaded: {out_model_path}')
+    print(f'model={model}, dependencies={dependencies}')
+    save_model(model, out_model_path, dependencies=dependencies)
 
 def load_keras(model_file, serialization, out_model_path):
+    import keras
     from builtin_models.keras import save_model, load_model_from_local_file
     model = load_model_from_local_file(model_file)
     path = './model'
@@ -69,6 +162,5 @@ def load_sklearn(model_file, serialization, out_model_path):
     else:
         pass
 
-# python -m dstest.modelloader.loader --flavor pytorch --model_url "https://zhweiamlservic0807301744.blob.core.windows.net/models/model.pkl?sp=r&st=2019-08-06T05:28:37Z&se=2019-08-31T13:28:37Z&spr=https&sv=2018-03-28&sig=naVtXXnxEZiGKWyOo8Vst35tekpmMmLwEKRD7FNUhwI%3D&sr=b" --serialization cloudpickle --output_model_path model2
 if __name__ == '__main__':
     run_pipeline()

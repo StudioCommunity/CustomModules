@@ -136,7 +136,7 @@ def run_pipeline(action, model_path):
   save_ilearner(model_path)
   print("Done")  
 
-# python -m dstest.keras.trainer  --model_path model/keras-mnist
+# python -m dstest.pytorch.trainer_savedmodel  --model_path model/pytorch-savedmodel
 if __name__ == '__main__':
     run_pipeline()
     

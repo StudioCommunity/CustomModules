@@ -90,7 +90,7 @@ def run_pipeline(action, model_path):
   print("save_model Done")
     
 
-# python -m dstest.pytorch.trainer_cloudpickle  --model_path model/pytorch-mnist
+# python -m dstest.pytorch.trainer_cloudpickle  --model_path model/pytorch-cloudpickle
 if __name__ == '__main__':
     run_pipeline()
     
