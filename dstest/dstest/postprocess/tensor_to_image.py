@@ -22,7 +22,11 @@ class Process:
     logger.info(f"input_df =\n{input_df}")
     output = []
     for _, row in input_df.iterrows():
-      entry = row[self.tensor_column]
+      # ugly workaround to make demo work
+      try:
+        entry = row[self.tensor_column]
+      except KeyError as e:
+        entry = row[0]
       tensor = torch.Tensor(list(entry)).to(self.device)
       logger.info(f"tensor.size() = {tensor.size()}")
       tensor.squeeze_(0)
