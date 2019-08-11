@@ -16,7 +16,7 @@ def transform_image_stargan(img, resize=(300, 300), crop_size=(256, 256), target
       T.CenterCrop(crop_size[0]),
       T.Resize(target_size[0]),
       T.ToTensor(),
-      #normalize
+      normalize
       ])
   
   image_tensor = preprocess(img)
