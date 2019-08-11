@@ -23,7 +23,19 @@ def img_to_datauri(img):
     data64 = u''.join(base64.encodebytes(data).decode('ascii').splitlines())
     #cv2.imwrite('outputs/test_3.png',gray)
     return u'data:image/%s;base64,%s' % (filetype, data64)
-  
+
+def pil_img_to_tensor(img):
+  to_tensor = T.ToTensor()
+  tensor = to_tensor(img)
+  return tensor
+
+def tensor_to_imgfile(image_tensor: torch.Tensor, filename):
+  # specified for stargan, of which the model accept tensor of 4 dimensions
+  image_tensor = image_tensor.squeeze(0)
+  to_pil = T.ToPILImage()
+  img = to_pil(image_tensor)
+  img.save(filename, format="JPEG")
+
 def tensor_to_datauri(image_tensor: torch.Tensor):
   # specified for stargan, of which the model accept tensor of 4 dimensions
   image_tensor = image_tensor.squeeze(0)
@@ -83,3 +95,10 @@ if __name__ == '__main__':
   _write_file(uri, "uri.txt")
   img = base64str_to_ndarray(remove_datauri_prefix(uri1))
   cv2.imwrite("outputs/test.jpg", img)
+
+  uri = imgfile_to_datauri("inputs/stargan/clement.jpg")
+  img = base64str_to_image(uri)
+  tensor = pil_img_to_tensor(img)
+  from . import stargan
+  tensor = stargan.transform_image_stargan(img)
+  tensor_to_imgfile(tensor, "outputs/clement.jpg")
