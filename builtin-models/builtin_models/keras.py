@@ -4,7 +4,8 @@ import keras
 import builtin_models.utils as utils
 
 FLAVOR_NAME = "keras"
-model_file_name = "model.h5"
+MODEL_FILE_NAME = "model.h5"
+
 
 def _get_default_conda_env():
     import tensorflow as tf
@@ -13,6 +14,11 @@ def _get_default_conda_env():
             "keras=={}".format(keras.__version__),
             "tensorflow=={}".format(tf.__version__),
         ])
+
+
+def load_model_from_local_file(path):
+    from keras.models import load_model
+    return load_model(path)
 
 
 def save_model(keras_model, path='./model/', conda_env=None):
@@ -30,13 +36,13 @@ def save_model(keras_model, path='./model/', conda_env=None):
     if not os.path.exists(path):
         os.makedirs(path)
 
-    keras_model.save(os.path.join(path, model_file_name)) 
+    keras_model.save(os.path.join(path, MODEL_FILE_NAME)) 
 
     if conda_env is None:
         conda_env = _get_default_conda_env()
     utils.save_conda_env(path, conda_env)
 
-    utils.save_model_spec(path, FLAVOR_NAME, model_file_name)
+    utils.save_model_spec(path, FLAVOR_NAME, MODEL_FILE_NAME)
     utils.generate_ilearner_files(path) # temp solution, to remove later
 
     

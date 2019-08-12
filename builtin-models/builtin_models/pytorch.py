@@ -5,11 +5,11 @@ import cloudpickle
 import inspect
 import torch
 import torchvision
-
 import builtin_models.utils as utils
 
 FLAVOR_NAME = "pytorch"
-model_file_name = "model.pkl"
+MODEL_FILE_NAME = "model.pkl"
+
 
 def _get_default_conda_env():
     return utils.generate_conda_env(
@@ -40,7 +40,7 @@ def save_model(pytorch_model, path='./model/', conda_env=None, dependencies=[]):
         os.makedirs(path)
 
     # only save cpu version
-    _save_model(pytorch_model.to('cpu'), os.path.join(path, model_file_name))
+    _save_model(pytorch_model.to('cpu'), os.path.join(path, MODEL_FILE_NAME))
 
     if conda_env is None:
         conda_env = _get_default_conda_env()
@@ -54,7 +54,7 @@ def save_model(pytorch_model, path='./model/', conda_env=None, dependencies=[]):
     if 'self' in args:
         args.remove('self')
 
-    utils.save_model_spec(path, FLAVOR_NAME, model_file_name, input_args = args)
+    utils.save_model_spec(path, FLAVOR_NAME, MODEL_FILE_NAME, input_args = args)
     utils.generate_ilearner_files(path) # temp solution, to remove later
 
 
