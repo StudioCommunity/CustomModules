@@ -27,10 +27,12 @@ def run_pipeline(flavor, model_url, serialization, model_class_url, init_args, i
     print(f'flavor={flavor}, serialziation={serialization}, out_model_path={out_model_path}')
     model_file = extract_name(model_url)
     urllib.request.urlretrieve(model_url, model_file)
+    print(f'DOWNLOAD to {model_file}')
     model_class_file = None
     if model_class_url:
         model_class_file = extract_name(model_class_url)
         urllib.request.urlretrieve(model_class_url, model_class_file)
+        print(f'DOWNLOAD to {model_class_file}')
 
     if flavor == 'pytorch':
         load_pytorch(model_file, serialization, out_model_path, model_class_file, init_args)
@@ -47,7 +49,7 @@ def load_module(path):
     module_path = path.replace('.\\', '').replace('./', '').replace('\\', '.').replace('/', '.')
     if module_path.endswith('.py'):
         module_path = module_path[:-len('.py')]
-    print(f'module path = ({path} : {module_path})')
+    print(f'LOADMODULE: {module_path} from {path}')
     return importlib.import_module(module_path)
 
 def extract_name(url):
@@ -72,6 +74,7 @@ def load_scripts(model_path):
             for entry in files_and_dirs:
                 if entry.is_file() and entry.name.endswith('.py') and 'setup.py' not in entry.name:
                     name = entry.name[:-len('.py')]
+                    print(f'LOADSCRIPT: {name} from {entry.path}')
                     modules[name] = load_module(entry.path)
         return modules  
 
