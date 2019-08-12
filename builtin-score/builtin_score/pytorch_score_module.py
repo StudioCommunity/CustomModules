@@ -117,7 +117,7 @@ class PytorchScoreModule(object):
 class PytorchWrapper(object):
     def __init__(self, model, is_gpu, input_args):
         self.model = model
-        self.model.eval()
+        # self.model.eval()
         self.device = 'cuda' if is_gpu else 'cpu'
         self.input_args = input_args
     
