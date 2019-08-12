@@ -32,6 +32,7 @@ def run_pipeline(flavor, model_url, serialization, model_class_url, init_args, i
     print(f'flavor={flavor}, serialziation={serialization}, out_model_path={out_model_path}')
     print(f'PATH: {os.environ}')
     print(f'CWD: {cwd}')
+    print(f'INIT_ARGS: {input_args}')
     model_file = extract_name(model_url)
     urllib.request.urlretrieve(model_url, model_file)
     print(f'DOWNLOAD to {model_file}')
@@ -70,8 +71,10 @@ def extract_name(url):
 def parse_init(init_args):
     if not init_args:
         return '', None
-    args = ast.literal_eval(init_args)
-    #args = json.loads(init_args)
+    #args = ast.literal_eval(init_args)
+    init_args = init_args.replace("'", '"')
+    print(f'INIT_ARGS2: {input_args}')
+    args = json.loads(init_args)
     class_name = args.get('class', '')
     if class_name:
         args.pop('class')
