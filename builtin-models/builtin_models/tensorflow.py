@@ -2,11 +2,10 @@ import os
 import yaml
 import json
 import tensorflow as tf
+import builtin_models.constants as constants
 import builtin_models.utils as utils
 
 FLAVOR_NAME = "tensorflow"
-conda_file_name = "conda.yaml"
-model_spec_file_name = "model_spec.yml"
 
 
 def _get_default_conda_env():
@@ -17,14 +16,14 @@ def _get_default_conda_env():
 
 
 def _save_model_spec(path, model_file_path, graph_tags, signature_name, serialization_format='saved_model'):
-    spec = utils.generate_model_spec(FLAVOR_NAME, model_file_path, conda_file_name)
+    spec = utils.generate_default_model_spec(FLAVOR_NAME, model_file_path)
     # add meta_graph_tags
     spec[FLAVOR_NAME]['meta_graph_tags'] = graph_tags
     # add serialization_format, default serialization format is 'saved_model'
     spec[FLAVOR_NAME]['serialization_format'] = serialization_format
     # add signature_def_key
     spec[FLAVOR_NAME]['signature_def_key'] = signature_name
-    with open(os.path.join(path, model_spec_file_name), 'w') as fp:
+    with open(os.path.join(path, constants.MODEL_SPEC_FILE_NAME), 'w') as fp:
         yaml.dump(spec, fp, default_flow_style=False)
 
 
@@ -79,7 +78,6 @@ def save_model(sess, input_tensor_list, output_tensor_list, graph_tags=None, sig
 
     :param path: Path to a directory containing model, spec, conda yaml data (optional).
     """
-    print('export_path: ', path)
     if(not path.endswith('/')):
         path += '/'
     if not os.path.exists(path):
@@ -91,7 +89,7 @@ def save_model(sess, input_tensor_list, output_tensor_list, graph_tags=None, sig
     if signature_name is None or signature_name == '':
         signature_name = 'signature_name'
 
-    model_file_path = 'model'
+    model_file_path = 'model' # sub-directory containing the tensorflow model
     _save_model(os.path.join(path, model_file_path), sess, input_tensor_list, output_tensor_list, graph_tags, signature_name)
 
     if conda_env is None:
