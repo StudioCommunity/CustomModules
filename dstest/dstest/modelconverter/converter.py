@@ -72,7 +72,7 @@ def parse_init(init_args):
     if not init_args:
         return '', None
     #args = ast.literal_eval(init_args)
-    init_args = init_args.replace("'", '"')
+    init_args = init_args.replace("'", '"').replace(";",",")
     print(f'INIT_ARGS2: {init_args}')
     args = json.loads(init_args)
     class_name = args.get('class', '')
@@ -124,7 +124,7 @@ def load_pytorch(model_file, serialization, out_model_path, model_class_file, in
     elif serialization == 'savedmodel':
         print(f'model loading(savedmodel): {model_file} to {out_model_path}')
         retry = True
-        while retry:  
+        while retry:   
             try:
                 with open(model_file, 'rb') as fp:
                     model = torch.load(model_file)
