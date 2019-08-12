@@ -105,6 +105,7 @@ def load_pytorch(model_file, serialization, out_model_path, model_class_file, in
         modules = load_scripts(basepath)
     class_name, init_args = parse_init(init_args)
     model = None
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     if serialization == 'cloudpickle':
         print(f'model loading(cloudpickle): {model_file} to {out_model_path}')
         import cloudpickle
@@ -127,7 +128,7 @@ def load_pytorch(model_file, serialization, out_model_path, model_class_file, in
         while retry:   
             try:
                 with open(model_file, 'rb') as fp:
-                    model = torch.load(model_file)
+                    model = torch.load(model_file, map_location=device)
                 retry = False
             except ModuleNotFoundError as ex:
                 name = ex.name.rpartition('.')[-1]
@@ -152,7 +153,7 @@ def load_pytorch(model_file, serialization, out_model_path, model_class_file, in
         else:
             model = model_class()
         print(f'MODEL1 = {model}')
-        model.load_state_dict(torch.load(model_file))
+        model.load_state_dict(torch.load(model_file), map_location=device)
         print(f'MODEL2 = {model}')
     else:
         raise NotImplementedError
@@ -160,6 +161,7 @@ def load_pytorch(model_file, serialization, out_model_path, model_class_file, in
     print(f'model loaded: {out_model_path}')
     print(f'model={model}, dependencies={dependencies}')
     save_model(model, out_model_path, dependencies=dependencies)
+    print(f'MODEL_FOLDER: {os.listdir(out_model_path)}')
 
 def load_keras(model_file, serialization, out_model_path):
     import keras
