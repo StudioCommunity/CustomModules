@@ -29,7 +29,7 @@ def run_pipeline(flavor, model_url, serialization, model_class_url, init_args, i
     cwd = os.getcwd()
     sys.path.append(cwd)
     print(f'flavor={flavor}, serialziation={serialization}, out_model_path={out_model_path}')
-    print(f'PATH: {os.environ}'
+    print(f'PATH: {os.environ}')
     print(f'CWD: {cwd}')
     model_file = extract_name(model_url)
     urllib.request.urlretrieve(model_url, model_file)
