@@ -106,6 +106,7 @@ def load_pytorch(model_file, serialization, out_model_path, model_class_file, in
     class_name, init_args = parse_init(init_args)
     model = None
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(f'DEVICE={device}')
     if serialization == 'cloudpickle':
         print(f'model loading(cloudpickle): {model_file} to {out_model_path}')
         import cloudpickle
