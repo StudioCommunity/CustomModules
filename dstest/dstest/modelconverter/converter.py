@@ -6,6 +6,7 @@ import urllib.request
 import ast
 import json
 import importlib
+import imp
 
 from pip._internal import main as pipmain
 pipmain(["install", "click"])
@@ -86,7 +87,8 @@ def load_scripts(model_path):
                 if entry.is_file() and entry.name.endswith('.py') and 'setup.py' not in entry.name:
                     name = entry.name[:-len('.py')]
                     print(f'LOADSCRIPT: {name} from {entry.path}')
-                    modules[name] = load_module(entry.path)
+                    #modules[name] = load_module(entry.path)
+                    modules[name] = imp.load_source(name, entry.path)
         return modules  
 
 def load_pytorch(model_file, serialization, out_model_path, model_class_file, init_args=None):
