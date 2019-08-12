@@ -1,4 +1,5 @@
 import os
+import os.path
 import logging
 import urllib.request
 import ast
@@ -49,7 +50,7 @@ def load_module(path):
     module_path = path.replace('.\\', '').replace('./', '').replace('\\', '.').replace('/', '.')
     if module_path.endswith('.py'):
         module_path = module_path[:-len('.py')]
-    print(f'LOADMODULE: {module_path} from {path}')
+    print(f'LOADMODULE: {module_path} from {path}, {os.path.exists(path)}')
     return importlib.import_module(module_path)
 
 def extract_name(url):
