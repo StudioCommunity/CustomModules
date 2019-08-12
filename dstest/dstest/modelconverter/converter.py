@@ -39,6 +39,8 @@ def run_pipeline(flavor, model_url, serialization, model_class_url, init_args, i
     if not os.path.exists(init_py):
         open(init_py, 'wb').close()
 
+    print(f'ALLFILES: {os.listdir(".")}')
+
     if flavor == 'pytorch':
         load_pytorch(model_file, serialization, out_model_path, model_class_file, init_args)
     elif flavor == 'keras':
