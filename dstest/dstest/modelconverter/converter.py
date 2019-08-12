@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 @click.option('--out_model_path', default='model')
 def run_pipeline(flavor, model_url, serialization, model_class_url, init_args, input_args, out_model_path):
     print(f'flavor={flavor}, serialziation={serialization}, out_model_path={out_model_path}')
+    print(f'PATH: {os.environ}')
     model_file = extract_name(model_url)
     urllib.request.urlretrieve(model_url, model_file)
     print(f'DOWNLOAD to {model_file}')
@@ -34,6 +35,9 @@ def run_pipeline(flavor, model_url, serialization, model_class_url, init_args, i
         model_class_file = extract_name(model_class_url)
         urllib.request.urlretrieve(model_class_url, model_class_file)
         print(f'DOWNLOAD to {model_class_file}')
+    init_py = '__init__.py'
+    if not os.path.exists(init_py):
+        open(init_py, 'wb').close()
 
     if flavor == 'pytorch':
         load_pytorch(model_file, serialization, out_model_path, model_class_file, init_args)
