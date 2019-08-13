@@ -1,6 +1,7 @@
 import torch
 from torch.autograd import Variable
 import importlib
+import imp
 import numpy as np
 import pandas as pd
 import sys
@@ -47,7 +48,8 @@ class PytorchScoreModule(object):
             for entry in files_and_dirs:
                 if entry.is_file() and entry.name.endswith('.py'):
                     name = entry.name[:-len('.py')]
-                    modules[name] = importlib.import_module(entry.path)
+                    #modules[name] = importlib.import_module(entry.path)
+                    modules[name] = imp.load_source(name, entry.path)
         return modules 
 
     def load_from_cloudpickle(self, model_path, pt_config):
