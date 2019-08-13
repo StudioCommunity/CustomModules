@@ -154,7 +154,7 @@ def load_pytorch(model_file, serialization, out_model_path, model_class_file, in
         else:
             model = model_class()
         print(f'MODEL1 = {model}')
-        model.load_state_dict(torch.load(model_file), map_location=device)
+        model.load_state_dict(torch.load(model_file, map_location=device))
         print(f'MODEL2 = {model}')
     else:
         raise NotImplementedError
