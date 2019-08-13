@@ -41,7 +41,9 @@ def save_model(pytorch_model, path='./model/', conda_env=None, dependencies=[]):
 
     # only save cpu version
     _save_model(pytorch_model.to('cpu'), os.path.join(path, MODEL_FILE_NAME))
-
+    fn = os.path.join(path, MODEL_FILE_NAME)
+    print(f'MODEL_FILE: {fn}')
+    
     if conda_env is None:
         conda_env = _get_default_conda_env()
     print(f'path={path}, conda_env={conda_env}')

@@ -47,8 +47,11 @@ def save_conda_env(path, conda_env):
                 conda_env = yaml.safe_load(f)
     if not isinstance(conda_env, dict):
         raise Exception("Could not load conda_env %s" % conda_env)
+    print(f'CONDA: {conda_env}')
     with open(os.path.join(path, constants.CONDA_FILE_NAME), "w") as f:
         yaml.safe_dump(conda_env, stream=f, default_flow_style=False)
+    fn = os.path.join(path, constants.CONDA_FILE_NAME)
+    print(f'CONDA_FILE: {fn}')
 
 
 def generate_default_model_spec(flavor_name, model_file_name, conda_file_name=constants.CONDA_FILE_NAME, input_args=[]):
@@ -95,8 +98,11 @@ def save_model_spec(path, flavor_name, model_file_name, conda_file_name=constant
     :input_args (optional)
     """
     spec = generate_default_model_spec(flavor_name, model_file_name, conda_file_name, input_args)
+    print(f'MODEL_SPEC: {spec}')
     with open(os.path.join(path, constants.MODEL_SPEC_FILE_NAME), 'w') as fp:
         yaml.dump(spec, fp, default_flow_style=False)
+    fn = os.path.join(path, constants.MODEL_SPEC_FILE_NAME)
+    print(f'SAVED MODEL_SPEC: {fn}')
 
 
 def generate_ilearner_files(path):
