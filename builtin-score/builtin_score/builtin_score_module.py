@@ -19,6 +19,7 @@ class BuiltinScoreModule(object):
             append_score_column_to_output_value_str.lower() == "true"
         print(f"self.append_score_column_to_output = {self.append_score_column_to_output}")
         model_spec_path = os.path.join(model_path, MODEL_SPEC_FILE_NAME)
+        print(f'MODEL_FOLDER: {os.listdir(model_path)}')
         with open(model_spec_path) as fp:
             config = yaml.safe_load(fp)
         
