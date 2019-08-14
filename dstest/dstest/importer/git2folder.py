@@ -21,9 +21,9 @@ logger = logging.getLogger(__name__)
 @click.option('--git_url')
 @click.option('--out_path', default='out')
 def run_pipeline(git_url, out_path):
-    #temp_folder = tempfile.TemporaryDirectory()
-    #temp_path = temp_folder.name
-    temp_path = 'temp'
+    temp_folder = tempfile.TemporaryDirectory()
+    temp_path = temp_folder.name
+    #temp_path = 'temp'
     print(f'Cloning {git_url} to {temp_path}')
     repo = Repo.clone_from(git_url, temp_path)
     root = repo.working_dir
@@ -31,9 +31,11 @@ def run_pipeline(git_url, out_path):
     if not os.path.exists(out_path):
         os.makedirs(out_path)
     for entry in os.scandir(root):
+        if entry.name == '.git':
+            continue
         src = os.path.join(root, entry.name)
-        print(f'Moving {src} to {out_path}')
-        shutil.move(src, out_path)
+        print(f'Copying {src} to {out_path}')
+        shutil.copy2(src, out_path)
     #temp_folder.cleanup()
     print(f"OUTPUT({out_path}): {os.listdir(out_path)}")
     
