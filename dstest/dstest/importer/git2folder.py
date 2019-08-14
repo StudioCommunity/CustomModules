@@ -24,13 +24,18 @@ def run_pipeline(git_url, out_path):
     #temp_folder = tempfile.TemporaryDirectory()
     #temp_path = temp_folder.name
     temp_path = 'temp'
-    Repo.clone_from(git_url, temp_path)
+    print(f'Cloning {git_url} to {temp_path}')
+    repo = Repo.clone_from(git_url, temp_path)
+    root = repo.working_dir
+    print(f'Cloned to {root}')
     if os.path.exists(out_path):
-        for entry in os.scandir(temp_path):
-            src = os.path.join(temp_path, entry.name)
+        for entry in os.scandir(root):
+            src = os.path.join(root, entry.name)
+            print(f'Moving {src} to {out_path}')
             shutil.move(src, out_path)
     else:
-        shutil.move(temp_path, out_path)
+        print(f'Moving2 {root} to {out_path}')
+        shutil.move(root, out_path)
     #temp_folder.cleanup()
     print(f"OUTPUT({out_path}): {os.listdir(out_path)}")
     
