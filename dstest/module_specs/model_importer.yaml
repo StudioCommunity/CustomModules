@@ -4,7 +4,7 @@ category: Machine Learning\Score
 description: Import External Model to Studio Trained Model
 inputs: 
 - name: Input Path
-  type: AnyDirectory
+  type: GenericFolder
   port: True
   description: Input Folder
 - name: Model Flavor

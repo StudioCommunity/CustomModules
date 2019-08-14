@@ -8,7 +8,7 @@ inputs:
   description: The Git project to be imported
 outputs:
 - name: Output Path
-  type: AnyDirectory
+  type: GenericFolder
   port: True
   description: The Output Folder
 implementation:
