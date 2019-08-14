@@ -28,14 +28,12 @@ def run_pipeline(git_url, out_path):
     repo = Repo.clone_from(git_url, temp_path)
     root = repo.working_dir
     print(f'Cloned to {root}')
-    if os.path.exists(out_path):
-        for entry in os.scandir(root):
-            src = os.path.join(root, entry.name)
-            print(f'Moving {src} to {out_path}')
-            shutil.move(src, out_path)
-    else:
-        print(f'Moving2 {root} to {out_path}')
-        shutil.move(root, out_path)
+    if not os.path.exists(out_path):
+        os.makedirs(out_path)
+    for entry in os.scandir(root):
+        src = os.path.join(root, entry.name)
+        print(f'Moving {src} to {out_path}')
+        shutil.move(src, out_path)
     #temp_folder.cleanup()
     print(f"OUTPUT({out_path}): {os.listdir(out_path)}")
     
