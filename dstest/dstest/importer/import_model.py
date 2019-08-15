@@ -130,6 +130,7 @@ class Importer(object):
             raise NotImplementedError
 
         save_model(model, self.out_model_path, dependencies=self.dependencies)
+        print(f'OUT_MODEL_FOLDER: {os.listdir(self.out_model_path)}')
     def load_keras(self, model_file, serialization_mode):
         pass
     def load_tensorflow(self, model_file, serialization_mode):
