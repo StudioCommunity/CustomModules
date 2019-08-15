@@ -33,12 +33,20 @@ def _save_model(export_path, sess, input_tensor_list, output_tensor_list, graph_
     outputs_dict = dict()
 
     for in_tensor in input_tensor_list:
-        tensor_info_input = tf.saved_model.utils.build_tensor_info(in_tensor)
-        inputs_dict[in_tensor.name] = tensor_info_input
+        if isinstance(in_tensor, str):
+            tensor_info_input = input_tensor_list[in_tensor]
+            inputs_dict[in_tensor] = tensor_info_input
+        else:
+            tensor_info_input = tf.saved_model.utils.build_tensor_info(in_tensor)
+            inputs_dict[in_tensor.name] = tensor_info_input
 
     for out_tensor in output_tensor_list:
-        tensor_info_output = tf.saved_model.utils.build_tensor_info(out_tensor)
-        outputs_dict[out_tensor.name] = tensor_info_output
+        if isinstance(out_tensor, str):
+            tensor_info_output = output_tensor_list[out_tensor]
+            outputs_dict[out_tensor] = tensor_info_output
+        else:
+            tensor_info_output = tf.saved_model.utils.build_tensor_info(out_tensor)
+            outputs_dict[out_tensor.name] = tensor_info_output
 
     print('inputs: ', inputs_dict)
     print('outputs: ', outputs_dict)

@@ -33,7 +33,7 @@ class Importer(object):
         elif self.flavor == 'keras':
             self.load_keras(model_file, serialization_mode)
         elif self.flavor == 'tensorflow':
-            self.load_tensorflow(model_file, serialization_mode)
+            self.load_tensorflow(model_file, serialization_mode, init_args)
         elif self.flavor == 'sklearn':
             self.load_sklearn(model_file, serialization_mode)
         else:
@@ -43,7 +43,7 @@ class Importer(object):
     def extract_filename(self, url):
         return url.partition('?')[0].rpartition('/')[-1]
 
-    def parse_init_args(self, init_args):
+    def parse_pytorch_init_args(self, init_args):
         if not init_args:
             return '', {}
         init_args = init_args.replace("'", '"').replace(";",",")
@@ -53,6 +53,17 @@ class Importer(object):
         if class_name:
             args.pop('class')
         return class_name, args
+
+    def parse_tensorflow_init_args(self, init_args):
+        if not init_args:
+            return '', {}
+        init_args = init_args.replace("'", '"').replace(";",",")
+        print(f'INIT_ARGS: {init_args}')
+        args = json.loads(init_args)
+        print(f'ARGS: {args}')
+        meta_graph_tags = args.get('meta_graph_tags', ['serve'])
+        signature_def_key = args.get('signature_def_key', 'predict')
+        return meta_graph_tags, signature_def_key
 
     def load_modules(self):
         print(f'INPUT_PATH: {self.input_path}')
@@ -107,7 +118,7 @@ class Importer(object):
                         raise ex
         elif serialization_mode == 'statedict':
             print(f'STATEDICT: {model_file} to {self.out_model_path}')
-            class_name, init_args = self.parse_init_args(init_args)
+            class_name, init_args = self.parse_pytorch_init_args(init_args)
             if not class_name:
                 if len(self.modules) == 1:
                     class_name = list(self.modules.keys())[0]
@@ -132,7 +143,7 @@ class Importer(object):
             raise NotImplementedError
 
         save_model(model, self.out_model_path, dependencies=self.dependencies)
-        print(f'OUT_MODEL_FOLDER: {os.listdir(self.out_model_path)}')
+
     def load_keras(self, model_file, serialization_mode):
         import keras
         from keras.models import load_model
@@ -141,8 +152,25 @@ class Importer(object):
         model = load_model(model_file)
         save_model(model, self.out_model_path)
 
-    def load_tensorflow(self, model_file, serialization_mode):
-        pass
+    def load_tensorflow(self, model_file, serialization_mode, init_args):
+        import tensorflow as tf
+        import numpy as np
+        import pandas as pd
+        from builtin_models.tensorflow import save_model
+        
+        model_folder = os.path.dirname(os.path.abspath(model_file)) if os.path.isfile(model_file) else model_file
+        print(f'IN_MODEL_PATH = {model_folder}')
+        print(f'IN_MODLE_FILES = {os.listdir(model_folder)}')
+        tf_graph = tf.Graph()
+        session = tf.Session(graph=tf_graph)
+        graph_tags, signature_def_key = self.parse_tensorflow_init_args(init_args)
+        print(f'tags = {graph_tags}, def_key = {signature_def_key}, model_folder = {model_folder}')
+        graph_def = tf.saved_model.load(session, graph_tags, model_folder)
+        print(f'graph_def = {graph_def}')
+        signature_def = graph_def.signature_def[signature_def_key]
+        input_tensors = signature_def.inputs
+        output_tensors = signature_def.outputs
+        save_model(session, input_tensors, output_tensors, path=self.out_model_path)
 
     def load_sklearn(self, model_file, serialization_mode):
         import pickle
@@ -155,8 +183,6 @@ class Importer(object):
             with open(model_file, 'rb') as fp:
                 model = pickle(fp)
         save_model(model, self.out_model_path)
-        
-
         
 
 @click.command()
@@ -175,5 +201,6 @@ def run_pipeline(input_path, flavor, model_file, serialization_mode, init_args, 
 # python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pkl --serialization_mode cloudpickle --out_model_path model_pytorch
 # python -m dstest.importer.import_model --input_path download --flavor keras --model_file model.h5 --serialization_mode h5 --out_model_path model_keras
 # python -m dstest.importer.import_model --input_path download --flavor sklearn --model_file model.sk.pkl --serialization_mode pickle --out_model_path model_sklearn
+# python -m dstest.importer.import_model --input_path download --flavor tensorflow --model_file model --serialization_mode savedmodel --init_args "{'meta_graph_tags':['serve'],'signature_def_key':'predict_images'}" --out_model_path model_tensorflow
 if __name__ == '__main__':
     run_pipeline()
