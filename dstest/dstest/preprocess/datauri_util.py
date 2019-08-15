@@ -91,8 +91,8 @@ if __name__ == '__main__':
   uri1 = img_to_datauri(img)
   # print(img)
   print(uri1 == uri)
-  _write_file(uri1, "uri1.txt")
-  _write_file(uri, "uri.txt")
+  #_write_file(uri1, "uri1.txt")
+  # _write_file(uri, "uri.txt")
   img = base64str_to_ndarray(remove_datauri_prefix(uri1))
   cv2.imwrite("outputs/test.jpg", img)
 

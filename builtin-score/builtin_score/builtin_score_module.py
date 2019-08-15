@@ -36,8 +36,13 @@ class BuiltinScoreModule(object):
         elif framework.lower() == "keras":
             from .keras_score_module import KerasScoreModule
             self.module = KerasScoreModule(model_path, config)
+        elif framework.lower() == "python":
+            from .python_score_module import PythonScoreModule
+            self.module = PythonScoreModule(model_path, config)
         else:
-            print(f"Not Implemented: framework {framework} not supported")
+            msg = f"Not Implemented: framework {framework} not supported"
+            print(msg)
+            raise ValueError(msg)
 
     def run(self, df, global_param=None):
         output_label = self.module.run(df)
