@@ -26,6 +26,8 @@ class Importer(object):
 
     def run(self, model_file, serialization_mode, init_args):
         self.load_modules()
+        if not os.path.exists(model_file):
+            model_file = os.path.join(self.input_path, model_file)
         if self.flavor == 'pytorch':
             self.load_pytorch(model_file, serialization_mode, init_args)
         elif self.flavor == 'keras':
@@ -36,6 +38,7 @@ class Importer(object):
             self.load_sklearn(model_file, serialization_mode)
         else:
             raise NotImplementedError
+        print(f'OUT_MODEL_FOLDER: {os.listdir(self.out_model_path)}')
 
     def extract_filename(self, url):
         return url.partition('?')[0].rpartition('/')[-1]
@@ -70,8 +73,7 @@ class Importer(object):
         model = None
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
         print(f'DEVICE={device}')
-        if not os.path.exists(model_file):
-            model_file = os.path.join(self.input_path, model_file)
+
         if serialization_mode == 'cloudpickle':
             print(f'CLOUDPICKLE: {model_file} to {self.out_model_path}')
             import cloudpickle
@@ -135,16 +137,26 @@ class Importer(object):
         import keras
         from keras.models import load_model
         from builtin_models.keras import save_model
-        if not os.path.exists(model_file):
-            model_file = os.path.join(self.input_path, model_file)
+        
         model = load_model(model_file)
         save_model(model, self.out_model_path)
-        print(f'OUT_MODEL_FOLDER: {os.listdir(self.out_model_path)}')
 
     def load_tensorflow(self, model_file, serialization_mode):
         pass
+
     def load_sklearn(self, model_file, serialization_mode):
-        pass
+        import pickle
+        import joblib
+        from builtin_models.sklearn import save_model
+        model = None
+        try:
+            model = joblib.load(model_file)
+        except:
+            with open(model_file, 'rb') as fp:
+                model = pickle(fp)
+        save_model(model, self.out_model_path)
+        
+
         
 
 @click.command()
@@ -159,8 +171,9 @@ def run_pipeline(input_path, flavor, model_file, serialization_mode, init_args, 
     importer.run(model_file, serialization_mode, init_args)
 
 # python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file 200000-G.ckpt --serialization_mode statedict --init_args "{'class':'Generator','conv_dim':64,'c_dim':5,'repeat_num':6}" --out_model_path model_pytorch
-# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pt --serialization_mode savedmodel --output_model_path model_pytorch
-# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pkl --serialization_mode cloudpickle --output_model_path model_pytorch
-
+# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pt --serialization_mode savedmodel --out_model_path model_pytorch
+# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pkl --serialization_mode cloudpickle --out_model_path model_pytorch
+# python -m dstest.importer.import_model --input_path download --flavor keras --model_file model.h5 --serialization_mode h5 --out_model_path model_keras
+# python -m dstest.importer.import_model --input_path download --flavor sklearn --model_file model.sk.pkl --serialization_mode pickle --out_model_path model_sklearn
 if __name__ == '__main__':
     run_pipeline()
