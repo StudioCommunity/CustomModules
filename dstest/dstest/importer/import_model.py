@@ -132,10 +132,18 @@ class Importer(object):
         save_model(model, self.out_model_path, dependencies=self.dependencies)
         print(f'OUT_MODEL_FOLDER: {os.listdir(self.out_model_path)}')
     def load_keras(self, model_file, serialization_mode):
-        pass
+        import keras
+        from keras.models import load_model
+        from builtin_models.keras import save_model
+        if not os.path.exists(model_file):
+            model_file = os.path.join(self.input_path, model_file)
+        model = load_model(model_file)
+        save_model(model, self.out_model_path)
+        print(f'OUT_MODEL_FOLDER: {os.listdir(self.out_model_path)}')
+
     def load_tensorflow(self, model_file, serialization_mode):
         pass
-    def load_keras(self, model_file, serialization_mode):
+    def load_sklearn(self, model_file, serialization_mode):
         pass
         
 
@@ -150,8 +158,9 @@ def run_pipeline(input_path, flavor, model_file, serialization_mode, init_args, 
     importer = Importer(input_path, flavor, out_model_path)
     importer.run(model_file, serialization_mode, init_args)
 
-# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file 200000-G.ckpt --serialization_mode statedict --init_args "{'class':'Generator','conv_dim':64,'c_dim':5,'repeat_num':6}"
-# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pt --serialization_mode savedmodel
-# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pkl --serialization_mode cloudpickle
+# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file 200000-G.ckpt --serialization_mode statedict --init_args "{'class':'Generator','conv_dim':64,'c_dim':5,'repeat_num':6}" --out_model_path model_pytorch
+# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pt --serialization_mode savedmodel --output_model_path model_pytorch
+# python -m dstest.importer.import_model --input_path download --flavor pytorch --model_file model.pkl --serialization_mode cloudpickle --output_model_path model_pytorch
+
 if __name__ == '__main__':
     run_pipeline()
