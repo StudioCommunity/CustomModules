@@ -1,0 +1,52 @@
+name: Byte Pair Encoding
+id: 3c7cbf1c-c24c-11e9-863b-6c2b59f8af4d
+category: Machine Learning\Preprocess
+description: Use Byte Pair Encoding to encode text
+inputs:
+- name: Dictionary Path
+  type: String
+  description: The dictionary used to encode the text
+- name: Vocabulary Path
+  type: String
+  description: The vacabulary used to encode the text
+- name: Raw Text
+  type: String
+  port: True
+  description: The input text
+outputs:
+- name: Output Path
+  type: TabularDataFolder
+  port: True
+  description: Encoded tokens
+implementation:
+  container:
+    conda:
+      name: project_environment
+      channels:
+      - defaults
+      dependencies:
+      - python=3.6.8
+      - pip:
+        - json
+        - regex
+        - pandas
+        - functools
+        - click
+        - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=dstest
+    command:
+    - python
+    - -m
+    - dstest.nlp.next-word.encode.py
+    args:
+    - --dict_path
+    - dictionaryPath: Dictionary Path
+    - --vocab_path
+    - vocabularyPath: Vocabulary Path
+    - --raw_text
+    - rawText: Raw Text
+    - --output_path
+    - outputPath: Output Path
+  invoking:
+    module:
+    class:
+    func:
