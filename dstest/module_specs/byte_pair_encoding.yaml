@@ -29,7 +29,6 @@ implementation:
       - pip:
         - json
         - pandas
-        - functools
         - click
         - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=dstest
     command:
