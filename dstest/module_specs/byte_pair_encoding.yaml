@@ -27,7 +27,6 @@ implementation:
       - python=3.6.8
       - regex
       - pip:
-        - json
         - pandas
         - click
         - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=dstest
