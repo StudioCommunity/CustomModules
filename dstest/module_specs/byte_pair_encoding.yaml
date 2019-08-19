@@ -25,9 +25,9 @@ implementation:
       - defaults
       dependencies:
       - python=3.6.8
+      - regex
       - pip:
         - json
-        - regex
         - pandas
         - functools
         - click
