@@ -33,7 +33,7 @@ implementation:
     command:
     - python
     - -m
-    - dstest.nlp.next-word.encode.py
+    - dstest.nlp.next_word.encode
     args:
     - --dict_path
     - dictionaryPath: Dictionary Path
