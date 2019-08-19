@@ -11,7 +11,6 @@ inputs:
   description: The vacabulary used to encode the text
 - name: Raw Text
   type: String
-  port: True
   description: The input text
 outputs:
 - name: Output Path
