@@ -25,6 +25,7 @@ def run(input_path, output_path):
   This functions read images in an folder and encode it ans base64. Then save it as csv in output_path.
   """
   import glob
+  print(f'INPUT_PATH({input_path}) : {os.listdir(input_path)}')
   types = ('**.jpg', '**.png') # the tuple of file types
   files_grabbed = []
   for files in types:
@@ -43,7 +44,7 @@ def run(input_path, output_path):
     df.loc[i] = basename, label, image_64_encode
 
   ioutil.save_parquet(df, output_path, True)
-
+  print(f'OUTPUT_PATH({output_path}) : {os.listdir(output_path)}')
 # python -m dstest.preprocess.import_image  --input_path inputs/mnist --output_path datas/mnist
 # python -m dstest.preprocess.import_image  --input_path inputs/imagenet --output_path datas/imagenet
 if __name__ == '__main__':
