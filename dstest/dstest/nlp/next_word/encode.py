@@ -124,6 +124,6 @@ def run_pipeline(dict_path, vocab_path, raw_text, output_path):
     print(f'Output path: {os.listdir(output_path)}')
 
 
-# python -m dstest.nlp.next-word.encode.py --dict_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/encoder.json?sp=r&st=2019-08-19T06:20:30Z&se=2019-08-19T14:20:30Z&spr=https&sv=2018-03-28&sig=qTGkAtWTCd53nk422%2BdBu2kNOfzlgQP4kPQ5UBJwHdE%3D&sr=b --vocab_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/vocab.bpe?sp=r&st=2019-08-19T06:20:07Z&se=2019-08-19T14:20:07Z&spr=https&sv=2018-03-28&sig=ADyXdQpwS4eewX5q2w3ab7FnQoR6SGKuE6yKKcifi5M%3D&sr=b --raw_text "This is a test"
+# python -m dstest.nlp.next_word.encode.py --dict_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/encoder.json?sp=r&st=2019-08-19T06:20:30Z&se=2019-08-19T14:20:30Z&spr=https&sv=2018-03-28&sig=qTGkAtWTCd53nk422%2BdBu2kNOfzlgQP4kPQ5UBJwHdE%3D&sr=b --vocab_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/vocab.bpe?sp=r&st=2019-08-19T06:20:07Z&se=2019-08-19T14:20:07Z&spr=https&sv=2018-03-28&sig=ADyXdQpwS4eewX5q2w3ab7FnQoR6SGKuE6yKKcifi5M%3D&sr=b --raw_text "This is a test"
 if __name__ == '__main__':
     run_pipeline()
