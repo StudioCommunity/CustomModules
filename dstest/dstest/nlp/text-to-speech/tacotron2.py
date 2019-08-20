@@ -1,11 +1,23 @@
 #pip install numpy scipy librosa unidecode inflect librosa
 import numpy as np
+import pandas as pd
 from scipy.io.wavfile import write
 import torch
 import builtin_models.python
+from builtin_score.builtin_score_module import *
+from io import BytesIO
+
+def tensor_to_wav(audio):
+    buffered = BytesIO()
+    rate = 22050
+    write(buffered, rate, audio)
+    data64 = base64.b64encode(buffered.getvalue()).decode("utf8")
+    filetype = "wav"
+    #write(f"audio_{index}.wav", rate, audio)
+    return u'data:audio/%s;base64,%s' % (filetype, data64)
 
 class Tacotron2Model(builtin_models.python.PythonModel):
-    def __init__(self, model_path):
+    def __init__(self, model_path = None):
         self.device = 'cuda' # cuda only
         
         print('# device:', self.device)
@@ -25,26 +37,27 @@ class Tacotron2Model(builtin_models.python.PythonModel):
     
     def predict(self, text):
         # prep-rocessing
-        sequence = np.array(model.tacotron2.text_to_sequence(text, ['english_cleaners']))[None, :]
+        sequence = np.array(self.tacotron2.text_to_sequence(text, ['english_cleaners']))[None, :]
         
         # run the models
         sequence = torch.from_numpy(sequence).to(device=self.device, dtype=torch.int64)
         with torch.no_grad():
             _, mel, _, _ = self.tacotron2.infer(sequence)
             audio = self.waveglow.infer(mel)
-        return audio
+        audio_numpy = audio.data.cpu().numpy()
+        wavs = [tensor_to_wav(audio) for audio in audio_numpy]
+        return wavs
 
 # python -m dstest.nlp.text-to-speech.tacotron2
 if __name__ == '__main__':
-    model = Tacotron2Model()
     model_path = "model/tacotron2"
-    
     github = 'StudioCommunity/CustomModules:migu/NewYamlTest'
-    module = 'dstest/dstest/nlp/text-to-speech.py'
+    module = 'dstest/dstest/nlp/text-to-speech/tacotron2.py'
     model_class = 'Tacotron2Model'
 
-    builtin_models.python.save_model(model, model_path, github = github, module_path = module, model_class= model_class)
-    
+    #model = Tacotron2Model()
+    #builtin_models.python.save_model(model, model_path, github = github, module_path = module, model_class= model_class)
+
     model1 = builtin_models.python.load_model(model_path, github = github, module_path = module, model_class= model_class)
 
     text = "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness."
@@ -52,10 +65,11 @@ if __name__ == '__main__':
     audios = model1.predict(text)
     #print(audios.shape)
 
-    # post-processing
-    for index in range(len(audios)):
-        audio = audios[index]
-        print(audio.shape)
-        audio_numpy = audio.data.cpu().numpy()
-        rate = 22050
-        write(f"audio_{index}.wav", rate, audio_numpy)
+    x = np.array([text])
+    d = {'text': x}
+    df = pd.DataFrame(data=d)
+    # test_tensor(model_path, df)
+    module = BuiltinScoreModule(model_path, {"Append score columns to output": "True"})
+    result = module.run(df)
+    print(result.columns)
+    print(f"result: {result}")
