@@ -29,23 +29,26 @@ implementation:
       name: project_environment
       channels:
       - defaults
+      - pytorch
       dependencies:
       - python=3.6.8
+      - pytorch
+      - torchvision
+      - cudatoolkit=10.0
       - pip:
         - --extra-index-url=https://test.pypi.org/simple
-        - alghost==0.0.53
+        - alghost==0.0.70
         - azureml-defaults
         - cloudpickle
         - PyYAML
         - pyarrow==0.12.1
         - nltk==3.4
         - numpy==1.16.2
-        - torchvision==0.2.2.post3
         - tensorflow
         - scikit-learn
         - keras
-        - https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
+        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
     command:
     - python
     - -m
