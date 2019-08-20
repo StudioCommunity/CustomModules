@@ -28,7 +28,6 @@ class GPT2Runner(object):
                  temperature=1,
                  top_k=0
                  ):
-        print(f'Model path: {model_path}')
         self.model_path = model_path
         if batch_size is None:
             batch_size = 1
@@ -77,14 +76,16 @@ class GPT2Runner(object):
 
 @click.command()
 @click.option('--model_path')
-@click.option('--input_path', default="outputs/gpt2")
+@click.option('--encoded_input_path', default="outputs/gpt2")
 @click.option('--output_path', default="outputs/gpt2/output")
-def run_pipeline(model_path, input_path, output_path):
+def run_pipeline(model_path, encoded_input_path, output_path):
+    print(f'MODEL_PATH: {os.listdir(model_path)}')
+    print(f'INPUT_FILES: {os.listdir(encoded_input_path)}')
     gpt2runner = GPT2Runner(model_path)
-    result = gpt2runner.run(input_path)
-    print(f'result: {result}')
+    result = gpt2runner.run(encoded_input_path)
+    print(f'RESULT: {result}')
     ioutil.save_parquet(pd.DataFrame(result), output_path)
-    print(f'Output path: {os.listdir(output_path)}')
+    print(f'OUTPUT_PATH: {os.listdir(output_path)}')
 
 # python -m dstest.nlp.next_word.run_gpt2 --model_path dstest/nlp/next_word/models/117M
 if __name__ == '__main__':

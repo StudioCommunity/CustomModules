@@ -3,11 +3,11 @@ id: d0465d12-c31f-11e9-8f15-6c2b59f8af4d
 category: Machine Learning\Score
 description: Run pre-trained GPT-2
 inputs:
-- name: Module Path
+- name: Model Path
   type: GenericFolder
   port: True
   description: The pre-trained module folder
-- name: Input Path
+- name: Encoded text Path
   type: TabularDataFolder
   port: True
   description: The encoded text parque
@@ -38,9 +38,9 @@ implementation:
     - dstest.nlp.next_word.run_gpt2
     args:
     - --model_path
-    - dictionaryPath: Pre-trained model Path
-    - --input_path
-    - vocabularyPath: Encoded input Path
+    - inputPath: Model Path
+    - --encoded_input_path
+    - inputPath: Encoded text Path
     - --output_path
     - outputPath: Output Path
   invoking:
