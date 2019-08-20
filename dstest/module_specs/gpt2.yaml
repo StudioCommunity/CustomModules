@@ -1,0 +1,48 @@
+name: GPT-2 Score
+id: d0465d12-c31f-11e9-8f15-6c2b59f8af4d
+category: Machine Learning\Score
+description: Run pre-trained GPT-2
+inputs:
+- name: Module Path
+  type: GenericFolder
+  port: True
+  description: The pre-trained module folder
+- name: Input Path
+  type: TabularDataFolder
+  port: True
+  description: The encoded text parque
+outputs:
+- name: Output Path
+  type: TabularDataFolder
+  port: True
+  description: GPT-2 outputs
+implementation:
+  container:
+    conda:
+      name: project_environment
+      channels:
+      - defaults
+      dependencies:
+      - python=3.6.8
+      - pip:
+        - tensorflow==1.12.0
+        - pandas
+        - click
+        - pyarrow
+        - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=builtin-score
+        - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=dstest
+    command:
+    - python
+    - -m
+    - dstest.nlp.next_word.run_gpt2
+    args:
+    - --model_path
+    - dictionaryPath: Pre-trained model Path
+    - --input_path
+    - vocabularyPath: Encoded input Path
+    - --output_path
+    - outputPath: Output Path
+  invoking:
+    module:
+    class:
+    func:
