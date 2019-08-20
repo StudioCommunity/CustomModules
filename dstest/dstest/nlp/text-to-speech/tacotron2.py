@@ -11,6 +11,7 @@ def tensor_to_wav(audio):
     buffered = BytesIO()
     rate = 22050
     write(buffered, rate, audio)
+    import base64
     data64 = base64.b64encode(buffered.getvalue()).decode("utf8")
     filetype = "wav"
     #write(f"audio_{index}.wav", rate, audio)
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     #model = Tacotron2Model()
     #builtin_models.python.save_model(model, model_path, github = github, module_path = module, model_class= model_class)
 
-    model1 = builtin_models.python.load_model(model_path, github = github, module_path = module, model_class= model_class)
+    model1 = builtin_models.python.load_model(model_path, github = github, module_path = module, model_class= model_class, force_reload= True)
 
     text = "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness."
     # run the models
