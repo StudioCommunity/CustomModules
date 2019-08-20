@@ -40,6 +40,7 @@ class Tacotron2Model(builtin_models.python.PythonModel):
         # prep-rocessing
         results = []
         for line in text:
+            print(f"generate for line: {line}")
             sequence = np.array(self.tacotron2.text_to_sequence(line, ['english_cleaners']))[None, :]
             
             # run the models
@@ -47,9 +48,9 @@ class Tacotron2Model(builtin_models.python.PythonModel):
             with torch.no_grad():
                 _, mel, _, _ = self.tacotron2.infer(sequence)
                 audio = self.waveglow.infer(mel)
-            audio_numpy = audio.data.cpu().numpy()
-            wav = tensor_to_wav(audio_numpy)
-            results.append(wav)
+                audio_numpy = audio.data.cpu().numpy() # [1, 256000]
+                wav = tensor_to_wav(audio_numpy[0])
+                results.append(wav)
         return results
 
 # python -m dstest.nlp.text-to-speech.tacotron2
@@ -65,11 +66,12 @@ if __name__ == '__main__':
     model1 = builtin_models.python.load_model(model_path, github = github, module_path = module, model_class= model_class, force_reload= True)
 
     text = "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness."
-    # run the models
-    audios = model1.predict(text)
-    #print(audios.shape)
-
     x = np.array([text])
+    # run the models
+    audios = model1.predict(x)
+    print(audios.shape)
+
+    
     d = {'text': x}
     df = pd.DataFrame(data=d)
     # test_tensor(model_path, df)
@@ -77,3 +79,4 @@ if __name__ == '__main__':
     result = module.run(df)
     print(result.columns)
     print(f"result: {result}")
+    result.to_csv("~/data.csv")

@@ -291,7 +291,7 @@ def load_model(model_path, github = None, module_path = None, model_class = None
         entry = _load_entry_from_module(module, model_class)
         print(f'initialize entry with: {args}, {kwargs}')
         model = entry(model_path, *args, **kwargs)
-        print(f"removing {repo_dir}")
+        print(f"removing {repo_dir} from sys path")
         sys.path.remove(repo_dir)
 
     elif module_path is None or model_class is None:
