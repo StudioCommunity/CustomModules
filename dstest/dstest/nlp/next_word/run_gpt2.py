@@ -28,6 +28,7 @@ class GPT2Runner(object):
                  temperature=1,
                  top_k=0
                  ):
+        print(f'Model path: {model_path}')
         self.model_path = model_path
         if batch_size is None:
             batch_size = 1
