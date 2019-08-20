@@ -37,16 +37,19 @@ class Tacotron2Model(builtin_models.python.PythonModel):
     
     def predict(self, text):
         # prep-rocessing
-        sequence = np.array(self.tacotron2.text_to_sequence(text, ['english_cleaners']))[None, :]
-        
-        # run the models
-        sequence = torch.from_numpy(sequence).to(device=self.device, dtype=torch.int64)
-        with torch.no_grad():
-            _, mel, _, _ = self.tacotron2.infer(sequence)
-            audio = self.waveglow.infer(mel)
-        audio_numpy = audio.data.cpu().numpy()
-        wavs = [tensor_to_wav(audio) for audio in audio_numpy]
-        return wavs
+        results = []
+        for line in text:
+            sequence = np.array(self.tacotron2.text_to_sequence(line, ['english_cleaners']))[None, :]
+            
+            # run the models
+            sequence = torch.from_numpy(sequence).to(device=self.device, dtype=torch.int64)
+            with torch.no_grad():
+                _, mel, _, _ = self.tacotron2.infer(sequence)
+                audio = self.waveglow.infer(mel)
+            audio_numpy = audio.data.cpu().numpy()
+            wav = tensor_to_wav(audio_numpy)
+            results.append(wav)
+        return results
 
 # python -m dstest.nlp.text-to-speech.tacotron2
 if __name__ == '__main__':
