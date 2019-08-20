@@ -1,3 +1,4 @@
+from dstest.nlp.next_word import sample, model
 from builtin_score import ioutil
 import tensorflow as tf
 import numpy as np
@@ -5,7 +6,6 @@ import os
 import json
 import pandas as pd
 
-import model, sample
 
 from pip._internal import main as pipmain
 pipmain(["install", "click"])

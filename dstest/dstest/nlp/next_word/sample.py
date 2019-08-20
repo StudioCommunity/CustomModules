@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-import model
+from dstest.nlp.next_word import model
 
 def top_k_logits(logits, k):
     if k == 0:

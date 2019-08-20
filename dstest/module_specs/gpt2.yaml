@@ -29,6 +29,7 @@ implementation:
         - pandas
         - click
         - pyarrow
+        - numpy
         - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=builtin-score
         - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=dstest
     command:
