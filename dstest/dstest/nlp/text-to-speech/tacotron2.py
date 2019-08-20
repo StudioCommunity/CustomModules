@@ -69,7 +69,7 @@ if __name__ == '__main__':
     x = np.array([text])
     # run the models
     audios = model1.predict(x)
-    print(audios.shape)
+    #print(audios.shape)
 
     
     d = {'text': x}
