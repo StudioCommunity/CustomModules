@@ -245,7 +245,12 @@ def save_model(python_model, path='./model/', conda_env=None, dependencies=[], g
     if 'self' in args:
         args.remove('self')
 
-    utils.save_model_spec(path, FLAVOR_NAME, MODEL_FILE_NAME, input_args=args)
+    spec = utils.generate_default_model_spec(FLAVOR_NAME, MODEL_FILE_NAME, input_args=args)
+    pySpec = spec[FLAVOR_NAME]
+    if github is not None: pySpec["github"] = github
+    if module_path is not None: pySpec["module_path"] = module_path
+    if model_class is not None: pySpec["model_class"] = model_class
+    utils._save_model_spec(path, spec)
     utils.generate_ilearner_files(path)  # temp solution, to remove later
 
 def load_model(model_path, github = None, module_path = None, model_class = None, *args, **kwargs):
@@ -269,7 +274,6 @@ def load_model(model_path, github = None, module_path = None, model_class = None
     if(model_path is None):
         raise RuntimeError("Invalid model_path")
 
-    repo_dir = None
     if github is not None:
         # Setup cache_dir to save downloaded files
         _setup_cache_dir()
@@ -282,7 +286,15 @@ def load_model(model_path, github = None, module_path = None, model_class = None
         print(f'adding {repo_dir} to sys path')
         sys.path.insert(0, repo_dir)
 
-    if module_path is None or model_class is None:
+        print(f'try load model from {repo_dir}, {module_path}, {model_class}')
+        module = import_module(module_path, repo_dir + '/' + module_path)
+        entry = _load_entry_from_module(module, model_class)
+        print(f'initialize entry with: {args}, {kwargs}')
+        model = entry(model_path, *args, **kwargs)
+        print(f"removing {repo_dir}")
+        sys.path.remove(repo_dir)
+
+    elif module_path is None or model_class is None:
         print(f'try load cloudpickle model directly from {model_path}')
         model = _load_model(model_path)
     else:
@@ -292,10 +304,6 @@ def load_model(model_path, github = None, module_path = None, model_class = None
         entry = _load_entry_from_module(module, model_class)
         print(f'initialize entry with: {args}, {kwargs}')
         model = entry(model_path, *args, **kwargs)
-
-    if repo_dir is not None:
-        print(f"removing {repo_dir}")
-        sys.path.remove(repo_dir)
 
     return model
 
@@ -320,7 +328,7 @@ def _test_dummy_model():
     # test_github_based_model
     github = 'StudioCommunity/CustomModules:migu/NewYamlTest'
     module = 'builtin-models/builtin_models/python.py'
-    model2 = load_model("../dstest/model/python/dummy/", github = github, module_path = module, model_class= 'DummyPythonModel')
+    model2 = load_model("../dstest/model/python/dummy/", github = github, module_path = module, model_class= 'DummyPythonModel', force_reload= True)
     result = model2.predict(x, y)
     print(f"result: {result}")
 

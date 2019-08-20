@@ -4,7 +4,7 @@ from scipy.io.wavfile import write
 import torch
 import builtin_models.python
 
-class Tacotron2Model(object):
+class Tacotron2Model(builtin_models.python.PythonModel):
     def __init__(self, model_path):
         self.device = 'cuda' # cuda only
         
@@ -38,9 +38,14 @@ class Tacotron2Model(object):
 if __name__ == '__main__':
     model = Tacotron2Model()
     model_path = "model/tacotron2"
-    builtin_models.python.save_model(model, model_path)
+    
+    github = 'StudioCommunity/CustomModules:migu/NewYamlTest'
+    module = 'dstest/dstest/nlp/text-to-speech.py'
+    model_class = 'Tacotron2Model'
 
-    model1 = builtin_models.python.load_model(model_path)
+    builtin_models.python.save_model(model, model_path, github = github, module_path = module, model_class= model_class)
+    
+    model1 = builtin_models.python.load_model(model_path, github = github, module_path = module, model_class= model_class)
 
     text = "We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness."
     # run the models

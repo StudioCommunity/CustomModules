@@ -83,6 +83,14 @@ def generate_default_model_spec(flavor_name, model_file_name, conda_file_name=co
     return spec
 
 
+def _save_model_spec(path, spec):
+    print(f'MODEL_SPEC: {spec}')
+    with open(os.path.join(path, constants.MODEL_SPEC_FILE_NAME), 'w') as fp:
+        yaml.dump(spec, fp, default_flow_style=False)
+    fn = os.path.join(path, constants.MODEL_SPEC_FILE_NAME)
+    print(f'SAVED MODEL_SPEC: {fn}')
+
+
 def save_model_spec(path, flavor_name, model_file_name, conda_file_name=constants.CONDA_FILE_NAME, input_args=[]):
     """
     Save model spec to local file
@@ -98,11 +106,7 @@ def save_model_spec(path, flavor_name, model_file_name, conda_file_name=constant
     :input_args (optional)
     """
     spec = generate_default_model_spec(flavor_name, model_file_name, conda_file_name, input_args)
-    print(f'MODEL_SPEC: {spec}')
-    with open(os.path.join(path, constants.MODEL_SPEC_FILE_NAME), 'w') as fp:
-        yaml.dump(spec, fp, default_flow_style=False)
-    fn = os.path.join(path, constants.MODEL_SPEC_FILE_NAME)
-    print(f'SAVED MODEL_SPEC: {fn}')
+    _save_model_spec(path, spec)
 
 
 def generate_ilearner_files(path):

@@ -35,7 +35,11 @@ class PythonWrapper(object):
 
 class PythonScoreModule(object):
     def __init__(self, model_path, config):
-        self.model = builtin_models.python.load_model(model_path)
+        pyConf = config["python"]
+        github = pyConf.get("github", None)
+        module_path = pyConf.get("module_path", None)
+        model_class = pyConf.get("model_class", None)
+        self.model = builtin_models.python.load_model(model_path, github = github, module_path = module_path, model_class= model_class)
         input_args = config.get('inputs', None)
         if(input_args == None): raise ValueError("inputs must be set in model spec")
         self.wrapper = PythonWrapper(self.model, input_args)
