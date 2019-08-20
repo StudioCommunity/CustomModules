@@ -55,7 +55,7 @@ def get_pairs(word):
 
 
 class BPEEncoder(object):
-    def __init__(self, dict_path, vocab_path):
+    def __init__(self, dict_path, vocab_path, errors='replace'):
         self.byte_encoder = bytes_to_unicode()
         response = urllib.request.urlopen(dict_path)
         self.dict = json.load(response)
@@ -64,6 +64,9 @@ class BPEEncoder(object):
         bpe_merges = [tuple(merge_str.split()) for merge_str in bpe_vocab.split('\n')[1:-1]]
         self.bpe_ranks = dict(zip(bpe_merges, range(len(bpe_merges))))
         self.pat = re.compile(r"""'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+""")
+        self.byte_decoder = {v:k for k, v in self.byte_encoder.items()}
+        self.decoder = {v:k for k,v in self.dict.items()}
+        self.errors = errors  # how to handle errors in decoding
 
     def encode(self, raw_text):
         bpe_tokens = []
@@ -110,6 +113,10 @@ class BPEEncoder(object):
         word = ' '.join(word)
         return word
 
+    def decode(self, tokens):
+        text = ''.join([self.decoder[token] for token in tokens])
+        text = bytearray([self.byte_decoder[c] for c in text]).decode('utf-8', errors=self.errors)
+        return text
 
 @click.command()
 @click.option('--dict_path')
