@@ -49,6 +49,10 @@ implementation:
         - keras
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
+        - scipy
+        - librosa
+        - unidecode 
+        - inflect
     command:
     - python
     - -m
