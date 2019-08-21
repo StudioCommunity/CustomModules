@@ -30,11 +30,13 @@ implementation:
       channels:
       - defaults
       - pytorch
+      - conda-forge # for tacotron2
       dependencies:
       - python=3.6.8
       - pytorch
       - torchvision
       - cudatoolkit=10.0
+      - libsndfile # for tacotron2
       - pip:
         - --extra-index-url=https://test.pypi.org/simple
         - alghost==0.0.70
@@ -49,7 +51,7 @@ implementation:
         - keras
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
-        - scipy
+        - scipy # for tacotron2
         - librosa
         - unidecode 
         - inflect
