@@ -19,6 +19,11 @@ inputs:
   type: String
   default: 
   description: Probability Column Name
+- name: Append category column to output
+  type: Boolean
+  default: true
+  description: If checked, append category column to the result dataset, otherwise only
+    return the category column.
 outputs:
 - name: Output Data
   type: TabularDataFolder
@@ -51,6 +56,8 @@ implementation:
     - inputValue: Probability Column Name
     - --file_name
     - inputValue: Category File Name
+    - --append_category_column_to_output
+    - inputValue: Append category column to output
     - --input_path
     - inputValue: Input Data
     - --meta_path

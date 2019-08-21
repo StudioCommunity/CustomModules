@@ -25,7 +25,7 @@ def ensure_folder_exists(output_path):
     os.makedirs(output_path)
     logger.info(f"{output_path} not exists, created")
 
-def save_parquet1(df, output_path, writeCsv= False):
+def save_parquet(df, output_path, writeCsv= False):
   from azureml.studio.modulehost.handler.port_io_handler import OutputHandler
   from azureml.studio.common.datatypes import DataTypes
   from azureml.studio.common.datatable.data_table import DataTable
@@ -62,7 +62,7 @@ def transform_to_list(root):
       root[i] = transform_to_list(child)
   return root
   
-def save_parquet(df, output_path, writeCsv= False):
+def save_parquet1(df, output_path, writeCsv= False):
   ensure_folder_exists(output_path)
   if(writeCsv):
     df.to_csv(os.path.join(output_path, "data.csv"))
