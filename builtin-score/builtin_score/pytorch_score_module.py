@@ -21,6 +21,7 @@ class PytorchScoreModule(object):
     def __init__(self, model_path, config):
         pt_config = config['pytorch']
         self.model_file = pt_config['model_file_path']
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         serializer = pt_config.get('serialization_format', 'cloudpickle')
         if serializer == 'cloudpickle':
             model = self.load_from_cloudpickle(model_path, pt_config)
@@ -32,9 +33,8 @@ class PytorchScoreModule(object):
             raise Exception(f"Unrecognized serializtion format {serializer}")
         print('Load model success.')
         is_gpu = torch.cuda.is_available()   
-        if is_gpu:
-            model = model.to('cuda')
-            print('Device cuda is available, convert model from cpu version to gpu version.')
+        model = model.to(self.device)
+        print(f'DEVICE: {device}')
         input_args = config.get('inputs', None)
         self.wrapper = PytorchWrapper(model, is_gpu, input_args)
 
@@ -82,7 +82,7 @@ class PytorchScoreModule(object):
         retry = True
         while retry:
             try:
-                model = torch.load(model_file_path)
+                model = torch.load(model_file_path, map_location=self.device)
                 retry = False
             except ModuleNotFoundError as ex:
                 name = ex.name.rpartition('.')[-1]
@@ -105,7 +105,7 @@ class PytorchScoreModule(object):
         with open(model_class_init_args, 'rb') as fp:
             args = pickle.load(fp)
         model = model_class(*args)
-        model.load_state_dict(torch.load(model_file_path))
+        model.load_state_dict(torch.load(model_file_path, map_location=self.device))
         return model
         
 
