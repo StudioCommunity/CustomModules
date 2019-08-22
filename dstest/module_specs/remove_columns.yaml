@@ -25,6 +25,8 @@ implementation:
       dependencies:
       - python=3.6.2
       - pip:
+        - --extra-index-url=https://test.pypi.org/simple
+        - alghost==0.0.70
         - pandas
         - tensorflow
         - click
