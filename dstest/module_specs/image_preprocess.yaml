@@ -25,15 +25,15 @@ inputs:
   description: Resize Image to size, the smaller edge of the image will be matched to this number maintaing the aspect ratio.
 - name: Target Image Size
   type: String
-  default: (256, 256)
+  default: (256; 256)
   description: Target Image Size, eg, (256, 256)
 - name: Normalization Mean
   type: String
-  default: (0, 0, 0)
+  default: (0; 0; 0)
   description: Normalization Mean, eg, (0, 0, 0)
 - name: Normalization Std
   type: String
-  default: (0.5, 0.5, 0.5)
+  default: (0.5; 0.5; 0.5)
   description: Normalization Std, eg, (0.5, 0.5, 0.5)
 - name: Convert to Grayscale
   type: Boolean
@@ -59,6 +59,7 @@ implementation:
         - pyarrow
         - Pillow
         - torchvision
+        - opencv-python-headless
         - https://download.pytorch.org/whl/cu100/torch-1.1.0-cp36-cp36m-linux_x86_64.whl
         - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
     command:
