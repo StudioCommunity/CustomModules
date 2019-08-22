@@ -79,7 +79,7 @@ implementation:
     - inputValue: Target Image Size
     - --normalization_mean
     - inputValue: Normalization Mean
-    - --normaliztion_std
+    - --normalization_std
     - inputValue: Normalization Std
     - --convert_to_grayscale
     - inputValue: Convert to Grayscale
