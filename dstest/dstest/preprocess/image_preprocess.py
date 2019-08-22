@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 def tuple_parser(input_str, data_type):
-    return tuple(map(data_type, input_str.strip().strip('(').strip(')').split(';')))
+    return tuple(map(data_type, input_str.strip().strip('(').strip(')').split(',')))
 
 class ImagePreprocess:
 
