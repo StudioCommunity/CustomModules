@@ -44,6 +44,7 @@ def run(input_path, output_path):
     df.loc[i] = basename, label, image_64_encode
 
   ioutil.save_parquet1(df, output_path, True)
+  print(f"df =\n{df}")
   print(f'OUTPUT_PATH({output_path}) : {os.listdir(output_path)}')
 # python -m dstest.preprocess.import_image  --input_path inputs/mnist --output_path pip/mnist
 # python -m dstest.preprocess.import_image  --input_path inputs/imagenet --output_path datas/imagenet
