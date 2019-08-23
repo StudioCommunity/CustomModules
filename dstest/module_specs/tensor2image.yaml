@@ -9,7 +9,7 @@ inputs:
   description: input data frame
 - name: Tensor Column
   type: String
-  default: 0
+  default: Score_0
   description: Tensor Column
 outputs:
 - name: Output Data
