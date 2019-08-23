@@ -143,6 +143,7 @@ class PytorchWrapper(object):
                 print(f"input_params[0].size() = {input_params[0].size()}")
                 print(f"input_params[1].size() = {input_params[1].size()}")
                 predicted = self.model(*input_params)
+                print(f"predicted = {predicted}")
                 output.append(predicted.tolist())
 
         output_df = pd.DataFrame(output)
