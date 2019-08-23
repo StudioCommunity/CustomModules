@@ -29,5 +29,8 @@ score_module = BuiltinScoreModule(args.trained_model, params)
 input_df = pd.read_parquet(os.path.join(args.dataset, INPUT_FILE_NAME), engine="pyarrow")
 output_df = score_module.run(input_df)
 
+print(f"input_df =\n{input_df}")
+print(f"output_df =\n{output_df}")
+print(f"trying to save_parquet1(output_df, {args.scored_dataset})")
 # ioutil.save_parquet(output_df, args.scored_dataset)
 ioutil.save_parquet1(output_df, args.scored_dataset)
