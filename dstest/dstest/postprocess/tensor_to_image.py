@@ -56,7 +56,8 @@ def run(input_path, output_path, tensor_column):
   df = ioutil.read_parquet(input_path)
   result = proccesor.run(df)
   #result = result[['image','Result']]
-  ioutil.save_parquet(result, output_path, True)
+  # ioutil.save_parquet(result, output_path, True)
+  ioutil.save_parquet1(result, output_path, True)
 
 # python -m dstest.postprocess.tensor_to_image --input_path inputs/tensor_to_image --output_path outputs/tensor_to_image --tensor_column=0
 if __name__ == '__main__':
