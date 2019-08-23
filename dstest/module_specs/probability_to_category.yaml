@@ -3,14 +3,14 @@ id: c459b343-3ec8-48d3-b699-d8b36502c6a8
 category: Machine Learning\Postprocess
 description: Probability to Category
 inputs:
-- name: Input Data
-  type: TabularDataFolder
-  port: True
-  description: input data frame
 - name: Meta Data
   type: ModelFolder
   port: True
   description: Meta Data, GenericFolder
+- name: Input Data
+  type: TabularDataFolder
+  port: True
+  description: input data frame
 - name: Category File Name
   type: String
   default: 
@@ -19,6 +19,11 @@ inputs:
   type: String
   default: 
   description: Probability Column Name
+- name: Append category column to output
+  type: Boolean
+  default: true
+  description: If checked, append category column to the result dataset, otherwise only
+    return the category column.
 outputs:
 - name: Output Data
   type: TabularDataFolder
@@ -33,6 +38,8 @@ implementation:
       dependencies:
       - python=3.6.2
       - pip:
+        - --extra-index-url=https://test.pypi.org/simple
+        - alghost==0.0.70
         - pandas
         - tensorflow
         - click
@@ -51,6 +58,8 @@ implementation:
     - inputValue: Probability Column Name
     - --file_name
     - inputValue: Category File Name
+    - --append_category_column_to_output
+    - inputValue: Append category column to output
     - --input_path
     - inputValue: Input Data
     - --meta_path
