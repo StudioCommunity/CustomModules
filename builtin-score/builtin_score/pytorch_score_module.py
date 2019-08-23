@@ -146,5 +146,6 @@ class PytorchWrapper(object):
                 output.append(predicted.tolist())
 
         output_df = pd.DataFrame(output)
+        output_df.columns = [f"Score_{i}" for i in range(0, output_df.shape[1])]
         print(f"output_df:\n{output_df}")
         return output_df
