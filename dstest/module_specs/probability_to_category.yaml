@@ -3,14 +3,14 @@ id: c459b343-3ec8-48d3-b699-d8b36502c6a8
 category: Machine Learning\Postprocess
 description: Probability to Category
 inputs:
-- name: Input Data
-  type: TabularDataFolder
-  port: True
-  description: input data frame
 - name: Meta Data
   type: ModelFolder
   port: True
   description: Meta Data, GenericFolder
+- name: Input Data
+  type: TabularDataFolder
+  port: True
+  description: input data frame
 - name: Category File Name
   type: String
   default: 
