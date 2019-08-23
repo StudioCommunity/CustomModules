@@ -27,6 +27,8 @@ implementation:
       - pip:
         - numpy
         - pandas
+        - alghost==0.0.70
+        - azureml-defaults
         - click
         - PyYAML
         - pyarrow
