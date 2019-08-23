@@ -34,7 +34,7 @@ class PytorchScoreModule(object):
         print('Load model success.')
         is_gpu = torch.cuda.is_available()   
         model = model.to(self.device)
-        print(f'DEVICE: {device}')
+        print(f'DEVICE: {self.device}')
         input_args = config.get('inputs', None)
         self.wrapper = PytorchWrapper(model, is_gpu, input_args)
 
