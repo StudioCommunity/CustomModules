@@ -4,7 +4,7 @@ category: Machine Learning\Postprocess
 description: Probability to Category
 inputs:
 - name: Meta Data
-  type: ModelFolder
+  type: GenericFolder
   port: True
   description: Meta Data, GenericFolder
 - name: Input Data
