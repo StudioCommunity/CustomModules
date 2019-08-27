@@ -89,5 +89,5 @@ implementation:
     - outputPath: Output Data
   invoking:
     module: dstest.preprocess.image_preprocess
-    class: Preprocess
+    class: ImagePreprocess
     func: run
