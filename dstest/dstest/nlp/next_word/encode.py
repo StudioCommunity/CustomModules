@@ -128,7 +128,7 @@ def run_pipeline(dict_path, vocab_path, raw_text, output_path):
     result = encoder.encode(raw_text)
     print(f'result: {result}')
     df = pd.DataFrame()
-    df["input:0"] = result
+    df["input:0"] = [result]
     ioutil.save_parquet(df, output_path)
     print(f'Output path: {os.listdir(output_path)}')
 
