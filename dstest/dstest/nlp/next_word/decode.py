@@ -20,7 +20,8 @@ logger = logging.getLogger(__name__)
 def run_pipeline(dict_path, vocab_path, encoded_token_path):
     print(f'ENCODED_TOKENS_PATH: {os.listdir(encoded_token_path)}')
     df = ioutil.read_parquet(encoded_token_path)
-    context_tokens = df.values.flatten()
+    # Change shape for built-in score
+    context_tokens = df.values.flatten()[0]
     encoder = BPEEncoder(dict_path, vocab_path)
     result = encoder.decode(context_tokens)
     print(f'RESULT: {result}')

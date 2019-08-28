@@ -127,7 +127,9 @@ def run_pipeline(dict_path, vocab_path, raw_text, output_path):
     encoder = BPEEncoder(dict_path, vocab_path)
     result = encoder.encode(raw_text)
     print(f'result: {result}')
-    ioutil.save_parquet(pd.DataFrame(result), output_path)
+    df = pd.DataFrame()
+    df["input:0"] = result
+    ioutil.save_parquet(df, output_path)
     print(f'Output path: {os.listdir(output_path)}')
 
 

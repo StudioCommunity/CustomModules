@@ -35,8 +35,8 @@ def array_from_df_col(col, shape):
     values = ioutil.from_df_column_to_array(col)
     if shape != None :
         target_shape = (len(values), *shape)
-        # reshape
-        if values.shape != target_shape:
+        # reshape if target_shape doesn't contain None
+        if values.shape != target_shape and None not in target_shape:
             print(f"reshape from {values.shape} to {target_shape}.")
             values = np.array(values).reshape(target_shape)
     return values
