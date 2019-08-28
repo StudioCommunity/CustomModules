@@ -49,8 +49,8 @@ implementation:
         - tensorflow
         - scikit-learn
         - keras
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-score
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=builtin-score
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=builtin-models
         - scipy # for tacotron2
         - librosa
         - unidecode 

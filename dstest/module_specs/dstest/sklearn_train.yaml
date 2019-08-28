@@ -21,8 +21,8 @@ implementation:
         - scikit-learn
         - click
         - PyYAML
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=dstest
-        - git+https://github.com/StudioCommunity/CustomModules.git@migu/NewYamlTest#subdirectory=builtin-models
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=dstest
+        - git+https://github.com/StudioCommunity/CustomModules.git@master#subdirectory=builtin-models
     command:
     - python
     - -m

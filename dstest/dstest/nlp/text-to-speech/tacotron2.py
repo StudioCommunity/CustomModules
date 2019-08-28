@@ -56,7 +56,7 @@ class Tacotron2Model(builtin_models.python.PythonModel):
 # python -m dstest.nlp.text-to-speech.tacotron2
 if __name__ == '__main__':
     model_path = "model/tacotron2"
-    github = 'StudioCommunity/CustomModules:migu/NewYamlTest'
+    github = 'StudioCommunity/CustomModules:master'
     module = 'dstest/dstest/nlp/text-to-speech/tacotron2.py'
     model_class = 'Tacotron2Model'
 

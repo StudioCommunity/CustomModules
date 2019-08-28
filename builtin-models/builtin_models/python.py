@@ -269,7 +269,7 @@ def load_model(model_path, github = None, module_path = None, model_class = None
     Returns:
         a single PythonModel with a predict function.
     Example:
-        model = builtin_models.load('StudioCommunity/CustomModules:migu/NewYamlTest', 'dstest/dstest/python/dummy.py', 'DummyPythonModel', pretrained=True)
+        model = builtin_models.load('StudioCommunity/CustomModules:master', 'dstest/dstest/python/dummy.py', 'DummyPythonModel', pretrained=True)
     """
     if(model_path is None):
         raise RuntimeError("Invalid model_path")
@@ -326,7 +326,7 @@ def _test_dummy_model():
     print(f"result: {result}")
     
     # test_github_based_model
-    github = 'StudioCommunity/CustomModules:migu/NewYamlTest'
+    github = 'StudioCommunity/CustomModules:master'
     module = 'builtin-models/builtin_models/python.py'
     model2 = load_model("../dstest/model/python/dummy/", github = github, module_path = module, model_class= 'DummyPythonModel', force_reload= True)
     result = model2.predict(x, y)

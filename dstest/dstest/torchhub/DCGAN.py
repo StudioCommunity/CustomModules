@@ -45,7 +45,7 @@ class DCGAN(builtin_models.python.PythonModel):
 # python -m dstest.torchhub.DCGAN
 if __name__ == '__main__':
     model_path = "model/pgan"
-    github = 'StudioCommunity/CustomModules:migu/NewYamlTest'
+    github = 'StudioCommunity/CustomModules:master'
     module = 'dstest/dstest/torchhub/PGAN.py'
     model_class = 'PGAN'
 
