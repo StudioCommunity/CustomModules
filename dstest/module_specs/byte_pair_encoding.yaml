@@ -29,7 +29,7 @@ implementation:
       - pip:
         - pandas
         - click
-        - pyarrow
+        - pyarrow==0.12.1
         - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=builtin-score
         - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=dstest
     command:
