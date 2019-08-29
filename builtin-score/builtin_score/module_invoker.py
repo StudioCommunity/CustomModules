@@ -8,9 +8,9 @@ from . import constants
 from .builtin_score_module import BuiltinScoreModule
 from . import ioutil
 
-# python -m builtin_score.module_invoker --trained-model ../dstest/model/tensorflow-minist/ --dataset ../dstest/outputs/mnist/ --scored-dataset ../dstest/outputs/mnist/ouput --append-score-columns-to-output True
-# python -m builtin_score.module_invoker --trained-model ../dstest/model/vgg/ --dataset ../dstest/outputs/imagenet/ --scored-dataset ../dstest/outputs/imagenet/ouput --append-score-columns-to-output True
-# python -m builtin_score.module_invoker --trained-model test/TestInputPort1 --dataset test/TestInputPort2 --scored-dataset test/TestOutputFolder --append-score-columns-to-output True
+# python -m builtin_score.module_invoker --trained-model ../dstest/model/tensorflow-minist/ --dataset ../dstest/outputs/mnist/ --scored-dataset ../dstest/outputs/mnist/ouput --append-score-columns-to-output true
+# python -m builtin_score.module_invoker --trained-model ../dstest/model/vgg/ --dataset ../dstest/outputs/imagenet/ --scored-dataset ../dstest/outputs/imagenet/ouput --append-score-columns-to-output true
+# python -m builtin_score.module_invoker --trained-model test/TestInputPort1 --dataset test/TestInputPort2 --scored-dataset test/TestOutputFolder --append-score-columns-to-output true
 
 INPUT_FILE_NAME = "data.dataset.parquet" # hard coded, to be replaced, and we presume the data is DataFrame inside parquet
 OUTPUT_FILE_NAME = "output.csv"
@@ -18,7 +18,7 @@ OUTPUT_FILE_NAME = "output.csv"
 parser = argparse.ArgumentParser()
 parser.add_argument("--trained-model", type=str, help="model path")
 parser.add_argument("--dataset", type=str, help="dataset")
-parser.add_argument('--append-score-columns-to-output', choices=('True', 'False'))
+parser.add_argument('--append-score-columns-to-output', choices=('true', 'false'))
 parser.add_argument("--scored-dataset", type=str, help="scored dataset path")
 
 args, _ = parser.parse_known_args()

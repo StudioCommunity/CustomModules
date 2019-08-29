@@ -7,8 +7,8 @@ import pandas as pd
 from os import walk
 import base64
 import pyarrow.parquet as pq
-from builtin_score import ioutil
-from. import datauri_util
+from ..utils import ioutils
+from ..utils import datauri_utils
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -35,17 +35,16 @@ def run(input_path, output_path):
   print(f"Got {len(files_grabbed)} files in folder {input_path}")
   print(files_grabbed)
 
-  df = pd.DataFrame(columns=["filename", "label", "image"])
+  df = pd.DataFrame(columns=["image"])
   for i in range(len(files_grabbed)):
     filename = files_grabbed[i]
-    basename = os.path.splitext(os.path.basename(filename))[0]
-    label = basename.split('_')[-1]
-    image_64_encode = datauri_util.imgfile_to_datauri(filename)
-    df.loc[i] = basename, label, image_64_encode
+    image_64_encode = datauri_utils.imgfile_to_datauri(filename)
+    df.loc[i] = image_64_encode
 
-  ioutil.save_parquet1(df, output_path, True)
+  ioutils.save_dataframe(df, output_path, True)
   print(f"df =\n{df}")
   print(f'OUTPUT_PATH({output_path}) : {os.listdir(output_path)}')
+
 # python -m dstest.preprocess.import_image  --input_path inputs/mnist --output_path pip/mnist
 # python -m dstest.preprocess.import_image  --input_path inputs/imagenet --output_path datas/imagenet
 if __name__ == '__main__':
