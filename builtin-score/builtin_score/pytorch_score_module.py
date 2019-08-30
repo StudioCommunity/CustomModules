@@ -10,6 +10,7 @@ import os
 import ast
 import cloudpickle
 import logging
+import shutil
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
@@ -44,12 +45,15 @@ class PytorchScoreModule(object):
 
     def load_scripts(self, model_path):
         modules = {}
+        cwd = os.getcwd()
         with os.scandir(model_path) as files_and_dirs:
             for entry in files_and_dirs:
                 if entry.is_file() and entry.name.endswith('.py'):
-                    name = entry.name[:-len('.py')]
-                    #modules[name] = importlib.import_module(entry.path)
-                    modules[name] = imp.load_source(name, entry.path)
+                    shutil.copyfile(entry.path, os.path.join(cwd, entry.name))
+                    # name = entry.name[:-len('.py')]
+                    # modules[name] = importlib.import_module(entry.path)
+                    # modules[name] = imp.load_source(name, entry.path)
+
         return modules 
 
     def load_from_cloudpickle(self, model_path, pt_config):
@@ -141,7 +145,6 @@ class PytorchWrapper(object):
                 input_params = list(map(to_tensor, row[self.input_args]))
                 print(f"FEATURES: {input_params}")
                 print(f"input_params[0].size() = {input_params[0].size()}")
-                print(f"input_params[1].size() = {input_params[1].size()}")
                 predicted = self.model(*input_params)
                 print(f"predicted = {predicted}")
                 output.append(predicted.tolist())
