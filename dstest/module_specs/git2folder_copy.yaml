@@ -21,6 +21,7 @@ implementation:
       - python=3.6.8
       - pip:
         - --extra-index-url=https://ds-test:uq2ilv76n53oy6zg7du6nauas75yy7wyld33muw7hj372tgn6mga@msdata.pkgs.visualstudio.com/_packaging/ds-test/pypi/simple/
+        - dstest
         - gitpython
     command:
     - python
