@@ -18,7 +18,7 @@ OUTPUT_FILE_NAME = "output.csv"
 parser = argparse.ArgumentParser()
 parser.add_argument("--trained-model", type=str, help="model path")
 parser.add_argument("--dataset", type=str, help="dataset")
-parser.add_argument('--append-score-columns-to-output', choices=('true', 'false'))
+parser.add_argument('--append-score-columns-to-output', choices=('True', 'False'))
 parser.add_argument("--scored-dataset", type=str, help="scored dataset path")
 
 args, _ = parser.parse_known_args()
