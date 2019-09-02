@@ -23,7 +23,7 @@ implementation:
       - pip:
         - --extra-index-url=https://test.pypi.org/simple
         - azureml-defaults
-        - alghost
+        - alghost==0.0.80
         - pandas
         - tensorflow
         - click
