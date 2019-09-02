@@ -44,6 +44,13 @@ class PytorchScoreModule(object):
         return self.wrapper.predict(df)
 
     def load_scripts(self, model_path):
+        # TODO: We need major refactoring here, since the current implementation is so limited that it can't support
+        # the using of it in the model trained in our own product.
+        # And the implementation itself is too crude to be released
+        # This is a ugly workaround for densenet case
+        from pip._internal import main as pipmain
+        pipmain(["install", "git+https://github.com/StudioCommunity/CustomModules-1.git@master#subdirectory=azureml-custom-module-examples/densenet-img-cls-v2", "fire", "scipy"])
+
         modules = {}
         cwd = os.getcwd()
         with os.scandir(model_path) as files_and_dirs:
