@@ -26,7 +26,7 @@ def run(input_path, output_path):
   """
   import glob
   print(f'INPUT_PATH({input_path}) : {os.listdir(input_path)}')
-  types = ('**.jpg', '**.png') # the tuple of file types
+  types = ('**.jpg', '**.png', '**.jfif') # the tuple of file types
   files_grabbed = []
   for files in types:
     pattern = os.path.join(input_path,files)
