@@ -1,3 +1,5 @@
+from pip._internal import main as pipmain
+print(pipmain(["list"]))
 import logging
 import os
 import json
