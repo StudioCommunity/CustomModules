@@ -9,8 +9,9 @@ inputs:
 - name: Vocabulary Path
   type: String
   description: The vacabulary used to encode the text
-- name: Raw Text
-  type: String
+- name: Input Text Path
+  type: TabularDataFolder
+  port: True
   description: The input text
 outputs:
 - name: Output Path
@@ -41,8 +42,8 @@ implementation:
     - inputPath: Dictionary Path
     - --vocab_path
     - inputPath: Vocabulary Path
-    - --raw_text
-    - inputPath: Raw Text
+    - --input_text_path
+    - inputPath: Input Text Path
     - --output_path
     - outputPath: Output Path
   invoking:

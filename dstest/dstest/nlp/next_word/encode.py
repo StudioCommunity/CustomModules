@@ -6,7 +6,6 @@ import os
 from functools import lru_cache
 from builtin_score import ioutil
 
-
 from pip._internal import main as pipmain
 pipmain(["install", "click"])
 import click
@@ -17,6 +16,8 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message
                     level=logging.INFO)
 logging.info(f"Encode text with BPE")
 logger = logging.getLogger(__name__)
+
+INPUT_FILE_NAME = "data.dataset.parquet" # hard coded, to be replaced, and we presume the data is DataFrame inside parquet
 
 @lru_cache()
 def bytes_to_unicode():
@@ -121,9 +122,11 @@ class BPEEncoder(object):
 @click.command()
 @click.option('--dict_path')
 @click.option('--vocab_path')
-@click.option('--raw_text')
+@click.option('--input_text_path')
 @click.option('--output_path', default="outputs/gpt2")
-def run_pipeline(dict_path, vocab_path, raw_text, output_path):
+def run_pipeline(dict_path, vocab_path, input_text_path, output_path):
+    input_df = pd.read_parquet(os.path.join(input_text_path, INPUT_FILE_NAME), engine="pyarrow")
+    raw_text = ''.join(input_df.values.flatten())
     encoder = BPEEncoder(dict_path, vocab_path)
     result = encoder.encode(raw_text)
     print(f'result: {result}')
@@ -133,6 +136,6 @@ def run_pipeline(dict_path, vocab_path, raw_text, output_path):
     print(f'Output path: {os.listdir(output_path)}')
 
 
-# python -m dstest.nlp.next_word.encode.py --dict_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/encoder.json?sp=r&st=2019-08-19T06:20:30Z&se=2019-08-19T14:20:30Z&spr=https&sv=2018-03-28&sig=qTGkAtWTCd53nk422%2BdBu2kNOfzlgQP4kPQ5UBJwHdE%3D&sr=b --vocab_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/vocab.bpe?sp=r&st=2019-08-19T06:20:07Z&se=2019-08-19T14:20:07Z&spr=https&sv=2018-03-28&sig=ADyXdQpwS4eewX5q2w3ab7FnQoR6SGKuE6yKKcifi5M%3D&sr=b --raw_text "This is a test"
+# python -m dstest.nlp.next_word.encode.py --dict_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/encoder.json?sp=r&st=2019-08-19T06:20:30Z&se=2019-08-19T14:20:30Z&spr=https&sv=2018-03-28&sig=qTGkAtWTCd53nk422%2BdBu2kNOfzlgQP4kPQ5UBJwHdE%3D&sr=b --vocab_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/vocab.bpe?sp=r&st=2019-08-19T06:20:07Z&se=2019-08-19T14:20:07Z&spr=https&sv=2018-03-28&sig=ADyXdQpwS4eewX5q2w3ab7FnQoR6SGKuE6yKKcifi5M%3D&sr=b --input_text_path inputs/gpt2
 if __name__ == '__main__':
     run_pipeline()
