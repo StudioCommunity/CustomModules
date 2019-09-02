@@ -49,7 +49,9 @@ class PytorchScoreModule(object):
         # And the implementation itself is too crude to be released
         # This is a ugly workaround for densenet case
         from pip._internal import main as pipmain
-        pipmain(["install", "git+https://github.com/StudioCommunity/CustomModules-1.git@master#subdirectory=azureml-custom-module-examples/densenet-img-cls-v2", "fire", "scipy"])
+        dependencies = ["git+https://github.com/StudioCommunity/CustomModules-1.git@master#subdirectory=azureml-custom-module-examples/densenet-img-cls-v2", "fire", "scipy"]
+        pipmain(["install"] + dependencies)
+        print(f"Installed additional dependencies {','.join(dependencies)}")
 
         modules = {}
         cwd = os.getcwd()
