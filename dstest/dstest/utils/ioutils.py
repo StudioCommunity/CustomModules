@@ -48,10 +48,13 @@ def transform_ndarraycol_to_list(df):
 def save_dataframe(df, output_path, writeCsv= False):
     ensure_folder_exists(output_path)
     df = transform_ndarraycol_to_list(df)
+    # Use datatable saver to get visualization data
     datatable = DataTable(df)
     visualizer = DataTableVisualizer(datatable)
     visualization_data = visualizer.dump_to_dict()
     save_data_frame_to_directory(output_path, data=df, visualization=[JsonVisualizer("Visualization", visualization_data)])
+    # save_data_frame_to_directory save df to _data.parquet instead of conventional data.dataset.parquet, manually save another copy
+    df.to_parquet(os.path.join(output_path, "data.dataset.parquet"), engine="pyarrow")
     logger.info(f"saved data to {output_path}, columns {df.columns}")
 
 def save_datatype(output_path):
