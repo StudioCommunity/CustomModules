@@ -18,6 +18,8 @@ logging.info(f"Encode text with BPE")
 logger = logging.getLogger(__name__)
 
 INPUT_FILE_NAME = "data.dataset.parquet" # hard coded, to be replaced, and we presume the data is DataFrame inside parquet
+DICT_PATH_KEY = "Dictionary Path"
+VOCAB_PATH_KEY = "Vocabulary Path"
 
 @lru_cache()
 def bytes_to_unicode():
@@ -56,7 +58,14 @@ def get_pairs(word):
 
 
 class BPEEncoder(object):
-    def __init__(self, dict_path, vocab_path, errors='replace'):
+    def __init__(self, params={}):
+        print(f"BPEEncoder({params})")
+        dict_path = params.get(
+            DICT_PATH_KEY, None
+        )
+        vocab_path = params.get(
+            VOCAB_PATH_KEY, None
+        )
         self.byte_encoder = bytes_to_unicode()
         response = urllib.request.urlopen(dict_path)
         self.dict = json.load(response)
@@ -67,14 +76,19 @@ class BPEEncoder(object):
         self.pat = re.compile(r"""'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+""")
         self.byte_decoder = {v:k for k, v in self.byte_encoder.items()}
         self.decoder = {v:k for k,v in self.dict.items()}
-        self.errors = errors  # how to handle errors in decoding
+        self.errors = 'replace'  # how to handle errors in decoding
 
-    def encode(self, raw_text):
+    def encode(self, input_df):
+        print(f"BPE encoder input({input_df})")
+        raw_text = ''.join(input_df.values.flatten())
         bpe_tokens = []
         for token in re.findall(self.pat, raw_text):
             token = ''.join(self.byte_encoder[b] for b in token.encode('utf-8'))
             bpe_tokens.extend(self.dict[bpe_token] for bpe_token in self.bpe(token).split(' '))
-        return bpe_tokens
+        print(f'result: {bpe_tokens}')
+        df = pd.DataFrame()
+        df["input:0"] = [bpe_tokens]
+        return df
 
     def bpe(self, token):
         word = tuple(token)
@@ -114,10 +128,15 @@ class BPEEncoder(object):
         word = ' '.join(word)
         return word
 
-    def decode(self, tokens):
-        text = ''.join([self.decoder[token] for token in tokens])
+    def decode(self, input_df):
+        # Change shape for built-in score
+        context_tokens = input_df.values.flatten()[0]
+        text = ''.join([self.decoder[token] for token in context_tokens])
         text = bytearray([self.byte_decoder[c] for c in text]).decode('utf-8', errors=self.errors)
-        return text
+        print(f'RESULT: {text}')
+        output = pd.DataFrame([text])
+        return output
+
 
 @click.command()
 @click.option('--dict_path')
@@ -126,12 +145,12 @@ class BPEEncoder(object):
 @click.option('--output_path', default="outputs/gpt2")
 def run_pipeline(dict_path, vocab_path, input_text_path, output_path):
     input_df = pd.read_parquet(os.path.join(input_text_path, INPUT_FILE_NAME), engine="pyarrow")
-    raw_text = ''.join(input_df.values.flatten())
-    encoder = BPEEncoder(dict_path, vocab_path)
-    result = encoder.encode(raw_text)
-    print(f'result: {result}')
-    df = pd.DataFrame()
-    df["input:0"] = [result]
+    meta = {
+        DICT_PATH_KEY: dict_path,
+        VOCAB_PATH_KEY: vocab_path
+    }
+    encoder = BPEEncoder(meta)
+    df = encoder.encode(input_df)
     ioutil.save_parquet(df, output_path)
     print(f'Output path: {os.listdir(output_path)}')
 

@@ -47,6 +47,6 @@ implementation:
     - --output_path
     - outputPath: Output Path
   invoking:
-    module:
-    class:
-    func:
+    module: dstest.nlp.next_word.encode
+    class: BPEEncoder
+    func: encode

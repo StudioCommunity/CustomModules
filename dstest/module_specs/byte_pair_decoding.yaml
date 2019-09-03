@@ -46,6 +46,6 @@ implementation:
     - --decoded_text_path
     - outputPath: Decoded text
   invoking:
-    module:
-    class:
-    func:
+    module: dstest.nlp.next_word.encode
+    class: BPEEncoder
+    func: decode
