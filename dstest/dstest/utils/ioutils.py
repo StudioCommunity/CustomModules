@@ -55,6 +55,7 @@ def save_dataframe(df, output_path, writeCsv= False):
     save_data_frame_to_directory(output_path, data=df, visualization=[JsonVisualizer("Visualization", visualization_data)])
     # save_data_frame_to_directory save df to _data.parquet instead of conventional data.dataset.parquet, manually save another copy
     df.to_parquet(os.path.join(output_path, "data.dataset.parquet"), engine="pyarrow")
+    logger.info(f"saved an additional copy to data.dataset.parquet")
     logger.info(f"saved data to {output_path}, columns {df.columns}")
 
 def save_datatype(output_path):
