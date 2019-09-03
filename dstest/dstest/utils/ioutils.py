@@ -6,8 +6,8 @@ import numpy as np
 
 from azureml.studio.common.datatypes import DataTypes
 from azureml.studio.common.datatable.data_table import DataTable
-from azureml.studio.core.io.data_frame_directory import save_data_frame_to_directory
-from azureml.studio.core.io.visualizer import JsonVisualizer
+from azureml.studio.common.io.data_frame_directory import save_data_frame_to_directory
+from azureml.studio.common.io.visualizer import JsonVisualizer
 from azureml.studio.modulehost.handler.sidecar_files import DataTableVisualizer
 
 logging.info(f"in {__file__}")
