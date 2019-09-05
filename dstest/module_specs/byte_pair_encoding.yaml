@@ -29,8 +29,8 @@ implementation:
       - regex
       - pip:
         - --extra-index-url=https://CustomModules:ptnvejiiz3hnah5eoiv4dooigkksysjme6tqwrfjlvw4ekchejqq@msdata.pkgs.visualstudio.com/_packaging/CustomModules/pypi/simple/
-        - azureml-studio-modelspec
-        - azureml-studio-score
+        - azureml-studio-modelspec==0.1.20190905.1
+        - azureml-studio-score==0.1.20190905.1
         - pandas
         - click
         - pyarrow==0.12.1
