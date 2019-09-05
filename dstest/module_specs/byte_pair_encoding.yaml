@@ -37,7 +37,7 @@ implementation:
     command:
     - python
     - -m
-    - dstest.nlp.next_word.encode
+    - examples.tensorflow.gpt2.encode
     args:
     - --dict_path
     - inputPath: Dictionary Path
@@ -48,6 +48,6 @@ implementation:
     - --output_path
     - outputPath: Output Path
   invoking:
-    module: dstest.nlp.next_word.encode
+    module: examples.tensorflow.gpt2.encode
     class: BPEEncoder
     func: encode
