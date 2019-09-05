@@ -4,7 +4,7 @@ import pandas as pd
 import urllib.request
 import os
 from functools import lru_cache
-from builtin_score import ioutil
+from azureml.studio.score import ioutil
 
 from pip._internal import main as pipmain
 pipmain(["install", "click"])
@@ -141,8 +141,8 @@ class BPEEncoder(object):
 @click.command()
 @click.option('--dict_path')
 @click.option('--vocab_path')
-@click.option('--input_text_path')
-@click.option('--output_path', default="outputs/gpt2")
+@click.option('--input_text_path', default="inputs/gpt2")
+@click.option('--output_path', default="outputs/gpt2/encoded_text")
 def run_pipeline(dict_path, vocab_path, input_text_path, output_path):
     input_df = pd.read_parquet(os.path.join(input_text_path, INPUT_FILE_NAME), engine="pyarrow")
     meta = {
@@ -155,6 +155,7 @@ def run_pipeline(dict_path, vocab_path, input_text_path, output_path):
     print(f'Output path: {os.listdir(output_path)}')
 
 
-# python -m dstest.nlp.next_word.encode.py --dict_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/encoder.json?sp=r&st=2019-08-19T06:20:30Z&se=2019-08-19T14:20:30Z&spr=https&sv=2018-03-28&sig=qTGkAtWTCd53nk422%2BdBu2kNOfzlgQP4kPQ5UBJwHdE%3D&sr=b --vocab_path https://wanhanamlservi5915456327.blob.core.windows.net/gpt2/vocab.bpe?sp=r&st=2019-08-19T06:20:07Z&se=2019-08-19T14:20:07Z&spr=https&sv=2018-03-28&sig=ADyXdQpwS4eewX5q2w3ab7FnQoR6SGKuE6yKKcifi5M%3D&sr=b --input_text_path inputs/gpt2
+# TODO(wanhan): use a better way to store dict and vocabulary
+# python -m examples.tensorflow.gpt2.encode ...
 if __name__ == '__main__':
     run_pipeline()
