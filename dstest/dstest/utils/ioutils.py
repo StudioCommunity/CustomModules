@@ -4,11 +4,6 @@ import json
 import pandas as pd
 import numpy as np
 
-from azureml.studio.common.datatypes import DataTypes
-from azureml.studio.common.datatable.data_table import DataTable
-from azureml.studio.common.io.data_frame_directory import save_data_frame_to_directory
-from azureml.studio.common.io.visualizer import JsonVisualizer
-from azureml.studio.modulehost.handler.sidecar_files import DataTableVisualizer
 
 logging.info(f"in {__file__}")
 logger = logging.getLogger(__name__)
@@ -46,6 +41,11 @@ def transform_ndarraycol_to_list(df):
     return df
    
 def save_dataframe(df, output_path, writeCsv= False):
+    from azureml.studio.common.datatypes import DataTypes
+    from azureml.studio.common.datatable.data_table import DataTable
+    from azureml.studio.common.io.data_frame_directory import save_data_frame_to_directory
+    from azureml.studio.common.io.visualizer import JsonVisualizer
+    from azureml.studio.modulehost.handler.sidecar_files import DataTableVisualizer
     ensure_folder_exists(output_path)
     df = transform_ndarraycol_to_list(df)
     # Use datatable saver to get visualization data
