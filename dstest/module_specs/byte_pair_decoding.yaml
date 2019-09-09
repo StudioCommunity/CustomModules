@@ -27,12 +27,11 @@ implementation:
       - python=3.6.8
       - regex
       - pip:
-        - --extra-index-url=https://CustomModules:ptnvejiiz3hnah5eoiv4dooigkksysjme6tqwrfjlvw4ekchejqq@msdata.pkgs.visualstudio.com/_packaging/CustomModules/pypi/simple/
-        - azureml-studio-modelspec
-        - azureml-studio-score
         - pandas
         - click
         - pyarrow==0.12.1
+        - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=builtin-score
+        - git+https://github.com/StudioCommunity/CustomModules.git@wanhan/NextWordNLP#subdirectory=dstest
     command:
     - python
     - -m
