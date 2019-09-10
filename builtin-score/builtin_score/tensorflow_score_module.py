@@ -5,6 +5,8 @@ import pandas as pd
 from . import constants
 from . import ioutil
 
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
 def rename_col(df, col_name):
     col_pattern = col_name +"."
     df.rename(columns=lambda col : col_name if col.startswith(col_pattern) else col, inplace=True)
@@ -48,6 +50,7 @@ class _TFSavedModelWrapper(object):
     """
     def __init__(self, export_dir, tf_meta_graph_tags, tf_signature_def_key):
         tf_graph = tf.Graph()
+        print(f'tf_graph: {tf_graph}')
         tf_sess = tf.Session(graph=tf_graph)
 
         self.tf_graph = tf_graph
