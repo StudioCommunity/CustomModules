@@ -60,12 +60,16 @@ def get_pairs(word):
 class BPEEncoder(object):
     def __init__(self, params={}):
         print(f"BPEEncoder({params})")
+        print(f"DICT_PATH_KEY: {DICT_PATH_KEY}")
+        print(f"VOCAB_PATH_KEY: {VOCAB_PATH_KEY}")
         dict_path = params.get(
             DICT_PATH_KEY, None
         )
         vocab_path = params.get(
             VOCAB_PATH_KEY, None
         )
+        print(f"dict_path: {dict_path}")
+        print(f"vocab_path: {vocab_path}")
         self.byte_encoder = bytes_to_unicode()
         response = urllib.request.urlopen(dict_path)
         self.dict = json.load(response)
