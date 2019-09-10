@@ -19,6 +19,7 @@ inputs:
 outputs:
 - name: Scored dataset
   type: TabularDataFolder
+  port: True
   description: Dataset with obtained scores
 implementation:
   container:
