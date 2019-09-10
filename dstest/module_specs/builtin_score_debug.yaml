@@ -57,7 +57,7 @@ implementation:
     - --dataset
     - inputValue: Dataset
     - --append-score-columns-to-output
-    - inputValue: Append score columns to output
+    - inputValue: Appendscorecolumnstooutput
     - --scored-dataset
     - outputPath: Scored dataset
   invoking:
