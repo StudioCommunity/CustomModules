@@ -5,6 +5,9 @@ import pandas as pd
 from . import constants
 from . import ioutil
 
+# work around for cases when tensorflow couldn't get tty for warning logs
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+
 def rename_col(df, col_name):
     col_pattern = col_name +"."
     df.rename(columns=lambda col : col_name if col.startswith(col_pattern) else col, inplace=True)
