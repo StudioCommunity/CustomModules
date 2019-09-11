@@ -4,15 +4,15 @@ category: Score
 description: Sleep for a while
 inputs:
 - name: Input Port One
-  type: AnyFile
+  type: TabularDataFolder
   port: True
   description: Input port one
 - name: Input Port Two
-  type: AnyFile
+  type: TabularDataFolder
   port: True
   description: Input port two
 - name: Input Port Three
-  type: AnyFile
+  type: TabularDataFolder
   port: True
   description: Input port three
 - name: SleepTime
@@ -20,15 +20,15 @@ inputs:
   description: Sleep time
 outputs:
 - name: Output Port One
-  type: AnyFile
+  type: TabularDataFolder
   port: True
   description: Output port one
 - name: Output Port Two
-  type: AnyFile
+  type: TabularDataFolder
   port: True
   description: Output port two
 - name: Output Port Three
-  type: AnyFile
+  type: TabularDataFolder
   port: True
   description: Output port three
 implementation:
