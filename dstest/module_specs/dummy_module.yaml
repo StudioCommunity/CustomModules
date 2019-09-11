@@ -49,6 +49,18 @@ implementation:
     args:
     - --sleep_time
     - inputValue: SleepTime
+    - --input_one
+    - inputValue: Input Port One
+    - --input_two
+    - inputValue: Input Port Two
+    - --input_three
+    - inputValue: Input Port Three
+    - --output_one
+    - outputPath: Output Port One
+    - --output_two
+    - outputPath: Output Port Two
+    - --output_three
+    - outputPath: Output Port Three
   invoking:
     module:
     class:
