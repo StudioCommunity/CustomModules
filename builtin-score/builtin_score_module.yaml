@@ -11,7 +11,7 @@ inputs:
   type: TabularDataFolder
   port: True
   description: input data to score
-- name: Append score columns to output
+- name: Append_score_columns_to_output
   type: Boolean
   default: true
   description: If checked, append score columns to the result dataset, otherwise only
@@ -65,7 +65,7 @@ implementation:
     - --dataset
     - inputValue: Dataset
     - --append-score-columns-to-output
-    - inputValue: Append score columns to output
+    - inputValue: Append_score_columns_to_output
     - --scored-dataset
     - outputPath: Scored dataset
   invoking:
