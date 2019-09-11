@@ -18,6 +18,11 @@ inputs:
   port: True
   optional: True
   description: Input port three
+- name: Input Port Four
+  type: TabularDataFolder
+  port: True
+  optional: True
+  description: Input port four
 - name: SleepTimeMilliSeconds
   type: int
   optional: True
@@ -50,6 +55,8 @@ implementation:
     - inputValue: Input Port Two
     - --input_three
     - inputValue: Input Port Three
+    - --input_four
+    - inputValue: Input Port Four
     - --output
     - outputPath: Output Port
   invoking:
