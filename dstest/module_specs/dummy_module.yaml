@@ -6,14 +6,17 @@ inputs:
 - name: Input Port One
   type: TabularDataFolder
   port: True
+  optional: True
   description: Input port one
 - name: Input Port Two
   type: TabularDataFolder
   port: True
+  optional: True
   description: Input port two
 - name: Input Port Three
   type: TabularDataFolder
   port: True
+  optional: True
   description: Input port three
 - name: SleepTime
   type: int
