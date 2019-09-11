@@ -6,6 +6,7 @@ import pandas as pd
 from . import constants
 
 MODEL_SPEC_FILE_NAME = "model_spec.yml"
+MODEL_SPEC_ONNX_NAME = "modle_opt_spec.yaml"
 
 
 class BuiltinScoreModule(object):
@@ -43,9 +44,26 @@ class BuiltinScoreModule(object):
             msg = f"Not Implemented: framework {framework} not supported"
             print(msg)
             raise ValueError(msg)
+        
+        self.onnx = None
+        onnx_spec_path = os.path.join(model_path, MODEL_SPEC_ONNX_NAME)
+        if os.path.exists(onnx_spec_path):
+            from .onnx_score_module import OnnxScoreModule
+            with open(onnx_spec_path) as fp:
+                config = yaml.safe_load(fp)
+            self.onnx = OnnxScoreModule(model_path, config)
+        print(f'ONNX={self.onnx}, PATH={onnx_spec_path}')
 
     def run(self, df, global_param=None):
-        output_label = self.module.run(df)
+        output_label = pd.DataFrame()
+        if self.onnx:
+            try:
+                output_label = self.onnx.run(df)
+            except Exception as ex:
+                print(f"ONNX EXCEPTION: {ex}")
+                print(f"Fallback to the original model")
+        if output_label.empty:
+            output_label = self.module.run(df)
         print(f"output_label = {output_label}")
         if self.append_score_column_to_output:
             if isinstance(output_label, pd.DataFrame):
