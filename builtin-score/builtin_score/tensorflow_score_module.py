@@ -51,6 +51,7 @@ class _TFSavedModelWrapper(object):
     """
     def __init__(self, export_dir, tf_meta_graph_tags, tf_signature_def_key):
         tf_graph = tf.Graph()
+        print(f'tf_graph: {tf_graph}')
         tf_sess = tf.Session(graph=tf_graph)
 
         self.tf_graph = tf_graph
@@ -199,6 +200,7 @@ class _TFSaverWrapper(object):
 class TensorflowScoreModule(object):
 
     def __init__(self, model_path, config):
+        print(f'Tensorflow init: config:{config}')
         tf_config = config["tensorflow"]
         
         if(tf_config.get(constants.SERIALIZATION_METHOD_KEY, "saver") == "saved_model"):

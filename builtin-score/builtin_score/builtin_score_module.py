@@ -15,6 +15,8 @@ class BuiltinScoreModule(object):
         append_score_column_to_output_value_str = params.get(
             constants.APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY, None
         )
+        print(f'APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY: {constants.APPEND_SCORE_COLUMNS_TO_OUTPUT_KEY}')
+        print(f'append_score_column_to_output_value_str: {append_score_column_to_output_value_str}')
         self.append_score_column_to_output = isinstance(append_score_column_to_output_value_str, str) and\
             append_score_column_to_output_value_str.lower() == "true"
         print(f"self.append_score_column_to_output = {self.append_score_column_to_output}")
@@ -29,6 +31,7 @@ class BuiltinScoreModule(object):
             self.module = PytorchScoreModule(model_path, config)
         elif framework.lower() == "tensorflow":
             from .tensorflow_score_module import TensorflowScoreModule
+            print(f'tensorflow config: {config}')
             self.module = TensorflowScoreModule(model_path, config)
         elif framework.lower() == "sklearn":
             from .sklearn_score_module import SklearnScoreModule

@@ -7,6 +7,8 @@ import numpy as np
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
+print(f'__file__: {__file__}')
+print(f'__name__: {__name__}')
 logging.info(f"in {__file__}")
 logger = logging.getLogger(__name__)
 
