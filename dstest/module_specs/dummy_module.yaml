@@ -18,7 +18,7 @@ inputs:
   port: True
   optional: True
   description: Input port three
-- name: SleepTimeInSeconds
+- name: SleepTimeMilliSeconds
   type: int
   optional: True
   description: Sleep time(in seconds)
@@ -45,14 +45,14 @@ implementation:
       - python=3.6.8
       - pip:
           - --extra-index-url=https://CustomModules:ptnvejiiz3hnah5eoiv4dooigkksysjme6tqwrfjlvw4ekchejqq@msdata.pkgs.visualstudio.com/_packaging/CustomModules/pypi/simple/
-          - azureml-studio-score==0.1.20190911.1
+          - azureml-studio-score==0.1.20190911.2
     command:
     - python
     - -m
     - azureml.studio.score.dummy_module
     args:
-    - --sleep_time_in_seconds
-    - inputValue: SleepTimeInSeconds
+    - --sleep_time_milli_seconds
+    - inputValue: SleepTimeMilliSeconds
     - --input_one
     - inputValue: Input Port One
     - --input_two
