@@ -20,6 +20,7 @@ inputs:
   description: Input port three
 - name: SleepTime
   type: int
+  optional: True
   description: Sleep time
 outputs:
 - name: Output Port One
