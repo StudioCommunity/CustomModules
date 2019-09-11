@@ -18,10 +18,10 @@ inputs:
   port: True
   optional: True
   description: Input port three
-- name: SleepTime
+- name: SleepTimeInSeconds
   type: int
   optional: True
-  description: Sleep time
+  description: Sleep time(in seconds)
 outputs:
 - name: Output Port One
   type: TabularDataFolder
@@ -45,14 +45,14 @@ implementation:
       - python=3.6.8
       - pip:
           - --extra-index-url=https://CustomModules:ptnvejiiz3hnah5eoiv4dooigkksysjme6tqwrfjlvw4ekchejqq@msdata.pkgs.visualstudio.com/_packaging/CustomModules/pypi/simple/
-          - azureml-studio-score==0.1.20190910.5
+          - azureml-studio-score==0.1.20190911.1
     command:
     - python
     - -m
     - azureml.studio.score.dummy_module
     args:
-    - --sleep_time
-    - inputValue: SleepTime
+    - --sleep_time_in_seconds
+    - inputValue: SleepTimeInSeconds
     - --input_one
     - inputValue: Input Port One
     - --input_two
