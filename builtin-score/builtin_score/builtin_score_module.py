@@ -6,7 +6,7 @@ import pandas as pd
 from . import constants
 
 MODEL_SPEC_FILE_NAME = "model_spec.yml"
-MODEL_SPEC_ONNX_NAME = "model_opt_spec.yaml"
+MODEL_SPEC_ONNX_NAME = "model_opt_spec.yml"
 
 
 class BuiltinScoreModule(object):
