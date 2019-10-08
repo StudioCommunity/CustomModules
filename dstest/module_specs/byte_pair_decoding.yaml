@@ -38,9 +38,9 @@ implementation:
     - dstest.nlp.next_word.decode
     args:
     - --dict-path
-    - inputPath: DictionaryPath
+    - inputValue: DictionaryPath
     - --vocab-path
-    - inputPath: VocabularyPath
+    - inputValue: VocabularyPath
     - --encoded-token-path
     - inputPath: Encoded token Path
     - --decoded-text-path
