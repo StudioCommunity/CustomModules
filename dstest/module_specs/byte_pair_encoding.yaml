@@ -39,11 +39,11 @@ implementation:
     - dstest.nlp.next_word.encode
     args:
     - --dict-path
-    - -inputValue: DictionaryPath
+    - inputValue: DictionaryPath
     - --vocab-path
-    - -inputValue: VocabularyPath
+    - inputValue: VocabularyPath
     - --input-text-path
-    - -inputPath: Input Text Path
+    - inputPath: Input Text Path
     - --output-path
     - outputPath: Output Path
   invoking:
