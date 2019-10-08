@@ -147,10 +147,10 @@ class BPEEncoder(object):
 
 
 @click.command()
-@click.option('--dict_path')
-@click.option('--vocab_path')
-@click.option('--input_text_path')
-@click.option('--output_path', default="outputs/gpt2")
+@click.option('--dict-path')
+@click.option('--vocab-path')
+@click.option('--input-text-path')
+@click.option('--output-path', default="outputs/gpt2")
 def run_pipeline(dict_path, vocab_path, input_text_path, output_path):
     input_df = pd.read_parquet(os.path.join(input_text_path, INPUT_FILE_NAME), engine="pyarrow")
     meta = {

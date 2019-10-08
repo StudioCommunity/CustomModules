@@ -19,10 +19,10 @@ VOCAB_PATH_KEY = "VocabularyPath"
 
 
 @click.command()
-@click.option('--dict_path')
-@click.option('--vocab_path')
-@click.option('--encoded_token_path', default="outputs/gpt2/output")
-@click.option('--decoded_text_path', default="outputs/gpt2/generated")
+@click.option('--dict-path')
+@click.option('--vocab-path')
+@click.option('--encoded-token-path', default="outputs/gpt2/output")
+@click.option('--decoded-text-path', default="outputs/gpt2/generated")
 def run_pipeline(dict_path, vocab_path, encoded_token_path, decoded_text_path):
     print(f'ENCODED_TOKENS_PATH: {os.listdir(encoded_token_path)}')
     df = ioutil.read_parquet(encoded_token_path)
